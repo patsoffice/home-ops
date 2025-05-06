@@ -17,7 +17,7 @@ metadata:
 spec:
   loadBalancerIPs: true
   interfaces:
-    - ^enp[0-9]s*  # On the Minisforum ms-01, these are the 2.5Gb links, the 10Gb links are two digit (enp87s0)
+    - ^enp[89]*  # On the Minisforum ms-01, these are the 2.5Gb links, the 10Gb links are (enp2)
   nodeSelector:
     matchLabels:
       kubernetes.io/os: linux
