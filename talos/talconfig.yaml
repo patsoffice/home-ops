@@ -40,6 +40,12 @@ nodes:
         mtu: 1500
         vip:
           ip: "192.168.6.0"
+      - deviceSelector:
+          hardwareAddr: "58:47:ca:7a:ea:92"
+        dhcp: false
+        addresses:
+          - 10.30.1.0/16
+        mtu: 9000
   - hostname: "k8s-01"
     ipAddress: "192.168.1.11"
     installDiskSelector:
@@ -60,6 +66,12 @@ nodes:
         mtu: 1500
         vip:
           ip: "192.168.6.0"
+      - deviceSelector:
+          hardwareAddr: "58:47:ca:7b:c3:d6"
+        dhcp: false
+        addresses:
+          - 10.30.1.1/16
+        mtu: 9000
   - hostname: "k8s-02"
     ipAddress: "192.168.1.12"
     installDiskSelector:
@@ -80,6 +92,12 @@ nodes:
         mtu: 1500
         vip:
           ip: "192.168.6.0"
+      - deviceSelector:
+          hardwareAddr: "58:47:ca:7a:e6:6e"
+        dhcp: false
+        addresses:
+          - 10.30.1.2/16
+        mtu: 9000
   - hostname: "k8s-03"
     ipAddress: "192.168.1.13"
     installDiskSelector:
