@@ -5,6 +5,7 @@ kind: Kustomization
 namespace: kube-system
 resources:
   - ./aeotec-zwave-device.yaml
+  - ./amd-gpu.yaml
   - ./coral-device.yaml
   - ./intel-gpu.yaml
   - ./sonoff-zigbee-device.yaml

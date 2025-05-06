@@ -1,0 +1,17 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/nfd.k8s-sigs.io/nodefeaturerule_v1alpha1.json
+apiVersion: nfd.k8s-sigs.io/v1alpha1
+kind: NodeFeatureRule
+metadata:
+  name: amd-gpu-device
+spec:
+  rules:
+    -
+      name: amd.gpu
+      labels:
+        amd.feature.node.kubernetes.io/gpu: "true"
+      matchFeatures:
+        - feature: pci.device
+          matchExpressions:
+            class: { op: In, value: ["1638", "15d8", "15dd", "1638"] }
+            vendor: { op: In, value: ["1002"] }

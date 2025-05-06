@@ -13,7 +13,7 @@ spec:
           matchExpressions:
             class:
               op: In
-              value: ["ff"]
+              value: ["02"]
             device:
               op: In
               value: ["55d4"]
