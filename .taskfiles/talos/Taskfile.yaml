@@ -64,3 +64,15 @@ tasks:
     cmd: talhelper gencommand reset --extra-flags="--reboot {{- if eq .CLI_FORCE false }} --system-labels-to-wipe STATE --system-labels-to-wipe EPHEMERAL{{ end }} --graceful=false --wait=false" | bash
     preconditions:
       - which talhelper
+
+  reboot-node:
+    desc: Reboot Talos on a single node [NODE=required] [MODE=default]
+    cmd: talosctl --nodes {{.NODE}} reboot --mode={{.MODE}}
+    vars:
+      MODE: '{{.MODE | default "default"}}'
+    requires:
+      vars: [NODE]
+    preconditions:
+      - talosctl config info
+      - talosctl --nodes {{.NODE}} get machineconfig
+      - which talosctl
