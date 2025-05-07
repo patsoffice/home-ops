@@ -46,6 +46,8 @@ nodes:
         addresses:
           - 10.30.1.0/16
         mtu: 9000
+    patches:
+      - "@./patches/k8s-00/add-storage.yaml"
   - hostname: "k8s-01"
     ipAddress: "192.168.1.11"
     installDiskSelector:
@@ -72,6 +74,8 @@ nodes:
         addresses:
           - 10.30.1.1/16
         mtu: 9000
+    patches:
+      - "@./patches/k8s-01/add-storage.yaml"
   - hostname: "k8s-02"
     ipAddress: "192.168.1.12"
     installDiskSelector:
@@ -98,6 +102,8 @@ nodes:
         addresses:
           - 10.30.1.2/16
         mtu: 9000
+    patches:
+      - "@./patches/k8s-02/add-storage.yaml"
   - hostname: "k8s-03"
     ipAddress: "192.168.1.13"
     installDiskSelector:
@@ -124,6 +130,7 @@ patches:
   - "@./patches/global/machine-network.yaml"
   - "@./patches/global/machine-sysctls.yaml"
   - "@./patches/global/machine-time.yaml"
+  - "@./patches/global/machine-udev-rules.yaml"
 
 # Controller patches
 controlPlane:
