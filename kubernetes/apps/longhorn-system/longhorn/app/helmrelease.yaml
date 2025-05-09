@@ -34,9 +34,9 @@ spec:
       v1DataEngine: true
     ingress:
       annotations:
-        external-dns.alpha.kubernetes.io/target: internal.${CLUSTER_DOMAIN}
+        external-dns.alpha.kubernetes.io/target: internal.${SECRET_DOMAIN}
       enabled: true
-      host: longhorn.${CLUSTER_DOMAIN}
+      host: "{{ .Release.Name }}.${SECRET_DOMAIN}"
       ingressClassName: internal
       tls: true
     metrics:
