@@ -110,7 +110,7 @@ nodes:
       serial: "240446C06702"
     machineSpec:
       secureboot: false
-    talosImageURL: factory.talos.dev/installer/885f6e49bdf9631ea8a3da3f1c3bb480739e1158f834db7a81e6571e898c0f86
+    talosImageURL: factory.talos.dev/installer/65cf8364cd0de4cf7b851dc7067a2db83d0ba04f11d8635c6cd3334be6ffb825
     controlPlane: false
     networkInterfaces:
       - deviceSelector:
