@@ -1,0 +1,28 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/volsync.backube/replicationdestination_v1alpha1.json
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationDestination
+metadata:
+  name: "${APP}-bootstrap"
+spec:
+  restic:
+    accessModes:
+      - "${VOLSYNC_ACCESSMODES:=ReadWriteOnce}"
+    cacheAccessModes:
+      - "${VOLSYNC_CACHE_ACCESSMODES:=ReadWriteOnce}"
+    cacheCapacity: "${VOLSYNC_CACHE_CAPACITY:=8Gi}"
+    cacheStorageClassName: "${VOLSYNC_CACHE_SNAPSHOTCLASS:=longhorn-cache}"
+    capacity: "${VOLSYNC_CAPACITY:=51Gi}"
+    cleanupCachePVC: true
+    cleanupTempPVC: true
+    copyMethod: "${VOLSYNC_COPYMETHOD:=Snapshot}"
+    enableFileDeletion: true
+    moverSecurityContext:
+      runAsUser: ${APP_UID:=2000}
+      runAsGroup: ${APP_GID:=2000}
+      fsGroup: ${APP_GID:=2000}
+    repository: "${APP}-volsync-minio"
+    storageClassName: "${VOLSYNC_STORAGECLASS:=longhorn-snapshot}"
+    volumeSnapshotClassName: "${VOLSYNC_SNAPSHOTCLASS:=longhorn-snapclass}"
+  trigger:
+    manual: restore-once

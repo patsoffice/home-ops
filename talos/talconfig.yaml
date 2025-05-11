@@ -139,4 +139,5 @@ controlPlane:
   patches:
     - "@./patches/controller/admission-controller-patch.yaml"
     - "@./patches/controller/cluster.yaml"
+    - "@./patches/controller/mutatingadmissionpolicy.yaml"
     - "@./patches/controller/talos-api-access.yaml"
