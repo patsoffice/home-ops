@@ -40,7 +40,7 @@ spec:
               - /data/etcd.snapshot
             env:
               - name: CP_NODE_IP
-                value: "192.168.6.0"
+                value: "192.168.1.10"
 
         containers:
           restic:
