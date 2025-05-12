@@ -36,7 +36,7 @@ spec:
       annotations:
         external-dns.alpha.kubernetes.io/target: internal.${SECRET_DOMAIN}
       enabled: true
-      host: "{{ .Release.Name }}.${SECRET_DOMAIN}"
+      host: "longhorn.${SECRET_DOMAIN}"
       ingressClassName: internal
       tls: true
     metrics:
