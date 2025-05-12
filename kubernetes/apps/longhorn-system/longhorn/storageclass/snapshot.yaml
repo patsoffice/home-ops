@@ -12,7 +12,7 @@ parameters:
   staleReplicaTimeout: "30"
 provisioner: driver.longhorn.io
 reclaimPolicy: Delete
-volumeBindingMode: WaitForFirstConsumer
+volumeBindingMode: Immediate
 ---
 allowVolumeExpansion: true
 # yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/v1.32.0/storageclass.json
@@ -27,4 +27,4 @@ parameters:
   staleReplicaTimeout: "30"
 provisioner: driver.longhorn.io
 reclaimPolicy: Delete
-volumeBindingMode: WaitForFirstConsumer
+volumeBindingMode: Immediate

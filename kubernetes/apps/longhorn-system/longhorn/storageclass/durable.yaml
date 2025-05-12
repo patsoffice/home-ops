@@ -1,0 +1,17 @@
+---
+allowVolumeExpansion: true
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/v1.32.0/storageclass.json
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+  name: longhorn-triple
+parameters:
+  dataLocality: best-effort
+  numberOfReplicas: "3"
+  replicaAutoBalance: least-effort
+  staleReplicaTimeout: "30"
+provisioner: driver.longhorn.io
+reclaimPolicy: Delete
+volumeBindingMode: Immediate

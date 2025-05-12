@@ -22,7 +22,7 @@ spec:
     retain:
       daily: 7
       hourly: 24
-    storageClassName: "${VOLSYNC_STORAGECLASS:=longhorn-snapshot}"
+    storageClassName: "${VOLSYNC_STORAGECLASS:=longhorn-triple}"
     unlock: u1
     volumeSnapshotClassName: "${VOLSYNC_SNAPSHOTCLASS:=longhorn-snapclass}"
   sourcePVC: "${VOLSYNC_CLAIM:=${APP}}"
