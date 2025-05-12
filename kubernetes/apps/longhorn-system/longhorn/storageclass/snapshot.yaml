@@ -7,6 +7,7 @@ metadata:
   name: longhorn-snapshot
 parameters:
   dataLocality: disabled
+  fsType: ext4
   numberOfReplicas: "1"
   replicaAutoBalance: best-effort
   staleReplicaTimeout: "30"
@@ -22,7 +23,8 @@ metadata:
   name: longhorn-cache
 parameters:
   dataLocality: disabled
-  numberOfReplicas: "2"
+  fsType: ext4
+  numberOfReplicas: "1"
   replicaAutoBalance: best-effort
   staleReplicaTimeout: "30"
 provisioner: driver.longhorn.io

@@ -9,6 +9,7 @@ metadata:
   name: longhorn-triple
 parameters:
   dataLocality: best-effort
+  fsType: ext4
   numberOfReplicas: "3"
   replicaAutoBalance: least-effort
   staleReplicaTimeout: "30"

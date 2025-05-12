@@ -27,10 +27,14 @@ spec:
       createDefaultDiskLabeledNodes: true
       defaultDataLocality: best-effort
       defaultDataPath: /var/lib/longhorn
+      defaultLonghornStaticStorageClass: longhorn-triple
+      guaranteedEngineManagerCPU: 20
+      guaranteedReplicaManagerCPU: 20
       nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
       orphanAutoDeletion: true
-      replicaAutoBalance: true
-      storageMinimalAvailablePercentage: 25
+      replicaAutoBalance: best-effort
+      storageMinimalAvailablePercentage: 5
+      storageReservedPercentageForDefaultDisk: 10
       v1DataEngine: true
     ingress:
       annotations:
@@ -43,4 +47,4 @@ spec:
       serviceMonitor:
         enabled: true
     persistence:
-      defaultClass: false
+      defaultDataLocality: best-effort
