@@ -1,61 +1,57 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/ocirepository_v1beta2.json
-apiVersion: source.toolkit.fluxcd.io/v1beta2
-kind: OCIRepository
-metadata:
-  name: pi-hole-dns
-spec:
-  interval: 1h
-  layerSelector:
-    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
-    operation: copy
-  ref:
-    tag: 1.16.0
-  url: oci://ghcr.io/home-operations/charts-mirror/external-dns
----
-# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app pi-hole-dns
+  name: &app external-dns-pihole
 spec:
-  interval: 1h
-  chartRef:
-    kind: OCIRepository
-    name: pi-hole-dns
+  chart:
+    spec:
+      chart: external-dns
+      sourceRef:
+        kind: HelmRepository
+        name: external-dns
+        namespace: flux-system
+      version: 1.16.1
   install:
-    crds: CreateReplace
-    disableSchemaValidation: true
     remediation:
       retries: 3
+  interval: 30m
   upgrade:
     cleanupOnFail: true
-    crds: CreateReplace
-    disableSchemaValidation: true
     remediation:
-      strategy: rollback
       retries: 3
+      strategy: rollback
   values:
-    fullnameOverride: *app
-    provider: pihole
+    domainFilters:
+      - "${SECRET_DOMAIN}"
     env:
-      - name: EXTERNAL_DNS_PIHOLE_PASSWORD
+      - name: &name EXTERNAL_DNS_PIHOLE_PASSWORD
         valueFrom:
           secretKeyRef:
-            name: &secret pi-hole-dns-secret
-            key: PIHOLE_PASSWORD
+            key: *name
+            name: &secret external-dns-pihole
+      - name: EXTERNAL_DNS_PIHOLE_API_VERSION
+        value: "6"
+      - name: EXTERNAL_DNS_PIHOLE_TLS_SKIP_VERIFY
+        value: "true"
     extraArgs:
-      - --events
-      - --ignore-ingress-tls-spec
-      - --ingress-class=internal
-      - "--pihole-server=https://dns0.${SECRET_DOMAIN}"
-    policy: upsert-only
-    registry: noop
-    sources: ["ingress", "service"]
-    txtPrefix: k8s.main.
-    txtOwnerId: main
-    domainFilters: ["${SECRET_DOMAIN}"]
-    serviceMonitor:
-      enabled: true
+      - "--pihole-server=http://192.168.0.100"
+      - "--ignore-ingress-tls-spec"
+      - "--ingress-class=internal"
+    fullnameOverride: *app
+    image:
+      repository: gcr.io/k8s-staging-external-dns/external-dns
+      tag: v20250402-v0.16.1-48-g1efdf416
+    logLevel: debug
     podAnnotations:
       secret.reloader.stakater.com/reload: *secret
+    policy: upsert-only
+    provider: pihole
+    registry: noop
+    serviceMonitor:
+      enabled: true
+    sources:
+      - ingress
+      - service
+    triggerLoopOnEvent: true
