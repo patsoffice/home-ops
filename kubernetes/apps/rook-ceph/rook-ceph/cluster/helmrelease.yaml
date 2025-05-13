@@ -72,12 +72,15 @@ spec:
           - name: k8s-00
             devices:
               - name: "/dev/disk/by-id/nvme-CT2000P310SSD8_24484CC1BF5"
+              - name: "/dev/disk/by-id/nvme-CT1000P3SSD8_24494CF0AB11"
           - name: k8s-01
             devices:
               - name: "/dev/disk/by-id/nvme-CT2000P310SSD8_24484CC1C012"
+              - name: "/dev/disk/by-id/nvme-CT1000P3SSD8_25044DBF5B66"
           - name: k8s-02
             devices:
               - name: "/dev/disk/by-id/nvme-CT2000P310SSD8_24484CC1C16A"
+              - name: "/dev/disk/by-id/nvme-CT1000P3SSD8_24484CA3E8D6"
         useAllDevices: false
         useAllNodes: false
     cephBlockPools:

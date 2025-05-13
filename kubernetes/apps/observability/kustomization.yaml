@@ -5,5 +5,4 @@ kind: Kustomization
 namespace: observability
 components:
   - ../../components/common
-resources:
-  - ./gatus/ks.yaml
+resources: []

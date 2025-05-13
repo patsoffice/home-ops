@@ -1,5 +1,0 @@
-machine:
-  disks:
-    - device: /dev/disk/by-id/nvme-CT1000P3SSD8_24494CF0AB11
-      partitions:
-        - mountpoint: /var/lib/longhorn
