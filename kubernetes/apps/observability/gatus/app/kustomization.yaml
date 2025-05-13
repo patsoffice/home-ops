@@ -6,9 +6,12 @@ resources:
   - ./externalsecret.yaml
   - ./rbac.yaml
   - ./helmrelease.yaml
+  - ./pvc.yaml
 configMapGenerator:
-  - name: gatus-configmap
-    files:
+  - files:
       - config.yaml=./resources/config.yaml
+    name: gatus-configmap
 generatorOptions:
   disableNameSuffixHash: true
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
