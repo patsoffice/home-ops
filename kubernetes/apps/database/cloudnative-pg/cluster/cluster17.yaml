@@ -1,0 +1,81 @@
+---
+# yaml-language-server: $schema=https://github.com/datreeio/CRDs-catalog/raw/refs/heads/main/postgresql.cnpg.io/cluster_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres17
+spec:
+  instances: 3
+  imageName: ghcr.io/cloudnative-pg/postgresql:17.2
+  primaryUpdateStrategy: unsupervised
+  superuserSecret:
+    name: cloudnative-pg-secret
+  enableSuperuserAccess: true
+  storage:
+    size: 32Gi
+    storageClass: ceph-block
+  postgresql:
+    shared_preload_libraries:
+      - "vectors.so"
+    parameters:
+      max_connections: "200"
+      shared_buffers: 256MB
+  nodeMaintenanceWindow:
+    inProgress: false
+    reusePVC: true
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1024Mi
+    limits:
+      memory: 2048Mi
+  monitoring:
+    enablePodMonitor: true
+  backup:
+    retentionPolicy: 14d
+    barmanObjectStore: &barmanObjectStore
+      data:
+        compression: bzip2
+      wal:
+        compression: bzip2
+        maxParallel: 4
+      destinationPath: s3://backups/cloudnative-pg/
+      endpointURL: http://192.168.1.182:9000/
+      # Note: serverName version needs to be inccremented
+      # when recovering from an existing cnpg cluster
+      serverName: &currentCluster postgres-v2
+      s3Credentials:
+        accessKeyId:
+          name: cloudnative-pg-secret
+          key: s3_access_key
+        secretAccessKey:
+          name: cloudnative-pg-secret
+          key: s3_secret_access_key
+  bootstrap:
+    recovery:
+      source: &previousCluster postgres-v1
+  # Note: externalClusters is needed when recovering from an existing cnpg cluster
+  externalClusters:
+    - name: *previousCluster
+      barmanObjectStore:
+        <<: *barmanObjectStore
+        serverName: *previousCluster
+---
+# yaml-language-server: $schema=https://kubernetesjsonschema.dev/v1.10.3-standalone/service-v1.json
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-lb
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: postgres.${SECRET_DOMAIN}
+    lbipam.cilium.io/ips: 192.168.5.10
+spec:
+  type: LoadBalancer
+  ports:
+    - name: postgres
+      port: 5432
+      protocol: TCP
+      targetPort: 5432
+  selector:
+    cnpg.io/cluster: postgres
+    role: primary
