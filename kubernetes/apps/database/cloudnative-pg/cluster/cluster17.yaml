@@ -15,8 +15,6 @@ spec:
     size: 32Gi
     storageClass: ceph-block
   postgresql:
-    shared_preload_libraries:
-      - "vectors.so"
     parameters:
       max_connections: "200"
       shared_buffers: 256MB
