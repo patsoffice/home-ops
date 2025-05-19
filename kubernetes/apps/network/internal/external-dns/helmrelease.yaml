@@ -13,6 +13,9 @@ spec:
         name: external-dns
         namespace: flux-system
       version: 1.16.1
+  dependsOn:
+    - name: external-secrets-stores
+      namespace: external-secrets
   install:
     remediation:
       retries: 3
