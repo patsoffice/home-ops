@@ -41,9 +41,9 @@ spec:
         maxParallel: 4
       destinationPath: s3://backups/cloudnative-pg/
       endpointURL: http://192.168.1.182:9000/
-      # Note: serverName version needs to be inccremented
+      # Note: serverName version needs to be incremented
       # when recovering from an existing cnpg cluster
-      serverName: &currentCluster postgres-v2
+      serverName: &currentCluster postgres-v1
       s3Credentials:
         accessKeyId:
           name: cloudnative-pg-secret
@@ -51,15 +51,17 @@ spec:
         secretAccessKey:
           name: cloudnative-pg-secret
           key: s3_secret_access_key
-  bootstrap:
-    recovery:
-      source: &previousCluster postgres-v1
-  # Note: externalClusters is needed when recovering from an existing cnpg cluster
-  externalClusters:
-    - name: *previousCluster
-      barmanObjectStore:
-        <<: *barmanObjectStore
-        serverName: *previousCluster
+  # # Note: previousCluster needs to be set to the name of the previous
+  # # cluster when recovering from an existing cnpg cluster
+  # bootstrap:
+  #   recovery:
+  #     source: &previousCluster postgres-v1
+  # # Note: externalClusters is needed when recovering from an existing cnpg cluster
+  # externalClusters:
+  #   - name: *previousCluster
+  #     barmanObjectStore:
+  #       <<: *barmanObjectStore
+  #       serverName: *previousCluster
 ---
 # yaml-language-server: $schema=https://kubernetesjsonschema.dev/v1.10.3-standalone/service-v1.json
 apiVersion: v1
