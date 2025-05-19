@@ -38,6 +38,12 @@ spec:
       namespace: flux-system
   interval: 1h
   path: ./kubernetes/apps
+  postBuild:
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
+      - kind: ConfigMap
+        name: cluster-settings
   prune: true
   retryInterval: 2m
   sourceRef:
@@ -56,6 +62,12 @@ spec:
             provider: sops
             secretRef:
               name: sops-age
+          postBuild:
+            substituteFrom:
+              - kind: Secret
+                name: cluster-secrets
+              - kind: ConfigMap
+                name: cluster-settings
       target:
         group: kustomize.toolkit.fluxcd.io
         kind: Kustomization
