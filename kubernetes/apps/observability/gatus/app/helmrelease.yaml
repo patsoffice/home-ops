@@ -106,8 +106,7 @@ spec:
                   identifier: app
                   port: http
     serviceAccount:
-      create: true
-      name: gatus
+      gatus: {}
     persistence:
       config:
         existingClaim: gatus
