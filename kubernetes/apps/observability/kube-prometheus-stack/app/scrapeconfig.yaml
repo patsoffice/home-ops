@@ -24,9 +24,9 @@ metadata:
 spec:
   staticConfigs:
     - targets:
-        - pve001.internal:9100
-        - pve002.internal:9100
-        - pve005.internal:9100
+        - pve001.internal:9633
+        - pve002.internal:9633
+        - pve005.internal:9633
   metricsPath: /metrics
   relabelings:
     - action: replace
