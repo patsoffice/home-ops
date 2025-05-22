@@ -8,4 +8,5 @@ components:
   - ../../components/repos/app-template
 resources:
   - ./echo/ks.yaml
+  - ./pinchflat/ks.yaml
   - ./romm/ks.yaml
