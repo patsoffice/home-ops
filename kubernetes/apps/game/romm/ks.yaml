@@ -5,7 +5,7 @@ metadata:
   name: &app romm
   namespace: flux-system
 spec:
-  targetNamespace: default
+  targetNamespace: game
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
@@ -22,7 +22,7 @@ spec:
       namespace: volsync-system
   prune: true
   interval: 30m
-  path: ./kubernetes/apps/default/romm/app
+  path: ./kubernetes/apps/game/romm/app
   sourceRef:
     kind: GitRepository
     name: flux-system
