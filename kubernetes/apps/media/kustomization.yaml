@@ -5,4 +5,5 @@ kind: Kustomization
 namespace: media
 components:
   - ../../components/common
-resources: []
+resources:
+  - ./pinchflat/ks.yaml
