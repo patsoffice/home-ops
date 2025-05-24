@@ -82,7 +82,7 @@ spec:
                   port: *port
     persistence:
       config:
-        existingClaim: $APP
+        existingClaim: pinchflat
       yt-dlp:
         type: emptyDir
         globalMounts:
