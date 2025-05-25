@@ -47,9 +47,12 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
     persistence:
       config:
-        existingClaim: pgadmin-config
-        globalMounts:
-          - path: /var/lib/pgadmin
+        existingClaim: ${APP}
+        advancedMounts:
+          pgadmin:
+            app:
+              - path: /var/lib/pgadmin
+                subPath: pgadmin
       empty:
         type: emptyDir
         sizeLimit: 100Mi
