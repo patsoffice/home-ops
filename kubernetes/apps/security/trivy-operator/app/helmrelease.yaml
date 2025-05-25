@@ -27,7 +27,7 @@ spec:
     remediation:
       retries: 3
   values:
-    excludeNamespaces: {{ .Release.Namespace }}
+    excludeNamespaces: "{{ .Release.Namespace }}"
     operator:
       annotations:
         reloader.stakater.com/auto: 'true'
