@@ -4,48 +4,47 @@ kind: HelmRelease
 metadata:
   name: trivy-operator
 spec:
-  interval: 10m0s
   chart:
     spec:
       chart: trivy-operator
-      version: "0.28.1"
       reconcileStrategy: ChartVersion
       sourceRef:
         kind: HelmRepository
         name: aqua
         namespace: flux-system
+      version: 0.28.1
   driftDetection:
     mode: enabled
-  maxHistory: 3
   install:
     crds: CreateReplace
     remediation:
       retries: -1
+  interval: 10m0s
+  maxHistory: 3
   upgrade:
     cleanupOnFail: true
     crds: CreateReplace
     remediation:
       retries: 3
   values:
-    excludeNamespaces: "{{ .Release.Namespace }}"
+    excludeNamespaces: {{ .Release.Namespace }}
     operator:
-      replicas: 1
-      scanJobsConcurrentLimit: 5
-      scanJobTTL: 10s
-      vulnerabilityScannerScanOnlyCurrentRevisions: true
-      configAuditScannerScanOnlyCurrentRevisions: true
       annotations:
-        reloader.stakater.com/auto: "true"
+        reloader.stakater.com/auto: 'true'
+      configAuditScannerScanOnlyCurrentRevisions: true
+      infraAssessmentScannerEnabled: false
+      replicas: 1
+      scanJobTTL: 10s
+      scanJobsConcurrentLimit: 5
+      vulnerabilityScannerScanOnlyCurrentRevisions: true
     serviceMonitor:
       enabled: true
     trivy:
-      slow: true
       ignoreUnfixed: true
-      severity: HIGH,CRITICAL
-      storageClassEnabled: false
       resources:
         limits:
           cpu: 500m
           memory: 1Gi
-    nodeCollector:
-      useNodeSelector: false
+      severity: HIGH,CRITICAL
+      slow: true
+      storageClassEnabled: false
