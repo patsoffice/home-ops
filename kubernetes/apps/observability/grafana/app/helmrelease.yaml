@@ -266,6 +266,11 @@ spec:
           gnetId: 19105
           revision: 7
           datasource: Prometheus
+      security:
+        trivy-operator:
+          gnetId: 17813
+          revision: 2
+          datasource: Prometheus
       unifi:
         unifi-pdu:
           # renovate: depName="UniFi-Poller: PDU Insights - Prometheus"
