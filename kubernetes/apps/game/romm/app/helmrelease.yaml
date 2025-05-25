@@ -96,6 +96,15 @@ spec:
                   identifier: app
                   port: http
     persistence:
+      data:
+        existingClaim: ${APP}
+        advancedMounts:
+          romm:
+            app:
+              - path: /romm/assets
+                subPath: assets
+              - path: /romm/resources
+                subPath: resources
       config:
         type: configMap
         name: romm-config
@@ -103,26 +112,16 @@ spec:
           - path: /romm/config/config.yml
             subPath: config.yml
             readOnly: false
-      nginx-conf:
-        type: emptyDir
-        globalMounts:
-          - path: /etc/nginx/conf.d
-      assets:
-        existingClaim: romm-assets
-        globalMounts:
-          - path: /romm/assets
-            readOnly: false
-      resources:
-        existingClaim: romm-resources
-        globalMounts:
-          - path: /romm/resources
-            readOnly: false
-      tmp:
-        type: emptyDir
-        sizeLimit: 1Gi
       media:
         type: nfs
         server: nas0.internal
         path: /tank/roms
         globalMounts:
           - path: /romm/library
+      nginx-conf:
+        type: emptyDir
+        globalMounts:
+          - path: /etc/nginx/conf.d
+      tmp:
+        type: emptyDir
+        sizeLimit: 1Gi
