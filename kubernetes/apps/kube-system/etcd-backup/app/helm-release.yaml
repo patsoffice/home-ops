@@ -46,7 +46,7 @@ spec:
         containers:
           restic:
             image:
-              repository: ghcr.io/instrumentisto/restic
+              repository: ghcr.io/restic/restic
               tag: 0.18.0
             workingDir: /data
             args:
@@ -79,7 +79,7 @@ spec:
         containers:
           restic:
             image:
-              repository: ghcr.io/instrumentisto/restic:0.18
+              repository: ghcr.io/restic/restic
               tag: 0.18.0
             args:
               - forget
