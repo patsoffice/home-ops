@@ -44,6 +44,9 @@ spec:
       redis:
         host: dragonfly.database.svc.cluster.local
         db: 1
+    prometheus:
+      rules:
+        enabled: true
     server:
       replicas: 3
       initContainers:
@@ -53,9 +56,9 @@ spec:
             - secretRef:
                 name: *secret
       metrics:
-        prometheus:
-          serviceMonitor:
-            enabled: true
+        enabled: true
+        serviceMonitor:
+          enabled: true
       ingress:
         enabled: true
         ingressClassName: external
@@ -64,5 +67,6 @@ spec:
         hosts:
           - &host auth.chezlawrence.com
         tls:
-          hosts:
-            - *host
+          - secretName: authentik-tls
+            hosts:
+              - *host
