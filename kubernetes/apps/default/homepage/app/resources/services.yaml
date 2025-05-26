@@ -1,0 +1,94 @@
+---
+- Media:
+    - Plex:
+        icon: plex.svg
+        href: "https://plex.chezlawrence.com"
+        description: media server
+        namespace: default
+        app: plex
+        widget:
+          type: plex
+          url: http://plex.int.chezlawrence.com:32400
+          key: {{HOMEPAGE_VAR_PLEX_TOKEN}}
+    - Tautulli:
+        icon: tautulli.svg
+        href: "https://tautulli.chezlawrence.com"
+        description: plex monitoring and history database
+        namespace: default
+        app: tautulli
+        widget:
+          type: tautulli
+          url: http://tautulli.int.chezlawrence.com:8181
+          key: {{HOMEPAGE_VAR_TAUTULLI_API_KEY}}
+    - Sonarr:
+        icon: sonarr.svg
+        description: tv
+        href: "https://sonarr.chezlawrence.com"
+        widget:
+          type: sonarr
+          url: http://sonarr.int.chezlawrence.com:8989
+          key: {{HOMEPAGE_VAR_SONARR_API_KEY}}
+    - Radarr:
+        icon: radarr.svg
+        description: movies
+        href: "https://radarr.chezlawrence.com"
+        namespace: default
+        app: radarr
+        widget:
+          type: radarr
+          url: http://radarr.int.chezlawrence.com:7878
+          key: {{HOMEPAGE_VAR_RADARR_API_KEY}}
+    - Romm:
+        icon: romm.svg
+        description: roms
+        href: "https://romm.chezlawrence.com"
+        widget:
+          type: romm
+          url: http://romm.game.svc.cluster.local:8080
+          username: {{HOMEPAGE_VAR_ROMM_USERNAME}}
+          password: {{HOMEPAGE_VAR_ROMM_PASSWORD}}
+
+- Releases:
+    - Calendar:
+        description: tv and movie releases
+        widget:
+          type: calendar
+          integrations:
+            - type: sonarr
+              service_group: Media
+              service_name: Sonarr
+            - type: radarr
+              service_group: Media
+              service_name: Radarr
+
+- Applications:
+    - Authentik:
+        icon: authentik.svg
+        href: "https://auth.chezlawrence.com"
+        description: authentication server
+        namespace: default
+        app: authentik-server
+        widget:
+          type: authentik
+          url: http://authentik-server.security.svc.cluster.local
+          key: {{HOMEPAGE_VAR_AUTHENTIK_API_KEY}}
+    - Grafana:
+        icon: grafana.png
+        href: "https://grafana.chezlawrence.com"
+        namespace: observability
+        app: grafana
+        widget:
+          type: grafana
+          url: http://grafana.observability.svc.cluster.local:80
+          username: {{HOMEPAGE_VAR_GRAFANA_USERNAME}}
+          password: {{HOMEPAGE_VAR_GRAFANA_PASSWORD}}
+
+- Network:
+    - Cloudflare Tunnel:
+        icon: cloudflare.svg
+        description: cloudflare tunnel
+        widget:
+          type: cloudflared
+          accountid: {{HOMEPAGE_VAR_CLOUDFLARE_ACCOUNT_ID}}
+          tunnelid: {{HOMEPAGE_VAR_CLOUDFLARE_TUNNEL_ID}}
+          key: {{HOMEPAGE_VAR_CLOUDFLARE_API_KEY}}
