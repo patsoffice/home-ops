@@ -11,7 +11,7 @@ spec:
     name: app-template
   install:
     remediation:
-      retries: 3
+      retries: -1
   upgrade:
     cleanupOnFail: true
     remediation:
@@ -26,7 +26,6 @@ spec:
           parallelism: 1
           successfulJobsHistory: 1
           failedJobsHistory: 1
-
         initContainers:
           talosctl:
             image:
@@ -41,7 +40,6 @@ spec:
             env:
               - name: CP_NODE_IP
                 value: "192.168.1.10"
-
         containers:
           restic:
             image:
@@ -56,7 +54,6 @@ spec:
             envFrom:
               - secretRef:
                   name: talos-etcd-s3-keys
-
         pod:
           hostNetwork: true
           hostPID: true
@@ -67,14 +64,12 @@ spec:
               labelSelector:
                 matchLabels:
                   app.kubernetes.io/name: *app
-
       prune:
         type: cronjob
         cronjob:
           schedule: "32 5 1 * *" # change me - 1st of month at 05:32
           successfulJobsHistory: 1
           failedJobsHistory: 1
-
         containers:
           restic:
             image:
@@ -88,13 +83,11 @@ spec:
             envFrom:
               - secretRef:
                   name: talos-etcd-s3-keys
-
     persistence:
       backupdata:
         type: emptyDir
         globalMounts:
           - path: /data
-
       serviceaccount:
         type: secret
         name: etcd-backup-talos
