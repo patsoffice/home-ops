@@ -6,7 +6,6 @@ resources:
   - ./externalsecret.yaml
   - ./rbac.yaml
   - ./helmrelease.yaml
-  - ./pvc.yaml
 configMapGenerator:
   - files:
       - config.yaml=./resources/config.yaml
