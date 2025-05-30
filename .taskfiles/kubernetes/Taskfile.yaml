@@ -1,6 +1,9 @@
 ---
 version: '3'
 
+vars:
+  KUBERNETES_RESOURCES_DIR: "{{.ROOT_DIR}}/.taskfiles/kubernetes/resources"
+
 tasks:
 
   browse-pvc:
@@ -47,4 +50,24 @@ tasks:
             PHASE: [Failed, Pending, Succeeded]
         cmd: kubectl delete pods --all-namespaces --field-selector status.phase={{.ITEM.PHASE}} --ignore-not-found=true
     preconditions:
+      - which kubectl
+
+  privileged-pvc:
+    desc: Run a privileged pod and mount a PVC [NS={{.NS}}] [CLAIM=required] [NODE=required]
+    cmd:
+      kubectl run privileged-{{.NODE}} -n {{.NS}} -i --rm --image=docker.io/library/alpine:latest --overrides="$(yq {{.KUBERNETES_RESOURCES_DIR}}/privileged-pod-pvc.tmpl.yaml -o=json | envsubst -no-unset -no-empty)"
+    env:
+      NS: '{{.NS}}'
+      CLAIM: '{{.CLAIM}}'
+      NODE: '{{.NODE}}'
+    vars:
+      NS: '{{.NS | default "default"}}'
+      TMPDIR:
+        sh: mktemp -d
+    requires:
+      vars: [CLAIM, NODE]
+    preconditions:
+      - kubectl --namespace {{.NS}} get persistentvolumeclaims {{.CLAIM}}
+      - test -f {{.KUBERNETES_RESOURCES_DIR}}/privileged-pod-pvc.tmpl.yaml
+      - which envsubst
       - which kubectl
