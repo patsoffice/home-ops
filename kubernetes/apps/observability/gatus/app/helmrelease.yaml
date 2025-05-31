@@ -95,8 +95,6 @@ spec:
     ingress:
       app:
         className: external
-        annotations:
-          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
         hosts:
           - host: "${GATUS_SUBDOMAIN}.${SECRET_DOMAIN}"
             paths:
