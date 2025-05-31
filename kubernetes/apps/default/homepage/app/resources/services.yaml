@@ -18,7 +18,7 @@
         app: tautulli
         widget:
           type: tautulli
-          url: http://tautulli.int.chezlawrence.com:8181
+          url: http://tautulli.media.svc.cluster.local:80
           key: {{HOMEPAGE_VAR_TAUTULLI_API_KEY}}
     - Sonarr:
         icon: sonarr.svg
