@@ -9,3 +9,4 @@ components:
 resources:
   - ./echo/ks.yaml
   - ./homepage/ks.yaml
+  - ./miniflux/ks.yaml
