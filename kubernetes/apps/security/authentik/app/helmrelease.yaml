@@ -63,7 +63,15 @@ spec:
         enabled: true
         ingressClassName: external
         annotations:
-          external-dns.alpha.kubernetes.io/target: external.chezlawrence.com
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/group: Security
+          gethomepage.dev/name: Authentik
+          gethomepage.dev/icon: authentik.png
+          gethomepage.dev/siteMonitor: "http://authentik-server.security.svc.cluster.local:80"
+          gethomepage.dev/pod-selector: app.kubernetes.io/name=authentik
+          gethomepage.dev/widget.type: authentik
+          gethomepage.dev/widget.url: "http://authentik-server.security.svc.cluster.local:80"
+          gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_AUTHENTIK_API_KEY}}"
         hosts:
           - &host auth.chezlawrence.com
         tls:
