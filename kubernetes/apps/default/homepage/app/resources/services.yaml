@@ -62,16 +62,6 @@
               service_name: Radarr
 
 - Applications:
-    - Authentik:
-        icon: authentik.svg
-        href: "https://auth.chezlawrence.com"
-        description: authentication server
-        namespace: default
-        app: authentik-server
-        widget:
-          type: authentik
-          url: http://authentik-server.security.svc.cluster.local
-          key: {{HOMEPAGE_VAR_AUTHENTIK_API_KEY}}
     - Grafana:
         icon: grafana.png
         href: "https://grafana.chezlawrence.com"

@@ -44,22 +44,9 @@ spec:
                 spec:
                   failureThreshold: 30
                   periodSeconds: 10
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
-            resources:
-              requests:
-                cpu: 10m
-              limits:
-                memory: 512Mi
-    defaultPodOptions:
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
-        fsGroupChangePolicy: OnRootMismatch
+        replicas: 2
+        serviceAccount:
+          identifier: homepage
     service:
       app:
         controller: *app
@@ -115,3 +102,5 @@ spec:
         enabled: true
         globalMounts:
           - path: /app/config/logs
+    serviceAccount:
+      homepage: {}
