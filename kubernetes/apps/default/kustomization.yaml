@@ -7,6 +7,7 @@ components:
   - ../../components/common
   - ../../components/repos/app-template
 resources:
+  - ./atuin/ks.yaml
   - ./echo/ks.yaml
   - ./homepage/ks.yaml
   - ./miniflux/ks.yaml
