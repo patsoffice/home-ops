@@ -1,0 +1,128 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app tandoor
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+  install:
+    remediation:
+      retries: -1
+  interval: 30m
+  maxHistory: 3
+  uninstall:
+    keepHistory: false
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    controllers:
+      tandoor:
+        annotations:
+          secret.reloader.stakater.com/reload: &secret tandoor-secret
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/home-operations/postgres-init
+              tag: 17.5.0@sha256:e0c87ce7df39d06b93f27cf2cc6a056611f13faaa88cc07ab4dc8bf7a85d0b11
+              pullPolicy: IfNotPresent
+            envFrom:
+              - secretRef:
+                  name: *secret
+        containers:
+          app:
+            image:
+              repository: ghcr.io/tandoorrecipes/recipes
+              tag: 1.5.34@sha256:7d083f3af3a2a58bb8bb5fe94d59a37e2076bc405cf9bd51c2e3eaa18d6baf5a
+            env:
+              COMMENT_PREF_DEFAULT: 0
+              DEBUG: 1
+              ENABLE_SIGNUP: 0
+              FRACTION_PREF_DEFAULT: 0
+              GUNICORN_MEDIA: 0
+              MAX_OWNED_SPACES_PREF_DEFAULT: 1000
+              SHOPPING_MIN_AUTOSYNC_INTERVAL: 5
+              TANDOOR_PORT: &tandoorPort 8000
+            envFrom:
+              - secretRef:
+                  name: *secret
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /accounts/login/
+                    port: *tandoorPort
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /accounts/login/
+                    port: *tandoorPort
+                  failureThreshold: 30
+                  periodSeconds: 10
+          nginx:
+            image:
+              repository: nginxinc/nginx-unprivileged
+              tag: 1.28.0-alpine@sha256:aebd3b76e6a6ac06c0502d3cf29e759f14f0429532ae89f785831a86ed61dd87
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: &port 8080
+    ingress:
+      app:
+        className: internal
+        hosts:
+          - host: tandoor.chezlawrence.com
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: *port
+    persistence:
+      files:
+        existingClaim: *app
+        advancedMounts:
+          tandoor:
+            app:
+              - path: /opt/recipes/mediafiles
+                subPath: mediafiles
+              - path: /opt/recipes/staticfiles
+                subPath: staticfiles
+            nginx:
+              - path: /media
+                subPath: mediafiles
+              - path: /static
+                subPath: staticfiles
+      nginx-config:
+        type: configMap
+        name: tandoor-nginx
+        advancedMounts:
+          tandoor:
+            nginx:
+              - path: /etc/nginx/nginx.conf
+                subPath: nginx-config
+                readOnly: true
+      temp:
+        type: emptyDir
+        advancedMounts:
+          tandoor:
+            app:
+              - path: /tmp
+                subPath: app-tmp
+              - path: /opt/recipes/cookbook/static/django_js_reverse
+                subPath: django_js_reverse
