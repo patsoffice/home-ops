@@ -69,7 +69,7 @@ spec:
       media:
         type: nfs
         server: nas0.internal
-        path: /tank/downloads/torrents
+        path: /tank/downloads
         globalMounts:
           - path: /data/downloads
       tmpfs:

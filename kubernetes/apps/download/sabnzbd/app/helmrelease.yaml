@@ -94,6 +94,6 @@ spec:
       media:
         type: nfs
         server: nas0.internal
-        path: /tank/downloads/nzb
+        path: /tank/downloads
         globalMounts:
           - path: /downloads
