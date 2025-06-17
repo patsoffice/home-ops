@@ -22,7 +22,7 @@ spec:
             env:
               TZ: America/Los_Angeles
               BASE_URL: https://epic.chezlawrence.com
-              CRON_SCHEDULE: "0 10 * * *"  # every day at 10
+              CRON_SCHEDULE: "0 0,6,12,18 * * *"  # every six hours
               EMAIL_SENDER_NAME: "Epic Games Captchas"
               RUN_ON_STARTUP: "true"
               SEARCH_STRATEGY: all
