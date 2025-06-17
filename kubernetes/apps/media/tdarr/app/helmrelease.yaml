@@ -23,31 +23,14 @@ spec:
           reloader.stakater.com/auto: "true"
         containers:
           app:
-            env:
-              - name: HOME
-                value: /app/configs
-              - name: TZ
-                value: America/Los_Angeles
-              - name: internalNode
-                value: "true"
-              - name: nodeName
-                valueFrom:
-                  fieldRef:
-                    fieldPath: spec.nodeName
             image:
-              repository: ghcr.io/usa-reddragon/tdarr
-              tag: 2.33.01@sha256:1d0bcd581993f3536b42971d5d8916c267ac3cc5b4496011c9282c9f79ab3890
-            probes:
-              liveness: &probes
-                enabled: true
-                spec:
-                  initialDelaySeconds: 20
-              readiness: *probes
-              startup: *probes
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+              repository: ghcr.io/haveagitgat/tdarr
+              tag: 2.44.01@sha256:59c55da122b38e59c24e354592e6e14aa4aa1a5870f35d193e0480bda1828064
+            env:
+              TZ: America/Los_Angeles
+              PGID: "8675309"
+              PUID: "10070"
+              internalNode: false
             resources:
               requests:
                 cpu: 100m
@@ -56,9 +39,8 @@ spec:
                 memory: 2Gi
     defaultPodOptions:
       securityContext:
-        runAsNonRoot: true
-        runAsUser: 10070
-        runAsGroup: 8675309
+        runAsUser: 0
+        runAsGroup: 0
         fsGroup: 8675309
         fsGroupChangePolicy: OnRootMismatch
         supplementalGroups: [44]
@@ -85,30 +67,18 @@ spec:
         existingClaim: tdarr
         globalMounts:
           - path: /app/server
-      config:
-        type: emptyDir
-        globalMounts:
-          - path: /app/configs
       cache:
         type: nfs
         server: nas0.internal
         path: /tank/transcode/tdarr/transcode-cache
         globalMounts:
           - path: /cache
-      logs:
-        type: emptyDir
-        globalMounts:
-          - path: /app/logs
       movies:
         type: nfs
         server: nas0.internal
         path: /tank/media/movies
         globalMounts:
           - path: /movies
-      node-plugins:
-        type: emptyDir
-        globalMounts:
-          - path: /app/Tdarr_Node/assets/app/plugins
       tv:
         type: nfs
         server: nas0.internal
