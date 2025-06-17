@@ -1,0 +1,117 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: tdarr
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    controllers:
+      tdarr:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            env:
+              - name: HOME
+                value: /app/configs
+              - name: TZ
+                value: America/Los_Angeles
+              - name: internalNode
+                value: "true"
+              - name: nodeName
+                valueFrom:
+                  fieldRef:
+                    fieldPath: spec.nodeName
+            image:
+              repository: ghcr.io/usa-reddragon/tdarr
+              tag: 2.33.01@sha256:1d0bcd581993f3536b42971d5d8916c267ac3cc5b4496011c9282c9f79ab3890
+            probes:
+              liveness: &probes
+                enabled: true
+                spec:
+                  initialDelaySeconds: 20
+              readiness: *probes
+              startup: *probes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 100m
+              limits:
+                gpu.intel.com/i915: 1
+                memory: 2Gi
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10070
+        runAsGroup: 8675309
+        fsGroup: 8675309
+        fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups: [44]
+    service:
+      app:
+        controller: tdarr
+        ports:
+          http:
+            port: &port 8265
+          server:
+            port: 8266
+    ingress:
+      tdarr:
+        className: internal
+        hosts:
+          - host: tdarr.chezlawrence.com
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: *port
+    persistence:
+      app-server:
+        existingClaim: tdarr
+        globalMounts:
+          - path: /app/server
+      config:
+        type: emptyDir
+        globalMounts:
+          - path: /app/configs
+      cache:
+        type: nfs
+        server: nas0.internal
+        path: /tank/transcode/tdarr/transcode-cache
+        globalMounts:
+          - path: /cache
+      logs:
+        type: emptyDir
+        globalMounts:
+          - path: /app/logs
+      movies:
+        type: nfs
+        server: nas0.internal
+        path: /tank/media/movies
+        globalMounts:
+          - path: /movies
+      node-plugins:
+        type: emptyDir
+        globalMounts:
+          - path: /app/Tdarr_Node/assets/app/plugins
+      tv:
+        type: nfs
+        server: nas0.internal
+        path: /tank/media/tv
+        globalMounts:
+          - path: /tv
