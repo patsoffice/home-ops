@@ -10,5 +10,6 @@ resources:
   - ./plex/ks.yaml
   - ./pinchflat/ks.yaml
   - ./readarr/ks.yaml
+  - ./radarr/ks.yaml
   - ./sonarr/ks.yaml
   - ./tautulli/ks.yaml
