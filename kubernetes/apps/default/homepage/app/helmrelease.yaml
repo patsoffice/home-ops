@@ -26,7 +26,8 @@ spec:
           app:
             image:
               repository: ghcr.io/gethomepage/homepage
-              tag: v1.3.2
+              tag: v1.3.2@sha256:67ce46259880c0d2c6f97f6a68f8cdaa4df2b5366256d7176cfd654f890c8666
+              pullPolicy: IfNotPresent
             env:
               TZ: America/Los_Angeles
               HOMEPAGE_ALLOWED_HOSTS: start.chezlawrence.com

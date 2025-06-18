@@ -33,6 +33,7 @@ spec:
             image:
               repository: haveagitgat/tdarr_node
               tag: 2.44.01@sha256:830e5cb1dbc1147e67097ab072032be7590991acea31d1fb72cca1629124a14b
+              pullPolicy: IfNotPresent
             env:
               - name: TZ
                 value: America/Los_Angeles

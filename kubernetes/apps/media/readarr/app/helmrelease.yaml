@@ -26,6 +26,7 @@ spec:
             image:
               repository: ghcr.io/home-operations/postgres-init
               tag: 17.5.0@sha256:e0c87ce7df39d06b93f27cf2cc6a056611f13faaa88cc07ab4dc8bf7a85d0b11
+              pullPolicy: IfNotPresent
             envFrom: &envFrom
               - secretRef:
                   name: readarr-secret
@@ -34,6 +35,7 @@ spec:
             image:
               repository: ghcr.io/home-operations/readarr
               tag: 0.4.17.2801@sha256:6bb62cd6c4d74b2cc6b0e9a8334a5034f75fd73cdbf5d47bf98381a6eba7a6e8
+              pullPolicy: IfNotPresent
             env:
               # Readarr App
               READARR__APP__INSTANCENAME: Readarr

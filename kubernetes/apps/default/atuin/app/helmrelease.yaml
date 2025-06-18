@@ -24,6 +24,7 @@ spec:
             image:
               repository: ghcr.io/home-operations/atuin-server-sqlite
               tag: 18.4.0@sha256:ba9807985d6d8f601f6887894b01ae65dee2280c0a0bb8b2f7bba50e7376f39a
+              pullPolicy: IfNotPresent
             env:
               ATUIN_PORT: &port 80
               ATUIN_OPEN_REGISTRATION: "true"

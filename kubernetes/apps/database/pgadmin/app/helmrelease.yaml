@@ -26,6 +26,7 @@ spec:
             image:
               repository: docker.io/dpage/pgadmin4
               tag: "9.4@sha256:6b1c0db09695758c72abcd5160b7c4cc6d0847ab0c90a2403bdbf951f0defb5a"
+              pullPolicy: IfNotPresent
             env:
               PGADMIN_DISABLE_POSTFIX: "true"
             envFrom:

@@ -38,7 +38,8 @@ spec:
           app:
             image:
               repository: ghcr.io/paperless-ngx/paperless-ngx
-              tag: 2.16.3
+              tag: 2.16.3@sha256:7fcb6786dbaa9efa2684a1d39a99277902abc104f3b0341fde9260a6abbd6abf
+              pullPolicy: IfNotPresent
             env:
               PAPERLESS_CONSUMER_POLLING: 60
               PAPERLESS_CONSUMER_RECURSIVE: "true"
@@ -97,8 +98,9 @@ spec:
                   periodSeconds: 12
           gotenberg:
             image:
-              repository: docker.io/thecodingmachine/gotenberg
-              tag: 8.21.1
+              repository: gotenberg/gotenberg
+              tag: 8.21.1@sha256:babd04923b43b3dbe21fea21a8167c90b817462a40163e42873c08207efd9ef6
+              pullPolicy: IfNotPresent
             env:
               - {name: DISABLE_GOOGLE_CHROME, value: "1"}
             securityContext:
@@ -107,7 +109,8 @@ spec:
           tika:
             image:
               repository: ghcr.io/paperless-ngx/tika
-              tag: 2.9.1-full
+              tag: 2.9.1-full@sha256:bb23ca11170fff84f6aa6fe613279d51988a1979c5f9a6a69f0e6c95e8220e35
+              pullPolicy: IfNotPresent
             securityContext:
               runAsUser: 65534
               runAsGroup: 65534

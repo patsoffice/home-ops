@@ -36,7 +36,8 @@ spec:
           app:
             image:
               repository: ghcr.io/lldap/lldap
-              tag: v0.6.1
+              tag: v0.6.1@sha256:4931eeeb841b1bbf5774161b5fd9dab88f41ffeb4b08ca656f0b7595cd7cb52a
+              pullPolicy: IfNotPresent
             env:
               TZ: America/Los_Angeles
               LLDAP_HTTP_PORT: &port 80

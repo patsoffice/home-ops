@@ -39,6 +39,7 @@ spec:
             image:
               repository: ghcr.io/tandoorrecipes/recipes
               tag: 1.5.34@sha256:7d083f3af3a2a58bb8bb5fe94d59a37e2076bc405cf9bd51c2e3eaa18d6baf5a
+              pullPolicy: IfNotPresent
             env:
               COMMENT_PREF_DEFAULT: 0
               DEBUG: 1
@@ -77,6 +78,7 @@ spec:
             image:
               repository: nginxinc/nginx-unprivileged
               tag: 1.28.0-alpine@sha256:052900a7f32944c1ad9dfe49555fef117f21a31b04113c9e95a7e698fb23c732
+              pullPolicy: IfNotPresent
     service:
       app:
         controller: *app
