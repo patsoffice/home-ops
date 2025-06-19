@@ -120,6 +120,13 @@ spec:
         globalMounts:
           - path: /mnt/tv
             readOnly: true
+      youtube:
+        type: nfs
+        server: nas0.internal
+        path: /tank/media/youtube
+        globalMounts:
+          - path: /mnt/youtube
+            readOnly: true
       tmpfs:
         type: emptyDir
         advancedMounts:
