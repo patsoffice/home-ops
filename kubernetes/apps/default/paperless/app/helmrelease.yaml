@@ -109,7 +109,7 @@ spec:
           tika:
             image:
               repository: ghcr.io/paperless-ngx/tika
-              tag: 2.9.1-full@sha256:bb23ca11170fff84f6aa6fe613279d51988a1979c5f9a6a69f0e6c95e8220e35
+              tag: 2.9.1-full@sha256:d59c38244949a418ef16be676eeea770e1616b45986661847d373f4de048a37e
               pullPolicy: IfNotPresent
             securityContext:
               runAsUser: 65534
