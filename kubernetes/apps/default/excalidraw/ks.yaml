@@ -6,6 +6,8 @@ metadata:
   name: &app excalidraw
   namespace: &namespace default
 spec:
+  components:
+    - ../../../../components/gatus/internal
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
