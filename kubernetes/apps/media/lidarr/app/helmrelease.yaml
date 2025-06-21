@@ -1,0 +1,118 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app lidarr
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    controllers:
+      lidarr:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/home-operations/postgres-init
+              tag: 17.5.0@sha256:e0c87ce7df39d06b93f27cf2cc6a056611f13faaa88cc07ab4dc8bf7a85d0b11
+              pullPolicy: IfNotPresent
+            envFrom: &envFrom
+              - secretRef:
+                  name: lidarr-secret
+        containers:
+          app:
+            image:
+              repository: ghcr.io/home-operations/lidarr
+              tag: 2.11.2.4629@sha256:c5b3b5e0c9825555ff542272a9d18eec9b0d70cb80b610b8f4efc848dff54021
+              pullPolicy: IfNotPresent
+            env:
+              # Lidarr App
+              LIDARR__APP__INSTANCENAME: Lidarr
+              LIDARR__APP__THEME: dark
+              LIDARR__AUTH__METHOD: External
+              LIDARR__AUTH__REQUIRED: DisabledForLocalAddresses
+              LIDARR__SERVER__PORT: &port 80
+              LIDARR__LOG_LEVEL: info
+              LIDARR__UPDATE__BRANCH: develop
+              LIDARR__POSTGRES__MAINDB: lidarr-main
+              LIDARR__POSTGRES__LOGDB: lidarr-log
+              LIDARR__POSTGRES__PORT: "5432"
+              TZ: America/Los_Angeles
+            envFrom: *envFrom
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ping
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 2Gi
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10060
+        runAsGroup: 8675309
+        fsGroup: 8675309
+        fsGroupChangePolicy: OnRootMismatch
+    service:
+      app:
+        controller: lidarr
+        ports:
+          http:
+            port: *port
+    ingress:
+      app:
+        className: internal
+        hosts:
+          - host: lidarr.chezlawrence.com
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: *port
+    persistence:
+      music:
+        type: nfs
+        server: nas0.internal
+        path: /tank/media/music
+        globalMounts:
+          - path: /music
+      cache:
+        existingClaim: lidarr-cache
+        globalMounts:
+          - path: /config/MediaCover
+      config:
+        existingClaim: lidarr
+      downloads:
+        type: nfs
+        server: nas0.internal
+        path: /tank/downloads
+        globalMounts:
+          - path: /downloads
+      tmp:
+        type: emptyDir
