@@ -8,7 +8,7 @@
         app: plex
         widget:
           type: plex
-          url: http://plex.int.chezlawrence.com:32400
+          url: http://plex.media.svc.cluster.local:32400
           key: {{HOMEPAGE_VAR_PLEX_TOKEN}}
     - Tautulli:
         icon: tautulli.svg
@@ -26,7 +26,7 @@
         href: "https://sonarr.chezlawrence.com"
         widget:
           type: sonarr
-          url: http://sonarr.int.chezlawrence.com:8989
+          url: http://sonarr.media.svc.cluster.local:80
           key: {{HOMEPAGE_VAR_SONARR_API_KEY}}
     - Radarr:
         icon: radarr.svg
@@ -36,7 +36,7 @@
         app: radarr
         widget:
           type: radarr
-          url: http://radarr.int.chezlawrence.com:7878
+          url: http://radarr.media.svc.cluster.local:80
           key: {{HOMEPAGE_VAR_RADARR_API_KEY}}
     - Romm:
         icon: romm.svg
