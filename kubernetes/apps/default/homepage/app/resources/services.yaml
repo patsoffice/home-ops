@@ -20,6 +20,14 @@
           type: tautulli
           url: http://tautulli.media.svc.cluster.local:80
           key: {{HOMEPAGE_VAR_TAUTULLI_API_KEY}}
+    - Lidarr:
+        icon: lidarr.svg
+        description: tv
+        href: "https://lidarr.chezlawrence.com"
+        widget:
+          type: lidarr
+          url: http://lidarr.media.svc.cluster.local:80
+          key: {{HOMEPAGE_VAR_LIDARR_API_KEY}}
     - Sonarr:
         icon: sonarr.svg
         description: tv
@@ -38,15 +46,6 @@
           type: radarr
           url: http://radarr.media.svc.cluster.local:80
           key: {{HOMEPAGE_VAR_RADARR_API_KEY}}
-    - Romm:
-        icon: romm.svg
-        description: roms
-        href: "https://romm.chezlawrence.com"
-        widget:
-          type: romm
-          url: http://romm.game.svc.cluster.local:8080
-          username: {{HOMEPAGE_VAR_ROMM_USERNAME}}
-          password: {{HOMEPAGE_VAR_ROMM_PASSWORD}}
 
 - Releases:
     - Calendar:
@@ -60,6 +59,17 @@
             - type: radarr
               service_group: Media
               service_name: Radarr
+
+- Games:
+    - Romm:
+        icon: romm.svg
+        description: roms
+        href: "https://romm.chezlawrence.com"
+        widget:
+          type: romm
+          url: http://romm.game.svc.cluster.local:8080
+          username: {{HOMEPAGE_VAR_ROMM_USERNAME}}
+          password: {{HOMEPAGE_VAR_ROMM_PASSWORD}}
 
 - Applications:
     - Grafana:
