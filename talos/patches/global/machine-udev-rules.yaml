@@ -5,3 +5,7 @@ machine:
         SUBSYSTEM=="drm", KERNEL=="renderD*", GROUP="44", MODE="0660"
       - # Thunderbolt
         ACTION=="add", SUBSYSTEM=="thunderbolt", ATTR{authorized}=="0", ATTR{authorized}="1"
+      - # Z-Wave
+        SUBSYSTEM=="tty", ATTRS{idVendor}=="0658", ATTRS{idProduct}=="0200", MODE="0660", GROUP="20"
+      - # Zigbee
+        SUBSYSTEM=="tty", ATTRS{idVendor}=="1a86", ATTRS{idProduct}=="55d4", MODE="0660", GROUP="20"
