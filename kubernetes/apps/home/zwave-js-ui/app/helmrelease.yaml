@@ -53,6 +53,13 @@ spec:
                   operator: "In"
                   values:
                     - "true"
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: Always
+        supplementalGroups: [20]
     service:
       app:
         controller: zwave
@@ -88,6 +95,5 @@ spec:
       usb:
         type: hostPath
         hostPath: /dev/serial/by-id/usb-0658_0200-if00
-        hostPathType: CharDevice
         globalMounts:
           - path: /dev/zwave
