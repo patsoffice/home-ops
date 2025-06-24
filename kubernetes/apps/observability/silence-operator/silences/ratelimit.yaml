@@ -1,0 +1,12 @@
+---
+apiVersion: monitoring.giantswarm.io/v1alpha1
+kind: Silence
+metadata:
+  name: dockerhub-rate-limit
+  namespace: observability
+spec:
+  matchers:
+    - name: alertname
+      value: DockerhubRateLimitRisk
+      isRegex: false
+      isEqual: true
