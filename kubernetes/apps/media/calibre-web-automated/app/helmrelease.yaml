@@ -1,0 +1,78 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app calibre-web-automated
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+  driftDetection:
+    mode: enabled
+    ignore:
+      - paths: [/spec/replicas]
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    controllers:
+      *app :
+        containers:
+          app:
+            image:
+              repository: docker.io/crocodilestick/calibre-web-automated
+              tag: V3.0.4@sha256:e602e73b6fd50c3ba389b38acb701205976a05b650898f615f93bd7e3537a827
+            env:
+              CACHE_DIR: /cache
+              PUID: 10000
+              PGID: 8675309
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
+            securityContext:
+              allowPrivilegeEscalation: false
+    service:
+      app:
+        ports:
+          http:
+            port: &port 8083
+    ingress:
+      app:
+        className: internal
+        hosts:
+          - host: "calibre.chezlawrence.com"
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: *port
+    persistence:
+      data:
+        existingClaim: *app
+        globalMounts:
+          - path: /config
+      data-cache:
+        existingClaim: calibre-web-automated-cache
+        globalMounts:
+          - path: /cache
+      media:
+        type: nfs
+        server: nas0.internal
+        path: /tank/media/books
+        advancedMounts:
+          *app :
+            app:
+              - path: /calibre-library

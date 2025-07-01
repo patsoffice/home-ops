@@ -7,6 +7,7 @@ components:
   - ../../components/common
   - ../../components/repos/app-template
 resources:
+  - ./calibre-web-automated/ks.yaml
   - ./lidarr/ks.yaml
   - ./plex/ks.yaml
   - ./pinchflat/ks.yaml
