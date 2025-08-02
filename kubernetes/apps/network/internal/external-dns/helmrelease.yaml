@@ -40,9 +40,9 @@ spec:
       - "--ignore-ingress-tls-spec"
       - "--ingress-class=internal"
     fullnameOverride: *app
-    image:
-      repository: gcr.io/k8s-staging-external-dns/external-dns
-      tag: v20250402-v0.16.1-48-g1efdf416
+    # image:
+    #   repository: gcr.io/k8s-staging-external-dns/external-dns
+    #   tag: v20250402-v0.16.1-48-g1efdf416
     logLevel: debug
     podAnnotations:
       secret.reloader.stakater.com/reload: *secret
