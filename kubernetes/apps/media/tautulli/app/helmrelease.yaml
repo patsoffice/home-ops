@@ -29,7 +29,7 @@ spec:
               pullPolicy: IfNotPresent
             env:
               TZ: America/Los_Angeles
-              TAUTULLI__PORT: &port 80
+              TAUTULLI_HTTP_PORT: &port 80
             probes:
               liveness: &probes
                 enabled: true
