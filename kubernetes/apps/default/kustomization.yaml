@@ -13,5 +13,6 @@ resources:
   - ./homepage/ks.yaml
   - ./it-tools/ks.yaml
   - ./miniflux/ks.yaml
+  - ./manyfold/ks.yaml
   - ./paperless/ks.yaml
   - ./tandoor/ks.yaml

@@ -1,0 +1,126 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: manyfold
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+  values:
+    controllers:
+      manyfold:
+        forceRename: manyfold
+        annotations:
+          secret.reloader.stakater.com/reload: manyfold-secret
+        pod:
+          securityContext:
+            runAsUser: 2000
+            runAsGroup: 2000
+            fsGroup: 2000
+            fsGroupChangePolicy: "OnRootMismatch"
+        initContainers:
+          chown-tmpdirs:
+            image:
+              repository: docker.io/library/alpine
+              tag: "3.22"
+            command:
+              - /bin/sh
+              - -c
+            args:
+              - |
+                chmod o-rwx /tmp
+            securityContext:
+              runAsUser: 0
+          init-db:
+            image:
+              repository: ghcr.io/home-operations/postgres-init
+              tag: 17.6.0@sha256:86a1992d46273c58fd4ad95b626081dfaabfe16bd56944675169e406d1a660dd
+              pullPolicy: IfNotPresent
+            envFrom: &envFrom
+              - secretRef:
+                  name: manyfold-secret
+        containers:
+          main:
+            image:
+              repository: ghcr.io/bjw-s-labs/manyfold
+              tag: 0.121.0@sha256:f85b892cf9fc9969f942801fce3d075a7a685d2b87d0cac1b242ebfe0810fd5c
+            env:
+              PORT: &httpPort 3214
+              REDIS_URL: redis://dragonfly.database.svc.cluster.local:6379/4
+              REGISTRATION: false
+              SECRET_KEY_BASE:
+                valueFrom:
+                  secretKeyRef:
+                    name: manyfold-secret
+                    key: MANYFOLD_SECRET_KEY
+            envFrom: *envFrom
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: *httpPort
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+            resources:
+              requests:
+                cpu: 20m
+                memory: 128Mi
+              limits:
+                memory: 1536Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+    service:
+      app:
+        forceRename: manyfold
+        primary: true
+        controller: manyfold
+        ports:
+          http:
+            port: *httpPort
+    persistence:
+      data:
+        existingClaim: manyfold
+        advancedMounts:
+          manyfold:
+            main:
+              - path: /data/libraries/main
+                subPath: libraries/main
+      tmpfs:
+        type: emptyDir
+        advancedMounts:
+          manyfold:
+            main: &tmpdirs
+              - path: /tmp
+                subPath: host-tmp
+              - path: /app/tmp
+                subPath: app-tmp
+              - path: /app/log
+                subPath: app-log
+            chown-tmpdirs: *tmpdirs
+    ingress:
+      app:
+        className: internal
+        hosts:
+          - host: &host manyfold.chezlawrence.com
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+        tls:
+          - secretName: manyfold-tls
+            hosts:
+              - *host
