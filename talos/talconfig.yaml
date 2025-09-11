@@ -98,24 +98,6 @@ nodes:
         addresses:
           - 10.30.1.2/16
         mtu: 9000
-  - hostname: "k8s-03"
-    ipAddress: "192.168.1.13"
-    installDiskSelector:
-      serial: "240446C06702"
-    machineSpec:
-      secureboot: false
-    talosImageURL: factory.talos.dev/installer/65cf8364cd0de4cf7b851dc7067a2db83d0ba04f11d8635c6cd3334be6ffb825
-    controlPlane: false
-    networkInterfaces:
-      - deviceSelector:
-          hardwareAddr: "b0:41:6f:08:ac:0d"
-        dhcp: false
-        addresses:
-          - "192.168.1.13/21"
-        routes:
-          - network: "0.0.0.0/0"
-            gateway: "192.168.0.1"
-        mtu: 1500
 
 # Global patches
 patches:
