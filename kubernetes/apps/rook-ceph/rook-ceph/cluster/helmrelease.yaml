@@ -90,6 +90,9 @@ spec:
           - name: "k8s-03"
             devices:
               - name: "/dev/disk/by-id/nvme-Micron_7450_MTFDKBG1T9TFR_22443D5C4DA3"
+          - name: "k8s-04"
+            devices:
+              - name: "/dev/disk/by-id/nvme-Micron_7450_MTFDKBG1T9TFR_22443D5C4EAA"
         useAllDevices: false
         useAllNodes: false
     cephBlockPools:
