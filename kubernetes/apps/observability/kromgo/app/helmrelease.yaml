@@ -9,7 +9,6 @@ spec:
   chartRef:
     kind: OCIRepository
     name: app-template
-    namespace: flux-system
   install:
     remediation:
       retries: 3
@@ -76,11 +75,11 @@ spec:
       app:
         className: external
         hosts:
-          - host: "{{ .Release.Name }}.chezlawrence.com"
+          - host: "kromgo.chezlawrence.com"
             paths:
               - path: /
                 service:
-                  identifier: *app
+                  identifier: app
                   port: *serverPort
     persistence:
       config-file:
