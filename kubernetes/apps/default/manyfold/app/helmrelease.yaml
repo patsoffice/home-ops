@@ -46,7 +46,7 @@ spec:
           main:
             image:
               repository: ghcr.io/bjw-s-labs/manyfold
-              tag: 0.123.1@sha256:a1c97c074ba92ba5221d7cf85e688c54c56f99785b9e6b1f577e1664c2d1c861
+              tag: 0.123.2@sha256:4145fc8bee10c4065f0f2c686496b7ad97bffbcb379a407824f981253be7e118
             env:
               PORT: &httpPort 3214
               REDIS_URL: redis://dragonfly.database.svc.cluster.local:6379/4
