@@ -44,7 +44,7 @@ spec:
           restic:
             image:
               repository: ghcr.io/restic/restic
-              tag: 0.18.0
+              tag: 0.18.1
             workingDir: /data
             args:
               - backup
@@ -74,7 +74,7 @@ spec:
           restic:
             image:
               repository: ghcr.io/restic/restic
-              tag: 0.18.0
+              tag: 0.18.1
             args:
               - forget
               - --keep-last=7 # change me - set retention policy
