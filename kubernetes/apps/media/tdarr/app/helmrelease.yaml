@@ -25,7 +25,7 @@ spec:
           app:
             image:
               repository: ghcr.io/haveagitgat/tdarr
-              tag: 2.51.01@sha256:d3d284e61157f89bfd21f4cae76a3005f6a3900e287338848138b1baf3df3339
+              tag: 2.51.03@sha256:5796f2fbb318f22609972f8dd07602b1fc562606c518c13c809eda4c2f9fca26
               pullPolicy: IfNotPresent
             env:
               TZ: America/Los_Angeles
