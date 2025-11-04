@@ -2,6 +2,7 @@ cluster:
   allowSchedulingOnControlPlanes: true
   apiServer:
     extraArgs:
+      feature-gates: ResourceHealthStatus=true
       # https://kubernetes.io/docs/tasks/extend-kubernetes/configure-aggregation-layer/
       enable-aggregator-routing: true
   controllerManager:
