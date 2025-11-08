@@ -29,6 +29,7 @@ spec:
               - server
               - start
             env:
+              ATUiN_CONFIG_DIR: /config
               ATUIN_DB_URI: "sqlite:///config/atuin.db"
               ATUIN_HOST: 0.0.0.0
               ATUIN_PORT: &port 80
