@@ -82,11 +82,23 @@ spec:
         existingClaim: calibre-web-automated-cache
         globalMounts:
           - path: /cache
+      ingest:
+        enabled: true
+        type: nfs
+        server: nas0.internal
+        path: /tank/downloads/nzb/completed/Books
+        globalMounts:
+          - path: /cwa-book-ingest
       media:
         type: nfs
         server: nas0.internal
         path: /tank/media/books
-        advancedMounts:
-          *app :
-            app:
-              - path: /calibre-library
+        globalMounts:
+          - path: /calibre-library
+      tmpfs:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
+            subPath: tmp
+          - path: /run
+            subPath: run
