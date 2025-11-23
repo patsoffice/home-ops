@@ -12,7 +12,7 @@ spec:
         kind: HelmRepository
         name: external-secrets
         namespace: flux-system
-      version: 1.0.0
+      version: 1.1.0
   install:
     crds: CreateReplace
     createNamespace: true
