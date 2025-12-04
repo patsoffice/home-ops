@@ -77,7 +77,7 @@ spec:
           nginx:
             image:
               repository: nginxinc/nginx-unprivileged
-              tag: 1.29.2-alpine@sha256:11355c11572cde4e4df38f54e2a111e625cbb3f9405eb4180b77fa192a8aa79b
+              tag: 1.29.2-alpine@sha256:031d8c8ab79d2d171a2a383aa50a06f527791c05ba1aeae9ca05d7b9779caf8e
               pullPolicy: IfNotPresent
     service:
       app:
