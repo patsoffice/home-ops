@@ -60,14 +60,14 @@ spec:
               OLLAMA_NUM_GPU: "999"
               ZES_ENABLE_SYSMAN: "1"
             resources:
+              claims:
+                - name: gpu
               requests:
                 cpu: "2"
                 memory: "8Gi"
-                gpu.intel.com/i915: 1
               limits:
                 cpu: "8"
                 memory: "16Gi"
-                gpu.intel.com/i915: 1
             securityContext:
               privileged: false
               capabilities:
@@ -97,6 +97,10 @@ spec:
                   timeoutSeconds: 1
                   failureThreshold: 3
               startup: *probe
+    defaultPodOptions:
+      resourceClaims:
+        - name: gpu
+          resourceClaimTemplateName: ollama-gpu
     service:
       app:
         ports:

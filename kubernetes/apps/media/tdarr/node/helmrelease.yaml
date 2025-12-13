@@ -50,12 +50,12 @@ spec:
               - name: serverPort
                 value: 8266
             resources:
+              claims:
+                - name: gpu
               requests:
-                gpu.intel.com/i915: 1
                 cpu: 100m
                 memory: 256Mi
               limits:
-                gpu.intel.com/i915: 1
                 memory: 1Gi
         pod:
           affinity:
@@ -68,6 +68,10 @@ spec:
                         values: ["plex", "tdarr-node"]
                   topologyKey: kubernetes.io/hostname
         replicas: 2
+    defaultPodOptions:
+      resourceClaims:
+        - name: gpu
+          resourceClaimTemplateName: tdarr-node-gpu
     service:
       app:
         controller: *app
