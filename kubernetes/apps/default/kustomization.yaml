@@ -16,4 +16,5 @@ resources:
   - ./miniflux/ks.yaml
   - ./manyfold/ks.yaml
   - ./paperless/ks.yaml
+  - ./syncthing/ks.yaml
   - ./tandoor/ks.yaml
