@@ -1,0 +1,109 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app romvault
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: romvault
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    controllers:
+      romvault:
+        containers:
+          app:
+            image:
+              repository: docker.io/laromicas/romvault
+              tag: v1.0.1-3.7.4@sha256:c1af44d43bfcc3ae048bbb21bbc206f9f4392ee537085b527552904ae77ca151
+              pullPolicy: IfNotPresent
+            env:
+              USER_ID: "10090"
+              GROUP_ID: "8675309"
+              UMASK: "0002"
+              TZ: America/Los_Angeles
+              WEB_LISTENING_PORT: &port 5800
+            # probes:
+            #   liveness: &probes
+            #     enabled: true
+            #     custom: true
+            #     spec:
+            #       httpGet:
+            #         path: /
+            #         port: *port
+            #       initialDelaySeconds: 0
+            #       periodSeconds: 10
+            #       timeoutSeconds: 1
+            #       failureThreshold: 3
+            #   readiness: *probes
+            securityContext:
+              allowPrivilegeEscalation: true
+              readOnlyRootFilesystem: false
+              capabilities:
+                drop:
+                  - ALL
+                add:
+                  - CHOWN
+                  - SETUID
+                  - SETGID
+                  - FOWNER
+                  - DAC_OVERRIDE
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: false
+        runAsUser: 0
+        runAsGroup: 8675309
+        fsGroup: 8675309
+        fsGroupChangePolicy: OnRootMismatch
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            primary: true
+            port: *port
+    ingress:
+      app:
+        className: internal
+        hosts:
+          - host: romvault.chezlawrence.com
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: *port
+    persistence:
+      config:
+        existingClaim: *app
+      datroot:
+        type: nfs
+        server: nas0.internal
+        path: /tank/roms/romvault/dats
+        globalMounts:
+          - path: /config/DatRoot
+      romroot:
+        type: nfs
+        server: nas0.internal
+        path: /tank/roms
+        globalMounts:
+          - path: /config/RomRoot
+      tosort:
+        type: nfs
+        server: nas0.internal
+        path: /tank/roms/romvault/to-sort
+        globalMounts:
+          - path: /config/ToSort
+      tmpfs:
+        type: emptyDir
+        advancedMounts:
+          romvault:
+            app:
+              - path: /tmp
+                subPath: tmp
