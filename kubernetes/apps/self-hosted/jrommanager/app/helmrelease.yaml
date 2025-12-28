@@ -1,0 +1,92 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app jrommanager
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: jrommanager
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    controllers:
+      jrommanager:
+        containers:
+          app:
+            image:
+              repository: docker.io/optyfr/jrommanager
+              tag: 3.0.5@sha256:9d5bfd11e7571348066ff411d774216d1ebf0d4056f18b8cc816a96f0dc92383
+              pullPolicy: IfNotPresent
+            env:
+              JRM_SERVER_WORKPATH: /work
+              JRM_SERVER_HTTP: &port 8080
+              JRM_SERVER_DEBUG: 1
+              TZ: America/Los_Angeles
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+              capabilities:
+                drop:
+                  - ALL
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10090
+        runAsGroup: 8675309
+        fsGroup: 8675309
+        fsGroupChangePolicy: OnRootMismatch
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            primary: true
+            port: *port
+    ingress:
+      app:
+        className: internal
+        hosts:
+          - host: jrommanager.chezlawrence.com
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: *port
+    persistence:
+      work:
+        existingClaim: *app
+        globalMounts:
+          - path: /work
+      romroot:
+        type: nfs
+        server: nas0.internal
+        path: /tank/roms
+        globalMounts:
+          - path: /data
+      tmpfs:
+        type: emptyDir
+        advancedMounts:
+          jrommanager:
+            app:
+              - path: /tmp
+                subPath: tmp
