@@ -153,7 +153,6 @@ nodes:
 
 # Global patches
 patches:
-  - "@./patches/global/machine-extra-kernel-args.yaml"
   - "@./patches/global/machine-files.yaml"
   - "@./patches/global/machine-kubelet.yaml"
   - "@./patches/global/machine-network.yaml"
@@ -164,7 +163,6 @@ patches:
 # Controller patches
 controlPlane:
   patches:
-    - "@./patches/controller/admission-controller-patch.yaml"
     - "@./patches/controller/cluster.yaml"
     - "@./patches/controller/mutatingadmissionpolicy.yaml"
     - "@./patches/controller/talos-api-access.yaml"
