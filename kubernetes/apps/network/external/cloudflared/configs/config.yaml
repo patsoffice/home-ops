@@ -3,6 +3,12 @@ originRequest:
   originServerName: "external.${SECRET_DOMAIN}"
 
 ingress:
+  # Add new rules for Envoy Gateway during the transition period
+  - hostname: "echo.${SECRET_DOMAIN}"
+    service: https://envoy-external.network.svc.cluster.local:443
+    originRequest:
+      originServerName: "echo.${SECRET_DOMAIN}"
+
   - hostname: "${SECRET_DOMAIN}"
     service: &svc https://external-ingress-nginx-controller.network.svc.cluster.local:443
   - hostname: "*.${SECRET_DOMAIN}"

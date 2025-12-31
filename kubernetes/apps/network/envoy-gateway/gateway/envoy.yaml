@@ -49,13 +49,17 @@ metadata:
   name: envoy-external
   namespace: network
   annotations:
-    external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
+    external-dns.alpha.kubernetes.io/target: &hostname external.chezlawrence.com
+    gatus.home-operations.com/endpoint: |-
+      client:
+        dns-resolver: tcp://9.9.9.9:53
+      group: external
 spec:
   gatewayClassName: envoy
   infrastructure:
     annotations:
-      external-dns.alpha.kubernetes.io/hostname: external.${SECRET_DOMAIN}
-      lbipam.cilium.io/ips: "192.168.6.203"  # New IP for envoy-external (UPDATED: .24 was in use)
+      external-dns.alpha.kubernetes.io/hostname: *hostname
+      lbipam.cilium.io/ips: 192.168.6.203
   listeners:
     - name: http
       protocol: HTTP
@@ -80,12 +84,12 @@ metadata:
   name: envoy-internal
   namespace: network
   annotations:
-    external-dns.alpha.kubernetes.io/target: internal.${SECRET_DOMAIN}
+    external-dns.alpha.kubernetes.io/target: &hostname internal.chezlawrence.com
 spec:
   gatewayClassName: envoy
   infrastructure:
     annotations:
-      external-dns.alpha.kubernetes.io/hostname: internal.${SECRET_DOMAIN}
+      external-dns.alpha.kubernetes.io/hostname: *hostname
       lbipam.cilium.io/ips: "192.168.6.202"
   listeners:
     - name: http
