@@ -32,7 +32,7 @@ spec:
               ATUiN_CONFIG_DIR: /config
               ATUIN_DB_URI: "sqlite:///config/atuin.db"
               ATUIN_HOST: 0.0.0.0
-              ATUIN_PORT: &port 80
+              ATUIN_PORT: &port ${APP_PORT}
               ATUIN_OPEN_REGISTRATION: "true"
               TZ: America/Los_Angeles
             probes:
@@ -66,16 +66,6 @@ spec:
           http:
             primary: true
             port: *port
-    ingress:
-      app:
-        className: internal
-        hosts:
-          - host: sh.chezlawrence.com
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: *port
     persistence:
       config:
         existingClaim: *app
