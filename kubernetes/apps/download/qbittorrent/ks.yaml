@@ -23,8 +23,12 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  wait: true
   postBuild:
     substitute:
       APP: *app
+      APP_PORT: "80"
       VOLSYNC_CAPACITY: 2Gi
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
+  wait: true

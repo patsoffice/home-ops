@@ -33,7 +33,7 @@ spec:
               pullPolicy: IfNotPresent
             env:
               TZ: America/Los_Angeles
-              QBT_WEBUI_PORT: &port 80
+              QBT_WEBUI_PORT: &port ${APP_PORT}
               QBT_TORRENTING_PORT: &torrentPort 50413
             securityContext:
               allowPrivilegeEscalation: false
@@ -54,16 +54,6 @@ spec:
             enabled: true
             port: *torrentPort
             protocol: TCP
-    ingress:
-      app:
-        className: internal
-        hosts:
-          - host: qbittorrent.chezlawrence.com
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: *port
     persistence:
       config:
         existingClaim: *app
