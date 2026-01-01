@@ -61,19 +61,9 @@ spec:
             subPath: tmp
           - path: /var/log
             subPath: log
-    ingress:
-      app:
-        className: internal
-        hosts:
-          - host: pgadmin.chezlawrence.com
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
     service:
       app:
         controller: pgadmin
         ports:
           http:
-            port: 80
+            port: ${APP_PORT}
