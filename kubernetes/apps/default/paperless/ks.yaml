@@ -28,10 +28,14 @@ spec:
   postBuild:
     substitute:
       APP: *app
+      APP_PORT: "8000"
       APP_UID: "568"
       APP_GID: "568"
       GATUS_SUBDOMAIN: documents
       VOLSYNC_CACHE_CAPACITY: 50Gi
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
   prune: true
   sourceRef:
     kind: GitRepository

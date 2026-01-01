@@ -7,7 +7,7 @@ metadata:
 spec:
   chartRef:
     kind: OCIRepository
-    name: paperless
+    name: *app
   install:
     remediation:
       retries: -1
@@ -51,7 +51,7 @@ spec:
               PAPERLESS_OCR_LANGUAGES: eng
               PAPERLESS_OCR_LANGUAGE: eng
               PAPERLESS_OCR_USER_ARGS: '{"invalidate_digital_signatures": true}'
-              PAPERLESS_PORT: &port 8000
+              PAPERLESS_PORT: &port ${APP_PORT}
               PAPERLESS_REDIS: redis://dragonfly.database.svc.cluster.local:6379/4
               PAPERLESS_TASK_WORKERS: 2
               PAPERLESS_TIKA_ENABLED: 1
@@ -116,20 +116,10 @@ spec:
               runAsGroup: 65534
     service:
       app:
-        controller: paperless
+        controller: *app
         ports:
           http:
             port: *port
-    ingress:
-      app:
-        className: internal
-        hosts:
-          - host: documents.chezlawrence.com
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: *port
     persistence:
       library:
         existingClaim: *app
