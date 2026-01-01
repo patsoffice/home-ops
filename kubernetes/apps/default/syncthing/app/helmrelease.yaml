@@ -38,7 +38,7 @@ spec:
                 spec:
                   httpGet:
                     path: /rest/noauth/health
-                    port: &port 8384
+                    port: &port ${APP_PORT}
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
@@ -75,16 +75,6 @@ spec:
           discovery:
             port: 21027
             protocol: UDP
-    ingress:
-      app:
-        className: internal
-        hosts:
-          - host: syncthing.chezlawrence.com
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: *port
     persistence:
       config:
         existingClaim: "{{ .Release.Name }}"
