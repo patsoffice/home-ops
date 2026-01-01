@@ -40,8 +40,8 @@ spec:
               pullPolicy: IfNotPresent
             env:
               TZ: America/Los_Angeles
-              LLDAP_HTTP_PORT: &port 80
-              LLDAP_HTTP_URL: https://lldap.chezlawrence.com
+              LLDAP_HTTP_PORT: &port ${APP_PORT}
+              LLDAP_HTTP_URL: "https://lldap.${SECRET_DOMAIN}"
               LLDAP_LDAP_PORT: &ldapPort 389
             envFrom: *envFrom
             probes:
@@ -72,16 +72,6 @@ spec:
             primary: true
           ldap:
             port: *ldapPort
-    ingress:
-      app:
-        className: internal
-        hosts:
-          - host: "{{ .Release.Name }}.chezlawrence.com"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
     persistence:
       data:
         type: emptyDir
