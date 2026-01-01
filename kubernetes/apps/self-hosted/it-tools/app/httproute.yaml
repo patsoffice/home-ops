@@ -6,6 +6,7 @@ metadata:
   name: it-tools
 spec:
   hostnames:
+    - "tools.${SECRET_DOMAIN}"
     - "it-tools.${SECRET_DOMAIN}"
   parentRefs:
     - name: envoy-internal
