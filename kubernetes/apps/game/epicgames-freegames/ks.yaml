@@ -19,7 +19,11 @@ spec:
   postBuild:
     substitute:
       APP: *app
+      APP_PORT: "3000"
       GATUS_SUBDOMAIN: epic
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
   prune: true
   sourceRef:
     kind: GitRepository
