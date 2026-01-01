@@ -4,7 +4,7 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app miniflux
-  namespace: &namespace default
+  namespace: &namespace self-hosted
 spec:
   commonMetadata:
     labels:
@@ -17,10 +17,14 @@ spec:
     - name: external-secrets-stores
       namespace: external-secrets
   interval: 30m
-  path: ./kubernetes/apps/default/miniflux/app
+  path: ./kubernetes/apps/self-hosted/miniflux/app
   postBuild:
     substitute:
       APP: *app
+      APP_PORT: "80"
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
   prune: true
   sourceRef:
     kind: GitRepository

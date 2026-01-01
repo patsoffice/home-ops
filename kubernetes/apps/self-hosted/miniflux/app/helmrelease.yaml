@@ -8,7 +8,7 @@ spec:
   interval: 30m
   chartRef:
     kind: OCIRepository
-    name: miniflux
+    name: *app
   install:
     remediation:
       retries: -1
@@ -88,29 +88,13 @@ spec:
                   app.kubernetes.io/name: *app
     service:
       app:
-        controller: miniflux
+        controller: *app
         ipFamilyPolicy: PreferDualStack
         ports:
           http:
             port: *port
     serviceMonitor:
       app:
-        serviceName: miniflux
+        serviceName: *app
         endpoints:
           - port: http
-    ingress:
-      app:
-        annotations:
-          authentik.home.arpa/enabled: "true"
-        className: external
-        hosts:
-          - host: &host rss.chezlawrence.com
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - secretName: miniflux-tls
-            hosts:
-              - *host

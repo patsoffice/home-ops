@@ -8,7 +8,6 @@ components:
 resources:
   - ./atuin/ks.yaml
   - ./echo/ks.yaml
-  - ./miniflux/ks.yaml
   - ./manyfold/ks.yaml
   - ./paperless/ks.yaml
   - ./syncthing/ks.yaml

@@ -8,6 +8,7 @@ components:
 resources:
   - ./drawio/ks.yaml
   - ./excalidraw/ks.yaml
+  - ./homepage/ks.yaml
   - ./it-tools/ks.yaml
   - ./jrommanager/ks.yaml
-  - ./homepage/ks.yaml
+  - ./miniflux/ks.yaml
