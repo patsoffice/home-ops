@@ -55,4 +55,4 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: *app
-    namespace: default
+    namespace: self-hosted

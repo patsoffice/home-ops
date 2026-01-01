@@ -30,7 +30,7 @@ spec:
               pullPolicy: IfNotPresent
             env:
               TZ: America/Los_Angeles
-              HOMEPAGE_ALLOWED_HOSTS: start.chezlawrence.com
+              HOMEPAGE_ALLOWED_HOSTS: "start.${SECRET_DOMAIN}"
               PORT: &port 3000
             envFrom:
               - secretRef:
@@ -54,16 +54,6 @@ spec:
         ports:
           http:
             port: *port
-    ingress:
-      app:
-        className: internal
-        hosts:
-          - host: start.chezlawrence.com
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: *port
     persistence:
       config:
         type: emptyDir
