@@ -20,8 +20,12 @@ spec:
   postBuild:
     substitute:
       APP: *app
+      APP_PORT: "8083"
       VOLSYNC_CAPACITY: 5Gi
       GATUS_SUBDOMAIN: calibre
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
   prune: true
   retryInterval: 2m
   sourceRef:

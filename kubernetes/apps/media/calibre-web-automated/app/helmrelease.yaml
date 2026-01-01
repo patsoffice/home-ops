@@ -8,7 +8,7 @@ spec:
   interval: 1h
   chartRef:
     kind: OCIRepository
-    name: app-template
+    name: *app
   driftDetection:
     mode: enabled
     ignore:
@@ -62,17 +62,7 @@ spec:
       app:
         ports:
           http:
-            port: &port 8083
-    ingress:
-      app:
-        className: internal
-        hosts:
-          - host: "calibre.chezlawrence.com"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: *port
+            port: &port ${APP_PORT}
     persistence:
       data:
         existingClaim: *app
