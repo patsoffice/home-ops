@@ -29,7 +29,7 @@ spec:
               pullPolicy: IfNotPresent
             env:
               TZ: America/Los_Angeles
-              PLEX_ADVERTISE_URL: https://plex.chezlawrence.com:443,http://192.168.5.101:32400
+              PLEX_ADVERTISE_URL: "https://plex.${SECRET_DOMAIN}:443,http://192.168.5.101:32400"
               PLEX_NO_AUTH_NETWORKS: 192.168.0.0/16
             probes:
               liveness: &probes
@@ -38,7 +38,7 @@ spec:
                 spec:
                   httpGet:
                     path: /identity
-                    port: &port 32400
+                    port: &port ${APP_PORT}
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
@@ -82,16 +82,6 @@ spec:
         ports:
           http:
             port: *port
-    ingress:
-      app:
-        className: internal
-        hosts:
-          - host: plex.chezlawrence.com
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: *port
     persistence:
       config:
         existingClaim: plex
