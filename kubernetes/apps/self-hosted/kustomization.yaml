@@ -6,4 +6,5 @@ namespace: self-hosted
 components:
   - ../../components/common
 resources:
+  - ./drawio/ks.yaml
   - ./jrommanager/ks.yaml
