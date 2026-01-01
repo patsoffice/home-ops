@@ -8,7 +8,7 @@ spec:
   interval: 1h
   chartRef:
     kind: OCIRepository
-    name: app-template
+    name: *app
   install:
     remediation:
       retries: -1
@@ -42,7 +42,7 @@ spec:
               LIDARR__APP__THEME: dark
               LIDARR__AUTH__METHOD: External
               LIDARR__AUTH__REQUIRED: DisabledForLocalAddresses
-              LIDARR__SERVER__PORT: &port 80
+              LIDARR__SERVER__PORT: &port ${APP_PORT}
               LIDARR__LOG_LEVEL: info
               LIDARR__UPDATE__BRANCH: develop
               LIDARR__POSTGRES__MAINDB: lidarr-main
@@ -85,16 +85,6 @@ spec:
         ports:
           http:
             port: *port
-    ingress:
-      app:
-        className: internal
-        hosts:
-          - host: lidarr.chezlawrence.com
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: *port
     persistence:
       music:
         type: nfs
