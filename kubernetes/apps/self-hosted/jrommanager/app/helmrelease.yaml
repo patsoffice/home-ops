@@ -26,7 +26,7 @@ spec:
               pullPolicy: IfNotPresent
             env:
               JRM_SERVER_WORKPATH: /work
-              JRM_SERVER_HTTP: &port 8080
+              JRM_SERVER_HTTP: &port ${APP_PORT}
               JRM_SERVER_DEBUG: 1
               TZ: America/Los_Angeles
             probes:
@@ -62,16 +62,6 @@ spec:
           http:
             primary: true
             port: *port
-    ingress:
-      app:
-        className: internal
-        hosts:
-          - host: jrommanager.chezlawrence.com
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: *port
     persistence:
       work:
         existingClaim: *app

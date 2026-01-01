@@ -18,13 +18,17 @@ spec:
     - name: volsync
       namespace: volsync-system
   path: ./kubernetes/apps/self-hosted/jrommanager/app
+  postBuild:
+    substitute:
+      APP: *app
+      APP_PORT: "8080"
+      VOLSYNC_CAPACITY: 25Gi
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
   prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
   wait: true
-  postBuild:
-    substitute:
-      APP: *app
-      VOLSYNC_CAPACITY: 25Gi
