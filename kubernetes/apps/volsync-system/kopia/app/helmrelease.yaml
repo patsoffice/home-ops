@@ -3,11 +3,11 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: kopia
+  name: &app kopia
 spec:
   chartRef:
     kind: OCIRepository
-    name: kopia
+    name: *app
   interval: 1h
   values:
     controllers:
@@ -21,7 +21,7 @@ spec:
               tag: 0.22.3@sha256:eeebd12fd4b3a9c25b9f711fff32454f62e2d5e2d431ab6806ad21c52f414807
             env:
               KOPIA_WEB_ENABLED: true
-              KOPIA_WEB_PORT: &port 80
+              KOPIA_WEB_PORT: &port ${APP_PORT}
               TZ: America/Los_Angeles
             envFrom:
               - secretRef:
@@ -62,16 +62,6 @@ spec:
         ports:
           http:
             port: *port
-    ingress:
-      app:
-        className: internal
-        hosts:
-          - host: kopia.chezlawrence.com
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: *port
     configMaps:
       config:
         data:
