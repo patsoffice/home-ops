@@ -49,7 +49,7 @@ spec:
               TZ: America/Los_Angeles
               GATUS_CONFIG_PATH: /config
               GATUS_DELAY_START_SECONDS: 5
-              WEB_PORT: &port 80
+              WEB_PORT: &port ${APP_PORT}
             envFrom:
               - secretRef:
                   name: gatus-secret
@@ -86,30 +86,20 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
     service:
       app:
-        controller: gatus
+        controller: *app
         ports:
           http:
             port: *port
     serviceMonitor:
       app:
-        serviceName: gatus
+        serviceName: *app
         endpoints:
           - port: http
-    ingress:
-      app:
-        className: external
-        hosts:
-          - host: "${GATUS_SUBDOMAIN}.${SECRET_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
     serviceAccount:
       gatus: {}
     persistence:
       config:
-        existingClaim: gatus
+        existingClaim: *app
       config-file:
         type: configMap
         name: gatus-configmap

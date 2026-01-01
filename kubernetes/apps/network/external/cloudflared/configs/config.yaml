@@ -9,6 +9,11 @@ ingress:
     originRequest:
       originServerName: "echo.${SECRET_DOMAIN}"
 
+  - hostname: "status.${SECRET_DOMAIN}"
+    service: https://envoy-external.network.svc.cluster.local:443
+    originRequest:
+      originServerName: "status.${SECRET_DOMAIN}"
+
   - hostname: "${SECRET_DOMAIN}"
     service: &svc https://external-ingress-nginx-controller.network.svc.cluster.local:443
   - hostname: "*.${SECRET_DOMAIN}"
