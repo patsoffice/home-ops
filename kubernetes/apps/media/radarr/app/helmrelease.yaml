@@ -8,7 +8,7 @@ spec:
   interval: 1h
   chartRef:
     kind: OCIRepository
-    name: app-template
+    name: *app
   install:
     remediation:
       retries: -1
@@ -42,7 +42,7 @@ spec:
               RADARR__APP__THEME: dark
               RADARR__AUTH__METHOD: External
               RADARR__AUTH__REQUIRED: DisabledForLocalAddresses
-              RADARR__SERVER__PORT: &port 80
+              RADARR__SERVER__PORT: &port ${APP_PORT}
               RADARR__LOG_LEVEL: info
               RADARR__UPDATE__BRANCH: develop
               RADARR__POSTGRES__MAINDB: radarr-main
@@ -85,16 +85,6 @@ spec:
         ports:
           http:
             port: *port
-    ingress:
-      app:
-        className: internal
-        hosts:
-          - host: radarr.chezlawrence.com
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: *port
     persistence:
       tv:
         type: nfs
@@ -107,7 +97,7 @@ spec:
         globalMounts:
           - path: /config/MediaCover
       config:
-        existingClaim: radarr
+        existingClaim: *app
       downloads:
         type: nfs
         server: nas0.internal
