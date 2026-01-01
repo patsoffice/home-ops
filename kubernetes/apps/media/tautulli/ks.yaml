@@ -21,7 +21,11 @@ spec:
   postBuild:
     substitute:
       APP: *app
+      APP_PORT: "80"
       VOLSYNC_CAPACITY: 3Gi
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
   prune: true
   retryInterval: 2m
   sourceRef:
