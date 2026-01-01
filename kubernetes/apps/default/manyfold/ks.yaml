@@ -22,8 +22,12 @@ spec:
   postBuild:
     substitute:
       APP: *app
+      APP_PORT: "3214"
       GATUS_SUBDOMAIN: manyfold
       VOLSYNC_CAPACITY: 5Gi
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
   prune: true
   sourceRef:
     kind: GitRepository
