@@ -29,7 +29,7 @@ spec:
               repository: ghcr.io/mendhak/http-https-echo
               tag: 38
             env:
-              HTTP_PORT: &port 80
+              HTTP_PORT: &port ${APP_PORT}
               LOG_WITHOUT_NEWLINE: true
               LOG_IGNORE_PATH: /healthz
               PROMETHEUS_ENABLED: true
@@ -75,12 +75,3 @@ spec:
             path: /metrics
             interval: 1m
             scrapeTimeout: 10s
-    # route:
-    #   app:
-    #     annotations:
-    #       gatus.home-operations.com/endpoint: |-
-    #         conditions: ["[STATUS] == 200"]
-    #     hostnames: ["{{ .Release.Name }}.chezlawrence.com"]
-    #     parentRefs:
-    #       - name: envoy-external
-    #         namespace: network
