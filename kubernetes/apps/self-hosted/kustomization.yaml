@@ -7,4 +7,5 @@ components:
   - ../../components/common
 resources:
   - ./drawio/ks.yaml
+  - ./excalidraw/ks.yaml
   - ./jrommanager/ks.yaml

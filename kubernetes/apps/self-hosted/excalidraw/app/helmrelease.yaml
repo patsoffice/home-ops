@@ -27,7 +27,8 @@ spec:
         containers:
           app:
             image:
-              repository: docker.io/excalidraw/excalidraw
+              repository: mirror.gcr.io/excalidraw/excalidraw
+              # renovate: datasource=docker depName=docker.io/excalidraw/excalidraw
               tag: latest@sha256:95d528cb4f8d18e0fbdc42ae3d09b5c4a899bfbd6bb89eeaf94b904330d79714
               pullPolicy: IfNotPresent
             probes:
@@ -41,15 +42,4 @@ spec:
         ipFamilyPolicy: PreferDualStack
         ports:
           http:
-            port: &port 80
-    ingress:
-      app:
-        className: internal
-        hosts:
-          - host: draw.chezlawrence.com
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: *port
-
+            port: ${APP_PORT}

@@ -8,7 +8,6 @@ components:
 resources:
   - ./atuin/ks.yaml
   - ./echo/ks.yaml
-  - ./excalidraw/ks.yaml
   - ./homepage/ks.yaml
   - ./it-tools/ks.yaml
   - ./miniflux/ks.yaml
