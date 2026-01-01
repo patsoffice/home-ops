@@ -30,7 +30,7 @@ spec:
               pullPolicy: IfNotPresent
             env:
               TZ: America/Los_Angeles
-              SABNZBD__PORT: &port 80
+              SABNZBD__PORT: &port ${APP_PORT}
               SABNZBD__HOST_WHITELIST_ENTRIES: >-
                 sabnzbd,
                 sabnzbd.download,
@@ -77,16 +77,6 @@ spec:
         ports:
           http:
             port: *port
-    ingress:
-      app:
-        className: internal
-        hosts:
-          - host: sabnzbd.chezlawrence.com
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: *port
     persistence:
       config:
         existingClaim: *app
