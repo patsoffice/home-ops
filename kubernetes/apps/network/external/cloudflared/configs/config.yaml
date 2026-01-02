@@ -9,6 +9,11 @@ ingress:
     originRequest:
       originServerName: "echo.${SECRET_DOMAIN}"
 
+  - hostname: "kromgo.${SECRET_DOMAIN}"
+    service: https://envoy-external.network.svc.cluster.local:443
+    originRequest:
+      originServerName: "kromgo.${SECRET_DOMAIN}"
+
   - hostname: "status.${SECRET_DOMAIN}"
     service: https://envoy-external.network.svc.cluster.local:443
     originRequest:
