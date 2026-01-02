@@ -12,3 +12,4 @@ resources:
   - ./envoy-gateway/ks.yaml
   - ./external/ks.yaml
   - ./internal/ks.yaml
+  - ./internal-services/ks.yaml
