@@ -8,7 +8,7 @@ spec:
   interval: 1h
   chartRef:
     kind: OCIRepository
-    name: app-template
+    name: *app
   install:
     remediation:
       retries: -1
@@ -57,17 +57,7 @@ spec:
         controller: *app
         ports:
           http:
-            port: &port 8080
-    ingress:
-      app:
-        className: internal
-        hosts:
-          - host: chat.chezlawrence.com
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: *port
+            port: ${APP_PORT}
     persistence:
       config:
         enabled: true

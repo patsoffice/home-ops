@@ -24,8 +24,12 @@ spec:
   postBuild:
     substitute:
       APP: *app
+      APP_PORT: "8080"
       VOLSYNC_CAPACITY: 5Gi
       GATUS_SUBDOMAIN: chat
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
   prune: true
   sourceRef:
     kind: GitRepository

@@ -5,7 +5,6 @@ kind: Kustomization
 namespace: llm
 components:
   - ../../components/common
-  - ../../components/repos/app-template
 resources:
   - ./ollama/ks.yaml
   - ./open-webui/ks.yaml
