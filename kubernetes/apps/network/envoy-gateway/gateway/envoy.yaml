@@ -49,7 +49,7 @@ metadata:
   name: envoy-external
   namespace: network
   annotations:
-    external-dns.alpha.kubernetes.io/target: &hostname external.chezlawrence.com
+    external-dns.alpha.kubernetes.io/target: &hostname "external.${SECRET_DOMAIN}"
     gatus.home-operations.com/endpoint: |-
       client:
         dns-resolver: tcp://9.9.9.9:53
@@ -84,7 +84,7 @@ metadata:
   name: envoy-internal
   namespace: network
   annotations:
-    external-dns.alpha.kubernetes.io/target: &hostname internal.chezlawrence.com
+    external-dns.alpha.kubernetes.io/target: &hostname "internal.${SECRET_DOMAIN}"
 spec:
   gatewayClassName: envoy
   infrastructure:
