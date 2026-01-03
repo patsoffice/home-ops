@@ -7,7 +7,7 @@ spec:
   interval: 1h
   chartRef:
     kind: OCIRepository
-    name: app-template
+    name: *app
   maxHistory: 2
   install:
     createNamespace: true
@@ -105,17 +105,7 @@ spec:
       app:
         ports:
           http:
-            port: &port 11434
-    ingress:
-      app:
-        className: internal
-        hosts:
-          - host: ollama.chezlawrence.com
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: *port
+            port: &port ${APP_PORT}
     persistence:
       models:
         enabled: true
