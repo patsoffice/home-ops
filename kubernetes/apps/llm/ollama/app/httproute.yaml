@@ -13,5 +13,5 @@ spec:
   rules:
     - backendRefs:
         - name: ${APP}
-          namespace: game
+          namespace: llm
           port: ${APP_PORT}
