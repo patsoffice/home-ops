@@ -59,9 +59,9 @@ spec:
                     path: /ping
                     port: *port
                   initialDelaySeconds: 0
-                  periodSeconds: 10
+                  periodSeconds: 15
                   timeoutSeconds: 1
-                  failureThreshold: 3
+                  failureThreshold: 5
               readiness: *probes
             securityContext:
               allowPrivilegeEscalation: false
