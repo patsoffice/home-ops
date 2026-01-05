@@ -105,7 +105,7 @@ spec:
       app:
         ports:
           http:
-            port: &port ${APP_PORT}
+            port: ${APP_PORT}
     persistence:
       models:
         enabled: true
