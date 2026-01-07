@@ -26,7 +26,7 @@ nodes:
       serial: "24494CB39CDC"
     machineSpec:
       secureboot: false
-    talosImageURL: factory.talos.dev/installer/0a87e2502b112e807c2dd3f91591fe372f3771188424e234a4283398297c2a33
+    talosImageURL: factory.talos.dev/installer/f63411a34575cb0dda75ed28b0a7ce5aa9cd427cf7a37093b8dea43b5a64defd
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -52,7 +52,7 @@ nodes:
       serial: "25044DBF2A09"
     machineSpec:
       secureboot: false
-    talosImageURL: factory.talos.dev/installer/0a87e2502b112e807c2dd3f91591fe372f3771188424e234a4283398297c2a33
+    talosImageURL: factory.talos.dev/installer/f63411a34575cb0dda75ed28b0a7ce5aa9cd427cf7a37093b8dea43b5a64defd
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -78,7 +78,7 @@ nodes:
       serial: "25044DBF61EE"
     machineSpec:
       secureboot: false
-    talosImageURL: factory.talos.dev/installer/0a87e2502b112e807c2dd3f91591fe372f3771188424e234a4283398297c2a33
+    talosImageURL: factory.talos.dev/installer/f63411a34575cb0dda75ed28b0a7ce5aa9cd427cf7a37093b8dea43b5a64defd
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -104,7 +104,7 @@ nodes:
       serial: "24524D2E3C5E"
     machineSpec:
       secureboot: false
-    talosImageURL: factory.talos.dev/installer/0a87e2502b112e807c2dd3f91591fe372f3771188424e234a4283398297c2a33
+    talosImageURL: factory.talos.dev/installer/f63411a34575cb0dda75ed28b0a7ce5aa9cd427cf7a37093b8dea43b5a64defd
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -130,7 +130,7 @@ nodes:
       serial: "24524D2E4CCA"
     machineSpec:
       secureboot: false
-    talosImageURL: factory.talos.dev/installer/0a87e2502b112e807c2dd3f91591fe372f3771188424e234a4283398297c2a33
+    talosImageURL: factory.talos.dev/installer/f63411a34575cb0dda75ed28b0a7ce5aa9cd427cf7a37093b8dea43b5a64defd
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -157,6 +157,7 @@ patches:
   - "@./patches/global/machine-kubelet.yaml"
   - "@./patches/global/machine-network.yaml"
   - "@./patches/global/machine-sysctls.yaml"
+  - "@./patches/global/machine-sysfs.yaml"
   - "@./patches/global/machine-time.yaml"
   - "@./patches/global/machine-udev-rules.yaml"
 
