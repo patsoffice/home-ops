@@ -1,0 +1,16 @@
+---
+customization:
+  extraKernelArgs:
+    - i915.enable_guc=3                   # Intel iGPU
+    - intel_iommu=on                      # PCI Passthrough
+    - iommu=pt                            # PCI Passthrough
+    - cpufreq.default_governor=powersave  # CPU Frequency Governor
+
+  systemExtensions:
+    officialExtensions:
+      - siderolabs/i915
+      - siderolabs/intel-ucode
+      - siderolabs/mei
+      - siderolabs/nfsrahead
+      - siderolabs/thunderbolt
+      - siderolabs/util-linux-tools

@@ -14,6 +14,15 @@ tasks:
       - test -f {{.SOPS_AGE_KEY_FILE}}
       - which talhelper
 
+  generate-schematic:
+    desc: Generate a Talos schematic
+    cmd: |-
+      curl --silent -X POST --data-binary @{{ .TALOS_DIR }}/schematic.yaml https://factory.talos.dev/schematics \
+        | jq --raw-output '.id'
+    preconditions:
+      - test -f {{.TALOS_DIR}}/schematic.yaml
+      - which curl jq
+
   apply-node:
     desc: Apply Talos config to a node [IP=required]
     dir: '{{.TALOS_DIR}}'
@@ -26,6 +35,7 @@ tasks:
       - talosctl --nodes {{.IP}} get machineconfig
       - talosctl config info
       - test -f {{.TALOSCONFIG}}
+      - test -f {{.TALOS_DIR}}/schematic.yaml
       - which talhelper talosctl yq
 
   upgrade-node:
