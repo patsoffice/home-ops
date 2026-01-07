@@ -6,6 +6,7 @@ resources:
   - ./helmrelease.yaml
   - ./httproute.yaml
   - ./ocirepository.yaml
+  - ./podmonitor.yaml
   - ./receiver.yaml
   - ./secret.sops.yaml
 configMapGenerator:
