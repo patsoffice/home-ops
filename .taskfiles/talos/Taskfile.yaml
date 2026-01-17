@@ -38,6 +38,21 @@ tasks:
       - test -f {{.TALOS_DIR}}/schematic.yaml
       - which talhelper talosctl yq
 
+  diff-node:
+    desc: Apply Talos config to a node [IP=required]
+    dir: '{{.TALOS_DIR}}'
+    cmd: talhelper gencommand apply --node {{.IP}} --extra-flags '--mode={{.MODE}} --dry-run' | bash
+    vars:
+      MODE: '{{.MODE | default "auto"}}'
+    requires:
+      vars: [IP]
+    preconditions:
+      - talosctl --nodes {{.IP}} get machineconfig
+      - talosctl config info
+      - test -f {{.TALOSCONFIG}}
+      - test -f {{.TALOS_DIR}}/schematic.yaml
+      - which talhelper talosctl yq
+
   upgrade-node:
     desc: Upgrade Talos on a single node [IP=required]
     dir: '{{.TALOS_DIR}}'
