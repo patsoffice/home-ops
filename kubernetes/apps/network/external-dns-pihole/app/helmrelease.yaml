@@ -5,14 +5,9 @@ kind: HelmRelease
 metadata:
   name: &app external-dns-pihole
 spec:
-  chart:
-    spec:
-      chart: external-dns
-      sourceRef:
-        kind: HelmRepository
-        name: external-dns
-        namespace: flux-system
-      version: 1.20.0
+  chartRef:
+    kind: OCIRepository
+    name: external-dns-pihole
   install:
     remediation:
       retries: 3

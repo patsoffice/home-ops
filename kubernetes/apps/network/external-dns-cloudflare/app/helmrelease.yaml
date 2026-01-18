@@ -6,14 +6,9 @@ metadata:
   name: &app external-dns-cloudflare
 spec:
   interval: 1h
-  chart:
-    spec:
-      chart: external-dns
-      sourceRef:
-        kind: HelmRepository
-        name: external-dns
-        namespace: flux-system
-      version: 1.20.0
+  chartRef:
+    kind: OCIRepository
+    name: external-dns-cloudflare
   install:
     remediation:
       retries: 3
@@ -44,6 +39,8 @@ spec:
     policy: sync
     serviceMonitor:
       enabled: true
-    sources: ["crd", "ingress", "gateway-httproute"]
+    sources:
+      - crd
+      - gateway-httproute
     txtPrefix: k8s.
     txtOwnerId: default
