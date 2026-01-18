@@ -25,6 +25,9 @@ This is a mono repository for my home infrastructure and Kubernetes cluster. I s
 
 The cluster is built on commodity hardware and runs a variety of self-hosted applications for media, networking, observability, and more. All infrastructure and application deployments are version-controlled and automatically synchronized via GitOps.
 
+The cluster is gratuitous overkill for what is actually needed to run the applications that I do. However, it's
+fun for me to do stuff like this and the cluster is resilient and fairly low maintenance.
+
 ---
 
 ## 🌱 Kubernetes
