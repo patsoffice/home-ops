@@ -37,7 +37,7 @@ spec:
         value: "true"
     extraArgs:
       - --pihole-server=http://192.168.0.100
-      - --gateway-name=envoy-external
+      - --gateway-name=envoy-internal
     fullnameOverride: *app
     logLevel: debug
     podAnnotations:
@@ -48,6 +48,6 @@ spec:
     serviceMonitor:
       enabled: true
     sources:
-      - ingress
+      - gateway-httproute
       - service
     triggerLoopOnEvent: true
