@@ -4,6 +4,12 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: it-tools
+  annotations:
+    gethomepage.dev/description: "IT Tools is a collection of useful IT utilities."
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/icon: it-tools.svg
+    gethomepage.dev/group: Apps
+    gethomepage.dev/name: IT Tools
 spec:
   hostnames:
     - "tools.${SECRET_DOMAIN}"

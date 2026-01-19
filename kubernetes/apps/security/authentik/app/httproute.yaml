@@ -6,7 +6,7 @@ metadata:
   namespace: security
   annotations:
     gethomepage.dev/enabled: "true"
-    gethomepage.dev/group: Security
+    gethomepage.dev/group: Infra
     gethomepage.dev/name: Authentik
     gethomepage.dev/icon: authentik.png
     gethomepage.dev/siteMonitor: "http://authentik-server.security.svc.cluster.local:80"

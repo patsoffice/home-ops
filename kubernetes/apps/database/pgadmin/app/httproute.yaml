@@ -4,6 +4,12 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: ${APP}
+  annotations:
+    gethomepage.dev/description: "pgAdmin is a web-based administration tool for PostgreSQL"
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/icon: pgadmin
+    gethomepage.dev/group: Infra
+    gethomepage.dev/name: pgAdmin
 spec:
   hostnames:
     - "${APP}.${SECRET_DOMAIN}"

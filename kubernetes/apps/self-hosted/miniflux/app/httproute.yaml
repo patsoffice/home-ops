@@ -6,6 +6,13 @@ metadata:
   name: ${APP}
   annotations:
     authentik.home.arpa/enabled: "true"
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/icon: miniflux
+    gethomepage.dev/group: Apps
+    gethomepage.dev/name: Miniflux
+    gethomepage.dev/widget.type: miniflux
+    gethomepage.dev/widget.url: "http://miniflux.self-hosted.svc.cluster.local:${APP_PORT}"
+    gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_MINIFLUX_API_KEY}}"
 spec:
   hostnames:
     - "rss.${SECRET_DOMAIN}"

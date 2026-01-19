@@ -12,16 +12,26 @@ rules:
       - ""
     resources:
       - namespaces
-      - pods
       - nodes
+      - pods
+      - services
     verbs:
       - get
       - list
   - apiGroups:
-      - extensions
-      - networking.k8s.io
+      - gateway.networking.k8s.io
     resources:
-      - ingresses
+      - httproutes
+      - gateways
+    verbs:
+      - get
+      - list
+  - apiGroups:
+      - apps
+    resources:
+      - deployments
+      - statefulsets
+      - daemonsets
     verbs:
       - get
       - list

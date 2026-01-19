@@ -5,11 +5,11 @@ kind: HTTPRoute
 metadata:
   name: excalidraw
   annotations:
-          gethomepage.dev/enabled: "true"
-          gethomepage.dev/icon: si-daigrams.net
-          gethomepage.dev/name: excalidraw
-          gethomepage.dev/group: Tools
-          gethomepage.dev/description: Diagramming Tool
+    gethomepage.dev/description: "Excalidraw is an online whiteboard tool."
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/icon: excalidraw.svg
+    gethomepage.dev/group: Apps
+    gethomepage.dev/name: Excalidraw
 spec:
   hostnames:
     - "draw.${SECRET_DOMAIN}"

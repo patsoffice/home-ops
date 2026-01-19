@@ -5,10 +5,11 @@ kind: HTTPRoute
 metadata:
   name: convertx
   annotations:
-          gethomepage.dev/enabled: "true"
-          gethomepage.dev/name: convertx
-          gethomepage.dev/group: Tools
-          gethomepage.dev/description: Format conversion tools
+    gethomepage.dev/description: "ConvertX is file conversion service supporting a variety of formats."
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/icon: convertx
+    gethomepage.dev/group: Apps
+    gethomepage.dev/name: ConvertX
 spec:
   hostnames:
     - "convertx.${SECRET_DOMAIN}"

@@ -4,6 +4,16 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: ${APP}
+  annotations:
+    gethomepage.dev/description: "Romm is a ROM management and browsing application."
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/icon: romm
+    gethomepage.dev/group: Games
+    gethomepage.dev/name: Romm
+    gethomepage.dev/widget.type: romm
+    gethomepage.dev/widget.url: "http://romm.game.svc.cluster.local:${APP_PORT}"
+    gethomepage.dev/widget.username: "{{HOMEPAGE_VAR_ROMM_USERNAME}}"
+    gethomepage.dev/widget.password: "{{HOMEPAGE_VAR_ROMM_PASSWORD}}"
 spec:
   hostnames:
     - "${APP}.${SECRET_DOMAIN}"

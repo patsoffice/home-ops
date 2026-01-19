@@ -4,6 +4,16 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: qbittorrent
+  annotations:
+    gethomepage.dev/description: "qBittorrent is a BitTorrent client."
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/icon: qbittorrent
+    gethomepage.dev/group: Downloads
+    gethomepage.dev/name: qBittorrent
+    gethomepage.dev/widget.type: qbittorrent
+    gethomepage.dev/widget.url: "http://qbittorrent.download.svc.cluster.local:${APP_PORT}"
+    gethomepage.dev/widget.username: "{{HOMEPAGE_VAR_QBITTORRENT_USERNAME}}"
+    gethomepage.dev/widget.password: "{{HOMEPAGE_VAR_QBITTORRENT_PASSWORD}}"
 spec:
   hostnames:
     - "qbittorrent.${SECRET_DOMAIN}"

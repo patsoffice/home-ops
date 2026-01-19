@@ -1,4 +1,6 @@
 ---
 # see https://gethomepage.dev/configs/kubernetes/
-mode: default
-ingress: true
+mode: cluster
+gateway: true
+ingress: false
+traefik: false

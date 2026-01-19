@@ -4,12 +4,47 @@
 
 theme: dark
 color: slate
-providers:
-  openweathermap: {{HOMEPAGE_VAR_OPENWEATHERMAP_API_KEY}}
 layout:
   Media:
     style: row
-    columns: 4
-  Network:
+    columns: 3
+    icon: mdi-play-circle
+  Downloads:
     style: row
-    columns: 4
+    columns: 3
+    icon: mdi-download
+  Apps:
+    style: row
+    columns: 3
+    header: true
+    icon: mdi-application
+  Games:
+    style: row
+    columns: 3
+    header: true
+    icon: mdi-gamepad-variant
+  Home:
+    style: row
+    columns: 3
+    header: true
+    icon: mdi-home-automation
+  Observability:
+    style: row
+    columns: 3
+    header: true
+    icon: mdi-monitor-eye
+  Infra:
+    style: row
+    columns: 3
+    header: true
+    icon: mdi-server-network
+  Storage:
+    style: row
+    columns: 3
+    header: true
+    icon: mdi-database
+providers:
+  openweathermap: "{{HOMEPAGE_VAR_OPENWEATHERMAP_API_KEY}}"
+quicklaunch:
+  searchDescriptions: true
+  hideInternetSearch: false

@@ -4,6 +4,12 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: ${APP}
+  annotations:
+    gethomepage.dev/description: "Pinchflat manages media from online sources."
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/icon: pinchflat
+    gethomepage.dev/group: Media
+    gethomepage.dev/name: Pinchflat
 spec:
   hostnames:
     - "${APP}.${SECRET_DOMAIN}"

@@ -4,6 +4,15 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: ${APP}
+  annotations:
+    gethomepage.dev/description: "Radarr is a movie collection manager."
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/icon: radarr.svg
+    gethomepage.dev/group: Media
+    gethomepage.dev/name: Radarr
+    gethomepage.dev/widget.type: radarr
+    gethomepage.dev/widget.url: "http://radarr.media.svc.cluster.local:${APP_PORT}"
+    gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_RADARR_API_KEY}}"
 spec:
   hostnames:
     - "${APP}.${SECRET_DOMAIN}"

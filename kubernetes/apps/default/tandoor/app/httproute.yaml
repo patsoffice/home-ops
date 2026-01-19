@@ -4,6 +4,15 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: ${APP}
+  annotations:
+    gethomepage.dev/description: "Tandoor Recipes is a recipe manager and meal planner."
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/icon: tandoor-recipes.svg
+    gethomepage.dev/group: Apps
+    gethomepage.dev/name: Tandoor Recipes
+    gethomepage.dev/widget.type: tandoor
+    gethomepage.dev/widget.url: "http://tandoor.default.svc.cluster.local:${APP_PORT}"
+    gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_TANDOOR_API_KEY}}"
 spec:
   hostnames:
     - "${APP}.${SECRET_DOMAIN}"

@@ -1,3 +1,36 @@
 ---
 # For configuration options and examples, please see:
 # https://gethomepage.dev/latest/configs/bookmarks
+
+- Cloud:
+    - CloudFlare:
+        - icon: cloudflare.png
+          href: https://dash.cloudflare.com
+    - AWS Console:
+        - icon: aws.png
+          href: https://aws.amazon.com/console/
+- Git:
+    - Renovate:
+        - icon: kubernetes-dashboard.png
+          href: https://app.renovatebot.com/dashboard#github/clarknova99/
+    - Kubesearch:
+        - icon: kubernetes-dashboard.png
+          description: Helm Chart Search
+          href: https://kubesearch.dev/
+    - 0nedr0p GitHub:
+        - icon: kubernetes-dashboard.png
+          description: Helm Chart Search
+          href: https://github.com/onedr0p/home-ops
+    - Cluster Template:
+        - icon: kubernetes-dashboard.png
+          description: Helm Chart Search
+          href: https://github.com/onedr0p/flux-cluster-template
+    - Homepage Icons:
+        - icon: si-jpeg
+          href: https://dashboardicons.com/
+    - Homepage MDI:
+        - icon: si-materialdesign
+          href: https://pictogrammers.com/library/mdi/
+    - Homepage SI:
+        - icon: si-simpleicons
+          href: https://simpleicons.org/

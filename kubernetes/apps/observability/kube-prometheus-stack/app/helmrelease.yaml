@@ -59,6 +59,15 @@ spec:
       route:
         main:
           enabled: true
+          annotations:
+            gethomepage.dev/description: "Prometheus monitoring system and time series database"
+            gethomepage.dev/enabled: "true"
+            gethomepage.dev/icon: prometheus
+            gethomepage.dev/group: Observability
+            gethomepage.dev/name: Prometheus
+            gethomepage.dev/pod-selector: app.kubernetes.io/name=prometheus
+            gethomepage.dev/widget.type: prometheus
+            gethomepage.dev/widget.url: http://kube-prometheus-stack-prometheus.observability.svc.cluster.local:9090
           hostnames:
             - "prometheus.${SECRET_DOMAIN}"
           parentRefs:

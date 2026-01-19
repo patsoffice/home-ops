@@ -8,7 +8,7 @@ spec:
   interval: 30m
   chartRef:
     kind: OCIRepository
-    name: homepage
+    name: *app
   install:
     remediation:
       retries: -1
@@ -32,6 +32,7 @@ spec:
               TZ: America/Los_Angeles
               HOMEPAGE_ALLOWED_HOSTS: "start.${SECRET_DOMAIN}"
               PORT: &port 3000
+              LOG_LEVEL: debug
             envFrom:
               - secretRef:
                   name: homepage-secret
@@ -45,9 +46,20 @@ spec:
                 spec:
                   failureThreshold: 30
                   periodSeconds: 10
-        replicas: 2
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                  - ALL
+              readOnlyRootFilesystem: false
+        pod:
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
+            fsGroupChangePolicy: "OnRootMismatch"
         serviceAccount:
-          identifier: homepage
+          identifier: *app
     service:
       app:
         controller: *app
@@ -58,7 +70,7 @@ spec:
       config:
         type: emptyDir
         globalMounts:
-          - path: /app/configs
+          - path: /app/config
       config-files:
         type: configMap
         name: homepage-configmap
@@ -66,28 +78,22 @@ spec:
         globalMounts:
           - path: /app/config/bookmarks.yaml
             subPath: bookmarks.yaml
-            readOnly: true
-          - path: /app/config/kubernetes.yaml
-            subPath: kubernetes.yaml
-            readOnly: true
-          - path: /app/config/services.yaml
-            subPath: services.yaml
-            readOnly: true
-          - path: /app/config/settings.yaml
-            subPath: settings.yaml
-            readOnly: true
-          - path: /app/config/widgets.yaml
-            subPath: widgets.yaml
-            readOnly: true
-          - path: /app/config/docker.yaml
-            subPath: docker.yaml
-            readOnly: true
           - path: /app/config/custom.css
             subPath: custom.css
-            readOnly: true
           - path: /app/config/custom.js
             subPath: custom.js
-            readOnly: true
+          - path: /app/config/docker.yaml
+            subPath: docker.yaml
+          - path: /app/config/kubernetes.yaml
+            subPath: kubernetes.yaml
+          - path: /app/config/proxmox.yaml
+            subPath: proxmox.yaml
+          - path: /app/config/services.yaml
+            subPath: services.yaml
+          - path: /app/config/settings.yaml
+            subPath: settings.yaml
+          - path: /app/config/widgets.yaml
+            subPath: widgets.yaml
       config-logs:
         type: emptyDir
         enabled: true

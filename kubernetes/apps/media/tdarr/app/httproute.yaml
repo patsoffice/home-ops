@@ -4,6 +4,14 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: ${APP}
+  annotations:
+    gethomepage.dev/description: "Tdarr is a distributed media transcoding system."
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/icon: tdarr
+    gethomepage.dev/group: Media
+    gethomepage.dev/name: Tdarr
+    gethomepage.dev/widget.type: tdarr
+    gethomepage.dev/widget.url: "http://tdarr.media.svc.cluster.local:${APP_PORT}"
 spec:
   hostnames:
     - "${APP}.${SECRET_DOMAIN}"

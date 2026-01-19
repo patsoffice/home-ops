@@ -5,11 +5,11 @@ kind: HTTPRoute
 metadata:
   name: drawio
   annotations:
-          gethomepage.dev/enabled: "true"
-          gethomepage.dev/icon: si-daigrams.net
-          gethomepage.dev/name: drawio
-          gethomepage.dev/group: Tools
-          gethomepage.dev/description: Diagramming Tool
+    gethomepage.dev/description: "Draw.io is diagram software."
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/icon: draw-io.svg
+    gethomepage.dev/group: Apps
+    gethomepage.dev/name: Draw.io
 spec:
   hostnames:
     - "drawio.${SECRET_DOMAIN}"

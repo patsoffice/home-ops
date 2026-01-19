@@ -4,6 +4,15 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: sabnzbd
+  annotations:
+    gethomepage.dev/description: "SABnzbd is a binary newsreader."
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/icon: sabnzbd
+    gethomepage.dev/group: Downloads
+    gethomepage.dev/name: SABnzbd
+    gethomepage.dev/widget.type: sabnzbd
+    gethomepage.dev/widget.url: "http://sabnzbd.download.svc.cluster.local:${APP_PORT}"
+    gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_SABNZBD_API_KEY}}"
 spec:
   hostnames:
     - "sabnzbd.${SECRET_DOMAIN}"
