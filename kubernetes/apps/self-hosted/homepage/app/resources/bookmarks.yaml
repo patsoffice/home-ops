@@ -19,11 +19,10 @@
           href: https://kubesearch.dev/
     - 0nedr0p GitHub:
         - icon: kubernetes-dashboard.png
-          description: Helm Chart Search
+          description: A great place to yoink from
           href: https://github.com/onedr0p/home-ops
     - Cluster Template:
         - icon: kubernetes-dashboard.png
-          description: Helm Chart Search
           href: https://github.com/onedr0p/flux-cluster-template
     - Homepage Icons:
         - icon: si-jpeg
