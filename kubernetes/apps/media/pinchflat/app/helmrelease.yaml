@@ -46,7 +46,7 @@ spec:
               readiness: *probes
             securityContext:
               allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
+              readOnlyRootFilesystem: false # To allow yt-dlp to auto-update
               capabilities: { drop: ["ALL"] }
             resources:
               claims:
