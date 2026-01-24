@@ -1,0 +1,78 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: go2rtc
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: go2rtc
+  interval: 1h
+  values:
+    controllers:
+      go2rtc:
+        strategy: RollingUpdate
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/alexxit/go2rtc
+              tag: 1.9.14@sha256:675c318b23c06fd862a61d262240c9a63436b4050d177ffc68a32710d9e05bae
+            env:
+              TZ: America/Los_Angeles
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: &port ${APP_PORT}
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 10m
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+    service:
+      app:
+        forceRename: "{{ .Release.Name }}"
+        primary: true
+        ports:
+          http:
+            port: *port
+      streams:
+        type: LoadBalancer
+        annotations:
+          lbipam.cilium.io/ips: 192.168.5.103
+        externalTrafficPolicy: Local
+        ports:
+          streams-rtsp:
+            port: 554
+          streams-webrtc-tcp:
+            port: 8555
+            protocol: TCP
+          streams-webrtc-udp:
+            port: 8555
+            protocol: UDP
+    persistence:
+      secret-file:
+        type: secret
+        name: go2rtc-secret
+        globalMounts:
+          - path: /config/go2rtc.yaml
+            subPath: go2rtc.yaml
+            readOnly: true
