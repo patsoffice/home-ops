@@ -1,0 +1,25 @@
+{
+  "logLevel": "info",
+  "accounts": [
+    {
+      "email": "{{ .EPIC_GAMES_EMAIL_1 }}",
+      "notifiers": [
+        {
+          "type": "discord",
+          "webhookUrl": "{{ .DISCORD_WEBHOOK }}",
+          "mentionedUsers": ["{{ .DISCORD_MENTIONED_USERS_1 }}"]
+        }
+      ]
+    },
+    {
+      "email": "{{ .EPIC_GAMES_EMAIL_2 }}",
+      "notifiers": [
+        {
+          "type": "discord",
+          "webhookUrl": "{{ .DISCORD_WEBHOOK }}",
+          "mentionedUsers": ["{{ .DISCORD_MENTIONED_USERS_2 }}"]
+        }
+      ]
+    }
+  ]
+}

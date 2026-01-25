@@ -24,12 +24,8 @@ spec:
               TZ: America/Los_Angeles
               BASE_URL: "https://epic.${SECRET_DOMAIN}"
               CRON_SCHEDULE: "0 0,6,12,18 * * *"  # every six hours
-              EMAIL_SENDER_NAME: "Epic Games Captchas"
               RUN_ON_STARTUP: "true"
               SEARCH_STRATEGY: all
-              SMTP_PORT: 25
-              SMTP_SECURE: false
-              SMTP_HOST: smtp-relay.network.svc.cluster.local
               SERVER_PORT: &port 3000
             envFrom:
               - secretRef:
@@ -61,6 +57,14 @@ spec:
         type: emptyDir
         globalMounts:
           - path: /usr/app/config
+      config-secret:
+        enabled: true
+        type: secret
+        name: epicgames-freegames-secret
+        globalMounts:
+          - path: /usr/app/config/config.json
+            subPath: config.json
+            readOnly: true
       tmp:
         type: emptyDir
         globalMounts:
