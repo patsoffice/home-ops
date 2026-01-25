@@ -9,6 +9,7 @@ resources:
   - ./convertx/ks.yaml
   - ./drawio/ks.yaml
   - ./excalidraw/ks.yaml
+  - ./filabridge/ks.yaml
   - ./homepage/ks.yaml
   - ./it-tools/ks.yaml
   - ./jrommanager/ks.yaml

@@ -1,0 +1,51 @@
+---
+# yaml-language-server: $schema=https://schemas.bykaj.io/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app filabridge
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: filabridge
+  interval: 1h
+  values:
+    controllers:
+      filabridge:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/needo37/filabridge
+              tag: v0.2@sha256:df02f409279285630cdb4268d8d5f425c6e90ff50c46097def5b3461e2a00147
+            resources:
+              requests:
+                cpu: 10m
+                memory: 128Mi
+              limits:
+                memory: 256Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+    persistence:
+      config:
+        existingClaim: *app
+        advancedMounts:
+          filabridge:
+            app:
+              - path: /app/data
+    service:
+      app:
+        ports:
+          http:
+            port: ${APP_PORT}
