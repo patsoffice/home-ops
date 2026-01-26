@@ -1,0 +1,57 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app octoprint
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: octoprint
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    controllers:
+      octoprint:
+        containers:
+          app:
+            image:
+              repository: ghcr.io/home-operations/octoprint
+              tag: 1.11.5@sha256:1b21c45b141ca1790e51accfbf013fd04775fac84f397ab22118fbb6200097e3
+              pullPolicy: IfNotPresent
+            probes:
+              liveness: &probes
+                enabled: true
+                type: HTTP
+              readiness: *probes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+              capabilities:
+                drop:
+                  - ALL
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            primary: true
+            port: ${APP_PORT}
+    persistence:
+      work:
+        existingClaim: *app
+        globalMounts:
+          - path: /config
+            subPath: data

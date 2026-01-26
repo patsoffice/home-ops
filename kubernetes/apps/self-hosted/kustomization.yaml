@@ -14,4 +14,5 @@ resources:
   - ./it-tools/ks.yaml
   - ./jrommanager/ks.yaml
   - ./miniflux/ks.yaml
+  - ./octoprint/ks.yaml
   - ./spoolman/ks.yaml
