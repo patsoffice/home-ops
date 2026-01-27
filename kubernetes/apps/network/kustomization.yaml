@@ -15,4 +15,5 @@ resources:
   - ./external-dns-pihole/ks.yaml
   - ./internal-services/ks.yaml
   - ./k8s-gateway/ks.yaml
+  - ./netshoot/ks.yaml
   - ./smtp-relay/ks.yaml
