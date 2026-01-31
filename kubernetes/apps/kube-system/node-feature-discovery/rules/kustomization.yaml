@@ -8,4 +8,6 @@ resources:
   - ./amd-gpu.yaml
   - ./coral-device.yaml
   - ./intel-gpu.yaml
+  - ./nabu-casa-zbt-2.yaml
+  - ./nabu-casa-zwa-2.yaml
   - ./sonoff-zigbee-device.yaml
