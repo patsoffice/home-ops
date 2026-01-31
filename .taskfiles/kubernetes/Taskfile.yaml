@@ -52,6 +52,22 @@ tasks:
     preconditions:
       - which kubectl
 
+  privileged-pod:
+    desc: Run a privileged pod [NODE=required]
+    cmd:
+      kubectl run privileged-{{.NODE}} -i --rm --image=docker.io/library/alpine:latest --overrides="$(yq {{.KUBERNETES_RESOURCES_DIR}}/privileged-pod.tmpl.yaml -o=json | envsubst -no-unset -no-empty)"
+    env:
+      NODE: '{{.NODE}}'
+    vars:
+      TMPDIR:
+        sh: mktemp -d
+    requires:
+      vars: [NODE]
+    preconditions:
+      - test -f {{.KUBERNETES_RESOURCES_DIR}}/privileged-pod.tmpl.yaml
+      - which envsubst
+      - which kubectl
+
   privileged-pvc:
     desc: Run a privileged pod and mount a PVC [NS={{.NS}}] [CLAIM=required] [NODE=required]
     cmd:
