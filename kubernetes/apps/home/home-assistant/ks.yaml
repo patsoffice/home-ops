@@ -1,0 +1,42 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app home-assistant
+  namespace: &namespace home
+spec:
+  targetNamespace: *namespace
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  components:
+    - ../../../../components/gatus/internal
+    - ../../../../components/volsync
+  dependsOn:
+    - name: external-secrets-stores
+      namespace: external-secrets
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+    - name: volsync
+      namespace: volsync-system
+  interval: 30m
+  path: ./kubernetes/apps/home/home-assistant/app
+  postBuild:
+    substitute:
+      APP: *app
+      APP_PORT: "8123"
+      CODE_PORT: "12321"
+      GATUS_SUBDOMAIN: hass
+      VOLSYNC_CAPACITY: 10Gi
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  wait: false
+  retryInterval: 1m
+  timeout: 5m
