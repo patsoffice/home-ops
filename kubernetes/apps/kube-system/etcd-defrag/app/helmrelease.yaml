@@ -1,0 +1,67 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app etcd-defrag
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: etcd-defrag
+  values:
+    controllers:
+      etcd-defrag:
+        type: cronjob
+        cronjob:
+          schedule: "@daily"
+          concurrencyPolicy: Forbid
+          successfulJobsHistory: 1
+          failedJobsHistory: 1
+        containers:
+          app:
+            image:
+              repository: ghcr.io/ahrtr/etcd-defrag
+              tag: v0.37.0@sha256:11df83d4af26a5428e5fffb93b3cc14f858fb61a012b75935ea5370aae413bf8
+            args:
+            - --endpoints=https://127.0.0.1:2379
+            - --cluster
+            - --cacert=/certs/ca.crt
+            - --cert=/certs/admin.crt
+            - --key=/certs/admin.key
+            - --defrag-rule=dbQuotaUsage > 0.5 || dbSizeFree > 100*1024*1024
+            - --move-leader
+            - --wait-between-defrags=60s
+            - --etcd-storage-quota-bytes=2147483648
+            - --auto-disalarm
+            - --disalarm-threshold=0.8
+            securityContext:
+              privileged: true
+            resources:
+              requests:
+                cpu: 25m
+                memory: 128Mi
+              limits:
+                memory: 128Mi
+        serviceAccount:
+          name: *app
+    defaultPodOptions:
+      hostNetwork: true
+      hostPID: true
+      securityContext:
+        runAsNonRoot: false
+        runAsUser: 0
+        runAsGroup: 0
+    persistence:
+      certs:
+        type: hostPath
+        hostPath: /system/secrets/etcd
+        globalMounts:
+          - path: /certs
+            readOnly: true
+      tmpfs:
+        type: emptyDir
+        advancedMounts:
+          etcd-defrag:
+            app:
+              - path: /tmp
+                subPath: tmp
