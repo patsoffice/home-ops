@@ -44,30 +44,25 @@ spec:
         containers:
           app:
             image:
-              repository: intelanalytics/ipex-llm-inference-cpp-xpu
-              tag: 2.3.0-SNAPSHOT
-            command:
-              - sh
-              - -c
-              - >-
-                mkdir -p /llm/ollama && cd /llm/ollama && init-ollama && exec ./ollama serve
+              repository: docker.io/ollama/ollama
+              tag: 0.15.2@sha256:76d0c003b27db65170e88ab319ff19c9bcee41ecb8177c52ab06921dfa13abdf
             env:
+              HOME: /config
+              OLLAMA_DEBUG: "1"
+              OLLAMA_FLASH_ATTENTION: "1"
               OLLAMA_MODELS: &modelPath /models
+              OLLAMA_VULKAN: "1"
               OLLAMA_HOST: "0.0.0.0"
-              no_proxy: "localhost,127.0.0.1"
-              DEVICE: "Arc"
-              OLLAMA_INTEL_GPU: "true"
-              OLLAMA_NUM_GPU: "999"
-              ZES_ENABLE_SYSMAN: "1"
+              GGML_VK_DISABLE_INTEGER_DOT_PRODUCT: "1"
             resources:
               claims:
                 - name: gpu
               requests:
                 cpu: "2"
-                memory: "8Gi"
+                memory: "16Gi"
               limits:
                 cpu: "8"
-                memory: "16Gi"
+                memory: "32Gi"
             securityContext:
               privileged: false
               capabilities:
@@ -118,7 +113,7 @@ spec:
         enabled: true
         existingClaim: *app
         globalMounts:
-          - path: /root/.ollama
+          - path: /config
       dev:
         type: hostPath
         hostPath: /dev/dri
