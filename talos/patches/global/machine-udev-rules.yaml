@@ -9,3 +9,7 @@ machine:
         SUBSYSTEM=="tty", ATTRS{idVendor}=="0658", ATTRS{idProduct}=="0200", MODE="0660", GROUP="20"
       - # Zigbee
         SUBSYSTEM=="tty", ATTRS{idVendor}=="1a86", ATTRS{idProduct}=="55d4", MODE="0660", GROUP="20"
+      - # ZWA-2
+        SUBSYSTEM=="tty", ATTRS{idVendor}=="303a", ATTRS{idProduct}=="4001", MODE="0660", GROUP="20"
+      - # ZBT-2
+        SUBSYSTEM=="tty", ATTRS{idVendor}=="303a", ATTRS{idProduct}=="831a", MODE="0660", GROUP="20"
