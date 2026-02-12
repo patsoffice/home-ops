@@ -15,13 +15,9 @@ spec:
       version: 1.3.2
   install:
     crds: CreateReplace
-    createNamespace: true
     remediation:
-      retries: 3
+      retries: -1
   interval: 30m
-  maxHistory: 2
-  uninstall:
-    keepHistory: false
   upgrade:
     cleanupOnFail: true
     crds: CreateReplace

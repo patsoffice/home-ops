@@ -22,14 +22,16 @@ spec:
   chartRef:
     kind: OCIRepository
     name: kyverno
-  maxHistory: 3
   interval: 30m
   install:
     crds: CreateReplace
+    remediation:
+      retries: -1
   upgrade:
+    cleanupOnFail: true
     crds: CreateReplace
-  uninstall:
-    keepHistory: false
+    remediation:
+      retries: 3
   values:
     crds:
       install: true

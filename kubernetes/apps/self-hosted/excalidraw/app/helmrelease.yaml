@@ -12,13 +12,9 @@ spec:
     remediation:
       retries: -1
   interval: 30m
-  maxHistory: 3
-  uninstall:
-    keepHistory: false
   upgrade:
     cleanupOnFail: true
     remediation:
-      strategy: rollback
       retries: 3
   values:
     controllers:
