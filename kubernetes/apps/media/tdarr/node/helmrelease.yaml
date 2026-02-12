@@ -17,15 +17,6 @@ spec:
     remediation:
       retries: 3
   values:
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - matchExpressions:
-                - key: intel.feature.node.kubernetes.io/gpu
-                  operator: In
-                  values:
-                    - "true"
     controllers:
       tdarr-node:
         containers:
@@ -69,6 +60,15 @@ spec:
                   topologyKey: kubernetes.io/hostname
         replicas: 2
     defaultPodOptions:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: intel.feature.node.kubernetes.io/gpu
+                    operator: In
+                    values:
+                      - "true"
       resourceClaims:
         - name: gpu
           resourceClaimTemplateName: tdarr-node-gpu

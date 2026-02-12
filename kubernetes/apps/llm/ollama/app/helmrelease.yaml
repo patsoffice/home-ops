@@ -20,15 +20,6 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - matchExpressions:
-                - key: intel.feature.node.kubernetes.io/gpu
-                  operator: In
-                  values:
-                    - "true"
     controllers:
       ollama:
         pod:
@@ -94,6 +85,15 @@ spec:
                   failureThreshold: 3
               startup: *probe
     defaultPodOptions:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: intel.feature.node.kubernetes.io/gpu
+                    operator: In
+                    values:
+                      - "true"
       resourceClaims:
         - name: gpu
           resourceClaimTemplateName: ollama-gpu
