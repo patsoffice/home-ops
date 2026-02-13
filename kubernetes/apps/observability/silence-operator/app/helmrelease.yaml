@@ -29,7 +29,7 @@ spec:
           silence-operator:
             image:
               repository: quay.io/giantswarm/silence-operator
-              tag: 0.19.0
+              tag: 0.19.0@sha256:e4d7897100d570dcccc26419e4a5aa754af73703486ac5bc1d990374e423667b
             args:
               - --leader-elect
               - --metrics-bind-address=:8080
