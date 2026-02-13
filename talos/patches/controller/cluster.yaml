@@ -4,7 +4,7 @@ cluster:
     admissionControl:
       $$patch: delete
     extraArgs:
-      feature-gates: ResourceHealthStatus=true
+      feature-gates: ResourceHealthStatus=true,MutatingAdmissionPolicy=true
       # https://kubernetes.io/docs/tasks/extend-kubernetes/configure-aggregation-layer/
       enable-aggregator-routing: true
   controllerManager:
