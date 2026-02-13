@@ -63,6 +63,11 @@ spec:
                   timeoutSeconds: 1
                   failureThreshold: 5
               readiness: *probes
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
