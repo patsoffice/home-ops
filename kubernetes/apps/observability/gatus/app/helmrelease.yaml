@@ -22,30 +22,13 @@ spec:
         annotations:
           reloader.stakater.com/auto: "true"
         initContainers:
-          init-config:
-            image:
-              repository: ghcr.io/home-operations/k8s-sidecar
-              tag: 1.30.10@sha256:dd3b1f0c4e6b4512b2deb50c58acf65fd0f0927120a59a95eec854d32a6c9ce3
-            env:
-              FOLDER: /config
-              LABEL: gatus.io/enabled
-              NAMESPACE: ALL
-              RESOURCE: both
-              UNIQUE_FILENAMES: true
-              METHOD: WATCH
-            restartPolicy: Always
-            resources:
-              requests:
-                cpu: 10m
-              limits:
-                memory: 128Mi
           init-sidecar:
             image:
               repository: ghcr.io/home-operations/gatus-sidecar
               tag: 0.0.13@sha256:40d549ea5ae89acac94bdf4cee1233e718a96c6e382c67f7e28de688511169d2
             args:
-              - --auto-httproute
-              - --auto-service
+              - --enable-httproute
+              - --enable-service
             restartPolicy: Always
             resources:
               requests:
