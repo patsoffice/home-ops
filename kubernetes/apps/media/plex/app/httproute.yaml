@@ -5,6 +5,9 @@ kind: HTTPRoute
 metadata:
   name: ${APP}
   annotations:
+    gatus.home-operations.com/endpoint: |-
+      conditions: ["[STATUS] == 200"]
+      path: /web/index.html
     gethomepage.dev/description: "Plex is a media server platform that organizes video, music, and photos from personal media libraries and streams them to smart TVs, streaming boxes and mobile devices."
     gethomepage.dev/enabled: "true"
     gethomepage.dev/icon: plex.svg

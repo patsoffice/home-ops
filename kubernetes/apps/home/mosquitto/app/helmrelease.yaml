@@ -45,6 +45,16 @@ spec:
     service:
       app:
         controller: *app
+        annotations:
+          gatus.home-operations.com/enabled: "true"
+          gatus.home-operations.com/endpoint: |-
+            url: tcp://mosquitto.home.svc.cluster.local:1883
+            group: infrastructure
+            ui:
+              hide-url: true
+              hide-hostname: true
+            conditions:
+              - "[CONNECTED] == true"
         ports:
           http:
             port: 1883
