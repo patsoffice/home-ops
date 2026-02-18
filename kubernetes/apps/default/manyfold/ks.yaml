@@ -10,7 +10,6 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   components:
-    - ../../../../components/gatus/internal
     - ../../../../components/volsync
   dependsOn:
     - name: pg-cluster17
@@ -23,7 +22,6 @@ spec:
     substitute:
       APP: *app
       APP_PORT: "3214"
-      GATUS_SUBDOMAIN: manyfold
       VOLSYNC_CAPACITY: 5Gi
     substituteFrom:
       - name: cluster-secrets

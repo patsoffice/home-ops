@@ -11,7 +11,6 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   components:
-    - ../../../../components/gatus/internal
     - ../../../../components/volsync
   dependsOn:
     - name: external-secrets-stores
@@ -27,7 +26,6 @@ spec:
       APP: *app
       APP_PORT: "8123"
       CODE_PORT: "12321"
-      GATUS_SUBDOMAIN: hass
       VOLSYNC_CAPACITY: 10Gi
     substituteFrom:
       - name: cluster-secrets

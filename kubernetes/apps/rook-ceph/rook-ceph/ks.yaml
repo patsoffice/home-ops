@@ -35,8 +35,6 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  components:
-    - ../../../../components/gatus/internal
   dependsOn:
     - name: rook-ceph
       namespace: *namespace
@@ -61,7 +59,6 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      GATUS_SUBDOMAIN: rook
     substituteFrom:
       - name: cluster-secrets
         kind: Secret

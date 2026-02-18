@@ -6,8 +6,6 @@ metadata:
   name: &app drawio
   namespace: &namespace self-hosted
 spec:
-  components:
-    - ../../../../components/gatus/internal
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
@@ -17,7 +15,6 @@ spec:
     substitute:
       APP: *app
       APP_PORT: "8080"
-      GATUS_SUBDOMAIN: drawio
     substituteFrom:
       - name: cluster-secrets
         kind: Secret

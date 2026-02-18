@@ -10,7 +10,6 @@ spec:
   retryInterval: 2m
   timeout: 5m
   components:
-    - ../../../../components/gatus/internal
     - ../../../../components/gpu
     - ../../../../components/volsync
   dependsOn:

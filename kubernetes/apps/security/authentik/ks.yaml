@@ -10,13 +10,10 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  components:
-    - ../../../../components/gatus/external
   path: ./kubernetes/apps/security/authentik/app
   postBuild:
     substitute:
       APP: *app
-      GATUS_SUBDOMAIN: auth
     substituteFrom:
       - name: cluster-secrets
         kind: Secret

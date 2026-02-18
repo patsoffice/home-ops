@@ -7,7 +7,6 @@ metadata:
   namespace: &namespace home
 spec:
   components:
-    - ../../../../components/gatus/internal
     - ../../../../components/volsync
   dependsOn:
     - name: external-secrets-stores
