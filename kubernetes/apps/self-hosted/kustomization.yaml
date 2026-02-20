@@ -15,3 +15,4 @@ resources:
   - ./jrommanager/ks.yaml
   - ./miniflux/ks.yaml
   - ./spoolman/ks.yaml
+  - ./wordpress-gds/ks.yaml

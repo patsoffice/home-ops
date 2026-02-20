@@ -1,0 +1,172 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/app-template-4.5.0/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app wordpress-gds
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  install:
+    remediation:
+      retries: -1
+  interval: 30m
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    controllers:
+      wordpress-gds:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: docker.io/library/wordpress
+              tag: 6.9.1-php8.4-apache
+            env:
+              WORDPRESS_DB_HOST: 127.0.0.1
+              WORDPRESS_DB_NAME: wordpress
+            envFrom:
+              - secretRef:
+                  name: wordpress-gds-secret
+            # probes:
+            #   liveness: &probes
+            #     enabled: true
+            #     custom: true
+            #     spec:
+            #       httpGet:
+            #         path: /wp-login.php
+            #         port: &port 80
+            #       initialDelaySeconds: 0
+            #       periodSeconds: 10
+            #       timeoutSeconds: 1
+            #       failureThreshold: 3
+            #   readiness: *probes
+            #   startup:
+            #     enabled: true
+            #     custom: true
+            #     spec:
+            #       httpGet:
+            #         path: /wp-login.php
+            #         port: *port
+            #       failureThreshold: 30
+            #       periodSeconds: 10
+            securityContext:
+              allowPrivilegeEscalation: true
+              readOnlyRootFilesystem: false
+              capabilities:
+                drop: ["ALL"]
+                add: ["CHOWN", "SETUID", "SETGID", "DAC_OVERRIDE", "FOWNER"]
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+              limits:
+                memory: 2048Mi
+          mariadb:
+            image:
+              repository: docker.io/library/mariadb
+              tag: "12.2.2-ubi10"
+            env:
+              MARIADB_DATABASE: wordpress
+            envFrom:
+              - secretRef:
+                  name: wordpress-gds-secret
+            # probes:
+            #   liveness:
+            #     enabled: true
+            #     custom: true
+            #     spec:
+            #       exec:
+            #         command:
+            #           - healthcheck.sh
+            #           - --connect
+            #           - --innodb_initialized
+            #       initialDelaySeconds: 10
+            #       periodSeconds: 10
+            #       timeoutSeconds: 5
+            #       failureThreshold: 3
+            #   readiness:
+            #     enabled: true
+            #     custom: true
+            #     spec:
+            #       exec:
+            #         command:
+            #           - healthcheck.sh
+            #           - --connect
+            #           - --innodb_initialized
+            #       initialDelaySeconds: 10
+            #       periodSeconds: 10
+            #       timeoutSeconds: 5
+            #       failureThreshold: 3
+            #   startup:
+            #     enabled: true
+            #     custom: true
+            #     spec:
+            #       exec:
+            #         command:
+            #           - healthcheck.sh
+            #           - --connect
+            #           - --innodb_initialized
+            #       failureThreshold: 30
+            #       periodSeconds: 10
+            securityContext:
+              allowPrivilegeEscalation: true
+              readOnlyRootFilesystem: false
+              capabilities:
+                drop: ["ALL"]
+                add: ["CHOWN", "SETUID", "SETGID", "DAC_OVERRIDE", "FOWNER"]
+            resources:
+              requests:
+                cpu: 50m
+                memory: 256Mi
+              limits:
+                memory: 512Mi
+    configMaps:
+      php-config:
+        data:
+          php.ini: |
+            upload_max_filesize = 64M
+            post_max_size = 64M
+            memory_limit = 256M
+            max_execution_time = 300
+            max_input_time = 300
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: 80
+    persistence:
+      data:
+        existingClaim: *app
+        advancedMounts:
+          wordpress-gds:
+            app:
+              - path: /var/www/html
+                subPath: wordpress
+            mariadb:
+              - path: /var/lib/mysql
+                subPath: mariadb
+      php-config:
+        type: configMap
+        name: wordpress-gds
+        advancedMounts:
+          wordpress-gds:
+            app:
+              - path: /usr/local/etc/php/php.ini
+                subPath: php.ini
+                readOnly: true
+      tmp:
+        type: emptyDir
+        advancedMounts:
+          wordpress-gds:
+            app:
+              - path: /tmp
+                subPath: app-tmp
+            mariadb:
+              - path: /tmp
+                subPath: mariadb-tmp
