@@ -1,0 +1,69 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mariadb-operator/mariadb-operator/main/src/crds/k8s.mariadb.com_mariadbs.yaml
+apiVersion: k8s.mariadb.com/v1alpha1
+kind: MariaDB
+metadata:
+  name: mariadb-wordpress-poc
+spec:
+  replicas: 3
+  galera:
+    enabled: true
+    sst: mariabackup
+    agent:
+      kubernetesAuth:
+        enabled: true
+    recovery:
+      enabled: true
+  image: docker.io/library/mariadb:12.2.2
+  rootPasswordSecretKeyRef:
+    name: mariadb-wordpress-poc-secret
+    key: root-password
+  database: wordpress
+  username: wordpress
+  passwordSecretKeyRef:
+    name: mariadb-wordpress-poc-secret
+    key: wordpress-db-password
+  myCnf: |
+    [mariadb]
+    bind-address=*
+    default_storage_engine=InnoDB
+    binlog_format=row
+    innodb_buffer_pool_size=512M
+    max_allowed_packet=256M
+  storage:
+    size: 10Gi
+    storageClassName: ceph-block
+    resizeInUseVolumes: true
+    waitForVolumeResize: true
+    volumeClaimTemplate:
+      accessModes: [ "ReadWriteOnce" ]
+  service:
+    type: ClusterIP
+  tls:
+    enabled: false
+  resources:
+    requests:
+      cpu: 100m
+      memory: 512Mi
+    limits:
+      memory: 2Gi
+  metrics:
+    enabled: true
+  podSecurityContext:
+    runAsUser: 999
+    runAsGroup: 999
+    fsGroup: 999
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+                - key: app.kubernetes.io/instance
+                  operator: In
+                  values:
+                    - mariadb-wordpress-poc
+            topologyKey: kubernetes.io/hostname
+  updateStrategy:
+    type: RollingUpdate

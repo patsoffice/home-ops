@@ -1,0 +1,37 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mariadb-operator/mariadb-operator/main/crds/k8s.mariadb.com_backups.yaml
+apiVersion: k8s.mariadb.com/v1alpha1
+kind: Backup
+metadata:
+  name: mariadb-wordpress-poc-backup
+spec:
+  mariaDbRef:
+    name: mariadb-wordpress-poc
+  schedule:
+    cron: "0 */4 * * *"
+  maxRetention: 336h
+  storage:
+    s3:
+      bucket: backups
+      prefix: mariadb-wordpress-poc
+      endpoint: 192.168.1.182:9000
+      region: us-east-1
+      tls:
+        enabled: false
+      accessKeyIdSecretKeyRef:
+        name: mariadb-wordpress-poc-secret
+        key: s3-access-key
+      secretAccessKeySecretKeyRef:
+        name: mariadb-wordpress-poc-secret
+        key: s3-secret-key
+  compression: gzip
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      memory: 512Mi
+  podSecurityContext:
+    runAsUser: 999
+    runAsGroup: 999
+    fsGroup: 999
