@@ -5,8 +5,14 @@ kind: MariaDB
 metadata:
   name: mariadb-wordpress-gds
 spec:
-  replicas: 1
-  image: docker.io/library/mariadb:12.2.2-ubi10
+  replicas: 3
+  galera:
+    enabled: true
+    sst: mariabackup
+    agent:
+      kubernetesAuth:
+        enabled: true
+  image: docker.io/library/mariadb:11.8.6
   rootPasswordSecretKeyRef:
     name: mariadb-wordpress-gds-secret
     key: root-password
@@ -14,14 +20,25 @@ spec:
   username: wordpress
   passwordSecretKeyRef:
     name: mariadb-wordpress-gds-secret
-    key: password
+    key: wordpress-gds-password
+  myCnf: |
+    [mariadb]
+    bind-address=*
+    default_storage_engine=InnoDB
+    binlog_format=row
+    innodb_buffer_pool_size=512M
+    max_allowed_packet=256M
   storage:
     size: 10Gi
     storageClassName: ceph-block
     resizeInUseVolumes: true
     waitForVolumeResize: true
+    volumeClaimTemplate:
+      accessModes: [ "ReadWriteOnce" ]
   service:
     type: ClusterIP
+  tls:
+    enabled: false
   resources:
     requests:
       cpu: 100m
@@ -34,5 +51,17 @@ spec:
     runAsUser: 999
     runAsGroup: 999
     fsGroup: 999
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+                - key: app.kubernetes.io/instance
+                  operator: In
+                  values:
+                    - mariadb-wordpress-gds
+            topologyKey: kubernetes.io/hostname
   updateStrategy:
     type: RollingUpdate

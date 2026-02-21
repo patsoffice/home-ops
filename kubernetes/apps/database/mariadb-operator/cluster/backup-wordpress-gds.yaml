@@ -9,7 +9,7 @@ spec:
     name: mariadb-wordpress-gds
   schedule:
     cron: "0 2 * * *"
-  maxRetention: 14d
+  maxRetention: 336h
   storage:
     s3:
       bucket: backups
@@ -24,7 +24,6 @@ spec:
       secretAccessKeySecretKeyRef:
         name: mariadb-wordpress-gds-secret
         key: s3-secret-key
-  backupType: logical
   compression: gzip
   resources:
     requests:
