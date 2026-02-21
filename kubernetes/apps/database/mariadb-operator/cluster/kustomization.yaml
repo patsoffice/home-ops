@@ -3,6 +3,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: database
-resources: []
-  # MariaDB instances will be added here
-  # Example: ./mariadb-instance.yaml
+resources:
+  - ./externalsecret-wordpress.yaml
+  - ./mariadb-wordpress-gds.yaml
+  - ./backup-wordpress-gds.yaml

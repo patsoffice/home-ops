@@ -1,0 +1,38 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mariadb-operator/mariadb-operator/main/src/crds/k8s.mariadb.com_mariadbs.yaml
+apiVersion: k8s.mariadb.com/v1alpha1
+kind: MariaDB
+metadata:
+  name: mariadb-wordpress-gds
+spec:
+  replicas: 1
+  image: docker.io/library/mariadb:12.2.2-ubi10
+  rootPasswordSecretKeyRef:
+    name: mariadb-wordpress-gds-secret
+    key: root-password
+  database: wordpress
+  username: wordpress
+  passwordSecretKeyRef:
+    name: mariadb-wordpress-gds-secret
+    key: password
+  storage:
+    size: 10Gi
+    storageClassName: ceph-block
+    resizeInUseVolumes: true
+    waitForVolumeResize: true
+  service:
+    type: ClusterIP
+  resources:
+    requests:
+      cpu: 100m
+      memory: 512Mi
+    limits:
+      memory: 1Gi
+  metrics:
+    enabled: true
+  podSecurityContext:
+    runAsUser: 999
+    runAsGroup: 999
+    fsGroup: 999
+  updateStrategy:
+    type: RollingUpdate
