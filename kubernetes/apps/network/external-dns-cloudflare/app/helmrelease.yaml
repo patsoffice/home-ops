@@ -19,7 +19,7 @@ spec:
   values:
     fullnameOverride: *app
     provider: cloudflare
-    domainFilters: ["${SECRET_DOMAIN}"]
+    domainFilters: ["${SECRET_DOMAIN}", "${SECRET_DOMAIN_POC}"]
     env:
       - name: CF_API_TOKEN
         valueFrom:
