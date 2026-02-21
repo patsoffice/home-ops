@@ -8,7 +8,7 @@ spec:
   mariaDbRef:
     name: mariadb-wordpress-gds
   schedule:
-    cron: "0 2 * * *"
+    cron: "0 */4 * * *"
   maxRetention: 336h
   storage:
     s3:

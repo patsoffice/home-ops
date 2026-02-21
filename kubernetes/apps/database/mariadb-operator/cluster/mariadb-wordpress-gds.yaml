@@ -12,6 +12,8 @@ spec:
     agent:
       kubernetesAuth:
         enabled: true
+    recovery:
+      enabled: true
   image: docker.io/library/mariadb:11.8.6
   rootPasswordSecretKeyRef:
     name: mariadb-wordpress-gds-secret
@@ -44,7 +46,7 @@ spec:
       cpu: 100m
       memory: 512Mi
     limits:
-      memory: 1Gi
+      memory: 2Gi
   metrics:
     enabled: true
   podSecurityContext:
