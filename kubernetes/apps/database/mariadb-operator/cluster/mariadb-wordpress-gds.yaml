@@ -14,7 +14,7 @@ spec:
         enabled: true
     recovery:
       enabled: true
-  image: docker.io/library/mariadb:11.8.6
+  image: docker.io/library/mariadb:12.2.2
   rootPasswordSecretKeyRef:
     name: mariadb-wordpress-gds-secret
     key: root-password
