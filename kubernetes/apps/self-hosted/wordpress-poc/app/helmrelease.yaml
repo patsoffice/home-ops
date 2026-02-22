@@ -30,7 +30,7 @@ spec:
           app:
             image:
               repository: ghcr.io/patsoffice/patsoffice-wordpress-image
-              tag: v6.9.1-4@sha256:2f33c5e10863f0f4a8ef62a2479234b566ff77ea7c92fe6b898585971d622b48
+              tag: v6.9.1-5@sha256:9042df5352920eba37d41cc4866bf1bbe10515602867c08099b4dc593c7da0d5
               pullPolicy: IfNotPresent
             env:
               WORDPRESS_DB_HOST: mariadb-wordpress-poc.database.svc.cluster.local
