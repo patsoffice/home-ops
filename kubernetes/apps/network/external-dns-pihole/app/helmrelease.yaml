@@ -19,6 +19,7 @@ spec:
   values:
     domainFilters:
       - "${SECRET_DOMAIN}"
+      - "${SECRET_DOMAIN_POC}"
     env:
       - name: &name EXTERNAL_DNS_PIHOLE_PASSWORD
         valueFrom:
