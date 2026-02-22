@@ -1,0 +1,43 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app wordle-solver
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  install:
+    remediation:
+      retries: -1
+  interval: 30m
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    controllers:
+      wordle-solver:
+        strategy: RollingUpdate
+        containers:
+          app:
+            image:
+              repository: ghcr.io/patsoffice/wordle-solver
+              tag: 1.0.0@sha256:6bc8bc7cd67f20960f0d792a365fdcd9676bb6325080f32f7a42ac7eb6fdbec4
+              pullPolicy: IfNotPresent
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: { drop: ["ALL"] }
+    service:
+      app:
+        controller: *app
+        ipFamilyPolicy: PreferDualStack
+        ports:
+          http:
+            port: ${APP_PORT}

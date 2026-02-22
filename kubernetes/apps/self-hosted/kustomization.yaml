@@ -17,3 +17,4 @@ resources:
   - ./spoolman/ks.yaml
   - ./wordpress-gds/ks.yaml
   - ./wordpress-poc/ks.yaml
+  - ./wordle-solver/ks.yaml
