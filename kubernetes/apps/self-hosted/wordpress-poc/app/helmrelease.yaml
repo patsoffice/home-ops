@@ -26,6 +26,23 @@ spec:
         pod:
           imagePullSecrets:
             - name: ghcr-registry
+        initContainers:
+          init-postfix:
+            image:
+              repository: ghcr.io/patsoffice/patsoffice-wordpress-image
+              tag: v6.9.1-5@sha256:9042df5352920eba37d41cc4866bf1bbe10515602867c08099b4dc593c7da0d5
+              pullPolicy: IfNotPresent
+            command: ["/bin/bash", "-c"]
+            args:
+              - |
+                postfix set-permissions
+                cp /etc/localtime /etc/services /etc/resolv.conf /etc/hosts /etc/host.conf /etc/nsswitch.conf /var/spool/postfix/etc/
+            securityContext:
+              allowPrivilegeEscalation: true
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop: ["ALL"]
+                add: ["CHOWN", "DAC_OVERRIDE", "FOWNER", "SETUID", "SETGID"]
         containers:
           app:
             image:
@@ -45,7 +62,7 @@ spec:
               readOnlyRootFilesystem: true
               capabilities:
                 drop: ["ALL"]
-                add: ["CHOWN", "DAC_OVERRIDE", "SETUID", "SETGID", "NET_BIND_SERVICE"]
+                add: ["SETUID", "SETGID", "NET_BIND_SERVICE"]
             resources:
               requests:
                 cpu: 100m
@@ -69,12 +86,16 @@ spec:
         type: emptyDir
         advancedMounts:
           wordpress-poc:
+            init-postfix:
+              - path: /var/spool/postfix
             app:
               - path: /var/spool/postfix
       postfix-lib:
         type: emptyDir
         advancedMounts:
           wordpress-poc:
+            init-postfix:
+              - path: /var/lib/postfix
             app:
               - path: /var/lib/postfix
       tmp:
