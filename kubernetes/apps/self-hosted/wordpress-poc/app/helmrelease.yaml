@@ -35,6 +35,8 @@ spec:
             env:
               WORDPRESS_DB_HOST: mariadb-wordpress-poc.database.svc.cluster.local
               WORDPRESS_DB_NAME: wordpress
+              XDG_CONFIG_HOME: /tmp
+              XDG_DATA_HOME: /tmp
             envFrom:
               - secretRef:
                   name: wordpress-poc-secret
