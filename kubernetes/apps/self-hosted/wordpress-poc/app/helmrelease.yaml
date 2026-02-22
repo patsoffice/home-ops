@@ -1,0 +1,88 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/app-template-4.5.0/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app wordpress-poc
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  install:
+    remediation:
+      retries: -1
+  interval: 30m
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    controllers:
+      wordpress-poc:
+        replicas: 1
+        strategy: RollingUpdate
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          imagePullSecrets:
+            - name: ghcr-registry
+        containers:
+          app:
+            image:
+              repository: ghcr.io/patsoffice/patsoffice-wordpress-image
+              tag: v6.9.1-3@sha256:23cdfdac1d758b315d6d0f545cf6e4a1d36cf0e009d5c2c2d7312cfa6a16235f
+              pullPolicy: IfNotPresent
+            env:
+              WORDPRESS_DB_HOST: mariadb-wordpress-poc.database.svc.cluster.local
+              WORDPRESS_DB_NAME: wordpress
+            envFrom:
+              - secretRef:
+                  name: wordpress-poc-secret
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop: ["ALL"]
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+              limits:
+                memory: 2048Mi
+    configMaps:
+      php-config:
+        data:
+          php.ini: |
+            upload_max_filesize = 64M
+            post_max_size = 64M
+            memory_limit = 256M
+            max_execution_time = 300
+            max_input_time = 300
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: 80
+    persistence:
+      data:
+        existingClaim: *app
+        advancedMounts:
+          wordpress-poc:
+            app:
+              - path: /var/www/html/wp-content/uploads
+      php-config:
+        type: configMap
+        name: wordpress-poc
+        advancedMounts:
+          wordpress-poc:
+            app:
+              - path: /usr/local/etc/php/php.ini
+                subPath: php.ini
+                readOnly: true
+      tmp:
+        type: emptyDir
+        advancedMounts:
+          wordpress-poc:
+            app:
+              - path: /tmp
