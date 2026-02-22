@@ -135,6 +135,28 @@ spec:
         certificateRefs:
           - kind: Secret
             name: ${SECRET_DOMAIN/./-}-production-tls
+    - name: https-poc
+      protocol: HTTPS
+      port: 443
+      hostname: "*.${SECRET_DOMAIN_POC}"
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        certificateRefs:
+          - kind: Secret
+            name: ${SECRET_DOMAIN_POC/./-}-production-tls
+    - name: https-poc-apex
+      protocol: HTTPS
+      port: 443
+      hostname: "${SECRET_DOMAIN_POC}"
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        certificateRefs:
+          - kind: Secret
+            name: ${SECRET_DOMAIN_POC/./-}-production-tls
 ---
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: EnvoyPatchPolicy
