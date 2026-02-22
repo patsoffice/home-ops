@@ -16,3 +16,4 @@ resources:
   - ./miniflux/ks.yaml
   - ./spoolman/ks.yaml
   - ./wordpress-gds/ks.yaml
+  - ./wordpress-poc/ks.yaml
