@@ -36,6 +36,9 @@ spec:
             args:
               - |
                 postfix set-permissions
+                # Fix maildrop permissions (setgid bits lost in Docker image layers)
+                chgrp postdrop /var/spool/postfix/maildrop
+                chmod 1730 /var/spool/postfix/maildrop
                 cp /etc/localtime /etc/services /etc/resolv.conf /etc/hosts /etc/host.conf /etc/nsswitch.conf /var/spool/postfix/etc/
             securityContext:
               allowPrivilegeEscalation: true
