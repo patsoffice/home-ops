@@ -30,7 +30,7 @@ spec:
           init-postfix:
             image:
               repository: ghcr.io/patsoffice/patsoffice-wordpress-image
-              tag: v6.9.1-6@sha256:33b885a077bfbff915205af53b21facf8b0ab7b3a2820483154b0b193cfa9622
+              tag: v6.9.1-8@sha256:7292e316ea104116e9410779aa90495122df23f1864b33191338d42eee359cf6
               pullPolicy: IfNotPresent
             command: ["/bin/bash", "-c"]
             args:
@@ -54,7 +54,7 @@ spec:
           app:
             image:
               repository: ghcr.io/patsoffice/patsoffice-wordpress-image
-              tag: v6.9.1-6@sha256:33b885a077bfbff915205af53b21facf8b0ab7b3a2820483154b0b193cfa9622
+              tag: v6.9.1-8@sha256:7292e316ea104116e9410779aa90495122df23f1864b33191338d42eee359cf6
               pullPolicy: IfNotPresent
             env:
               WORDPRESS_DB_HOST: mariadb-wordpress-poc.database.svc.cluster.local
