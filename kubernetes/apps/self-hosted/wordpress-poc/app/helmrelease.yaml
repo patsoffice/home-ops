@@ -35,14 +35,21 @@ spec:
             command: ["/bin/bash", "-c"]
             args:
               - |
-                # Copy full spool/lib trees from image to emptyDir mounts
-                # (init mounts emptyDirs at /mnt/* so image originals are visible)
-                cp -a /var/spool/postfix/. /mnt/postfix-spool/
-                cp -a /var/lib/postfix/. /mnt/postfix-lib/
-                # Fix maildrop/public permissions (setgid bits lost in image layers)
-                chown postfix:postdrop /mnt/postfix-spool/maildrop /mnt/postfix-spool/public
+                # Create spool queue directories
+                mkdir -p /mnt/postfix-spool/{active,bounce,corrupt,defer,deferred,etc,flush,hold,incoming,maildrop,pid,private,public,saved,trace}
+                # Create chroot directories Postfix expects
+                mkdir -p /mnt/postfix-spool/usr/lib/zoneinfo
+                # Set spool root and queue directory ownership
+                chown postfix:root /mnt/postfix-spool /mnt/postfix-spool/{active,bounce,corrupt,defer,deferred,flush,hold,incoming,private,saved,trace}
+                chmod 0755 /mnt/postfix-spool
+                chmod 0700 /mnt/postfix-spool/{active,bounce,corrupt,defer,deferred,flush,hold,incoming,private,saved,trace}
+                # maildrop and public need group postdrop
+                chown postfix:postdrop /mnt/postfix-spool/{maildrop,public}
                 chmod 1730 /mnt/postfix-spool/maildrop
                 chmod 1710 /mnt/postfix-spool/public
+                # /var/lib/postfix ownership
+                chown postfix:root /mnt/postfix-lib
+                chmod 0755 /mnt/postfix-lib
                 # Copy network config for postfix chroot
                 cp /etc/localtime /etc/services /etc/resolv.conf /etc/hosts /etc/host.conf /etc/nsswitch.conf /mnt/postfix-spool/etc/
             securityContext:
