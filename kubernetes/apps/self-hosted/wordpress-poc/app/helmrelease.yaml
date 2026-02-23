@@ -37,11 +37,17 @@ spec:
               - |
                 # Recreate spool directory structure (emptyDir starts empty)
                 mkdir -p /var/spool/postfix/{active,bounce,corrupt,defer,deferred,etc,flush,hold,incoming,maildrop,pid,private,public,saved,trace}
-                # Set ownership (ignore read-only /etc/postfix errors)
-                postfix set-permissions || true
-                # Fix maildrop permissions (owner postfix, group postdrop, sticky+group-write)
-                chown postfix:postdrop /var/spool/postfix/maildrop
+                # Set spool root and queue directory ownership
+                chown postfix:root /var/spool/postfix /var/spool/postfix/{active,bounce,corrupt,defer,deferred,flush,hold,incoming,private,saved,trace}
+                chmod 0755 /var/spool/postfix
+                chmod 0700 /var/spool/postfix/{active,bounce,corrupt,defer,deferred,flush,hold,incoming,private,saved,trace}
+                # maildrop and public need group postdrop
+                chown postfix:postdrop /var/spool/postfix/{maildrop,public}
                 chmod 1730 /var/spool/postfix/maildrop
+                chmod 1710 /var/spool/postfix/public
+                # /var/lib/postfix ownership
+                chown postfix:root /var/lib/postfix
+                chmod 0755 /var/lib/postfix
                 # Copy network config for postfix chroot
                 cp /etc/localtime /etc/services /etc/resolv.conf /etc/hosts /etc/host.conf /etc/nsswitch.conf /var/spool/postfix/etc/
             securityContext:
