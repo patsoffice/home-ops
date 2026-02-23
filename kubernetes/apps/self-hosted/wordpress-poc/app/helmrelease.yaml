@@ -35,10 +35,14 @@ spec:
             command: ["/bin/bash", "-c"]
             args:
               - |
-                postfix set-permissions
+                # Recreate spool directory structure (emptyDir starts empty)
+                mkdir -p /var/spool/postfix/{active,bounce,corrupt,defer,deferred,etc,flush,hold,incoming,maildrop,pid,private,public,saved,trace}
+                # Set ownership (ignore read-only /etc/postfix errors)
+                postfix set-permissions || true
                 # Fix maildrop permissions (setgid bits lost in Docker image layers)
                 chgrp postdrop /var/spool/postfix/maildrop
                 chmod 1730 /var/spool/postfix/maildrop
+                # Copy network config for postfix chroot
                 cp /etc/localtime /etc/services /etc/resolv.conf /etc/hosts /etc/host.conf /etc/nsswitch.conf /var/spool/postfix/etc/
             securityContext:
               allowPrivilegeEscalation: true
