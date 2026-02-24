@@ -27,6 +27,7 @@ spec:
     substitute:
       APP: *app
       APP_PORT: "8080"
+      VOLSYNC_CACHE_CAPACITY: 15Gi
       VOLSYNC_CAPACITY: 10Gi
     substituteFrom:
       - name: cluster-secrets

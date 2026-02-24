@@ -26,6 +26,7 @@ spec:
       APP: *app
       APP_PORT: "8123"
       CODE_PORT: "12321"
+      VOLSYNC_CACHE_CAPACITY: 15Gi
       VOLSYNC_CAPACITY: 10Gi
     substituteFrom:
       - name: cluster-secrets

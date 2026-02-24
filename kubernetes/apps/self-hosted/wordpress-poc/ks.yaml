@@ -26,6 +26,7 @@ spec:
     substitute:
       APP: *app
       APP_PORT: "80"
+      VOLSYNC_CACHE_CAPACITY: 15Gi
       VOLSYNC_CAPACITY: 10Gi
       VOLSYNC_STORAGECLASS: ceph-filesystem
       VOLSYNC_ACCESSMODES: ReadWriteMany
