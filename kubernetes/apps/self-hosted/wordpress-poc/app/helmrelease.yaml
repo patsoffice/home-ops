@@ -30,11 +30,15 @@ spec:
           init-uploads:
             image:
               repository: ghcr.io/patsoffice/patsoffice-wordpress-image
-              tag: v6.9.1-8@sha256:7292e316ea104116e9410779aa90495122df23f1864b33191338d42eee359cf6
+              tag: v6.9.1-10@sha256:6a04b58b74f6d5439fb29e2024985b9f0577ce49b42979e55a939db67386b49b
               pullPolicy: IfNotPresent
             command: ["/bin/bash", "-c"]
             args:
-              - chown -R 33:1000 /mnt/uploads
+              - |
+                owner=$(stat -c '%u:%g' /mnt/uploads)
+                if [ "$owner" != "33:33" ]; then
+                  chown 33:33 /mnt/uploads
+                fi
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -44,7 +48,7 @@ spec:
           init-postfix:
             image:
               repository: ghcr.io/patsoffice/patsoffice-wordpress-image
-              tag: v6.9.1-8@sha256:7292e316ea104116e9410779aa90495122df23f1864b33191338d42eee359cf6
+              tag: v6.9.1-10@sha256:6a04b58b74f6d5439fb29e2024985b9f0577ce49b42979e55a939db67386b49b
               pullPolicy: IfNotPresent
             command: ["/bin/bash", "-c"]
             args:
@@ -76,7 +80,7 @@ spec:
           app:
             image:
               repository: ghcr.io/patsoffice/patsoffice-wordpress-image
-              tag: v6.9.1-8@sha256:7292e316ea104116e9410779aa90495122df23f1864b33191338d42eee359cf6
+              tag: v6.9.1-10@sha256:6a04b58b74f6d5439fb29e2024985b9f0577ce49b42979e55a939db67386b49b
               pullPolicy: IfNotPresent
             env:
               WORDPRESS_DB_HOST: mariadb-wordpress-poc.database.svc.cluster.local
@@ -98,6 +102,12 @@ spec:
                 memory: 256Mi
               limits:
                 memory: 2048Mi
+    configMaps:
+      php-session:
+        data:
+          session.ini: |
+            session.save_handler = redis
+            session.save_path = "tcp://dragonfly.database.svc.cluster.local:6379"
     service:
       app:
         controller: *app
@@ -129,6 +139,15 @@ spec:
               - path: /mnt/postfix-lib
             app:
               - path: /var/lib/postfix
+      php-session:
+        type: configMap
+        identifier: php-session
+        advancedMounts:
+          wordpress-poc:
+            app:
+              - path: /usr/local/etc/php/conf.d/session.ini
+                subPath: session.ini
+                readOnly: true
       tmp:
         type: emptyDir
         advancedMounts:
