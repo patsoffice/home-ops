@@ -27,6 +27,20 @@ spec:
           imagePullSecrets:
             - name: ghcr-registry
         initContainers:
+          init-uploads:
+            image:
+              repository: ghcr.io/patsoffice/patsoffice-wordpress-image
+              tag: v6.9.1-8@sha256:7292e316ea104116e9410779aa90495122df23f1864b33191338d42eee359cf6
+              pullPolicy: IfNotPresent
+            command: ["/bin/bash", "-c"]
+            args:
+              - chown -R 33:1000 /mnt/uploads
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop: ["ALL"]
+                add: ["CHOWN"]
           init-postfix:
             image:
               repository: ghcr.io/patsoffice/patsoffice-wordpress-image
@@ -95,6 +109,8 @@ spec:
         existingClaim: *app
         advancedMounts:
           wordpress-poc:
+            init-uploads:
+              - path: /mnt/uploads
             app:
               - path: /var/www/html/wp-content/uploads
       postfix-spool:
