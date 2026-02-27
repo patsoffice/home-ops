@@ -32,7 +32,7 @@ spec:
           app:
             image:
               repository: docker.io/ollama/ollama
-              tag: 0.17.0@sha256:006ad593108a705eafc8ea8496a30765222bdab17b1a1b0bbe3d50ff2e70fbf4
+              tag: 0.17.3@sha256:d392e8ec73e334424835a33ebc061afd0e05e0bcd3a702027cd7f7d7acb83289
             env:
               HOME: /config
               OLLAMA_CONTEXT_LENGTH: "64000"
