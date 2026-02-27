@@ -30,7 +30,7 @@ spec:
           init-uploads:
             image:
               repository: ghcr.io/patsoffice/patsoffice-wordpress-image
-              tag: v6.9.1-13@sha256:04bf41235e7d504510b021a223e0496130e734261d4acc1216bd1551225db4b4
+              tag: v6.9.1-15@sha256:7f69dcc6b019ef4a8acaae58836a57f3e67f3690a51d42ad54dd0fa8ceed28d5
               pullPolicy: IfNotPresent
             command: ["/bin/bash", "-c"]
             args:
@@ -48,7 +48,7 @@ spec:
           init-postfix:
             image:
               repository: ghcr.io/patsoffice/patsoffice-wordpress-image
-              tag: v6.9.1-13@sha256:04bf41235e7d504510b021a223e0496130e734261d4acc1216bd1551225db4b4
+              tag: v6.9.1-15@sha256:7f69dcc6b019ef4a8acaae58836a57f3e67f3690a51d42ad54dd0fa8ceed28d5
               pullPolicy: IfNotPresent
             command: ["/bin/bash", "-c"]
             args:
@@ -80,12 +80,13 @@ spec:
           app:
             image:
               repository: ghcr.io/patsoffice/patsoffice-wordpress-image
-              tag: v6.9.1-13@sha256:04bf41235e7d504510b021a223e0496130e734261d4acc1216bd1551225db4b4
+              tag: v6.9.1-15@sha256:7f69dcc6b019ef4a8acaae58836a57f3e67f3690a51d42ad54dd0fa8ceed28d5
               pullPolicy: IfNotPresent
             env:
               WORDPRESS_DB_HOST: mariadb-wordpress-poc.database.svc.cluster.local
               WORDPRESS_DB_NAME: wordpress
               WP_REDIS_HOST: dragonfly.database.svc.cluster.local
+              CADDY_CACHE_REDIS_URL: redis://dragonfly.database.svc.cluster.local:6379
               XDG_CONFIG_HOME: /tmp
               XDG_DATA_HOME: /tmp
             envFrom:
@@ -149,6 +150,12 @@ spec:
               - path: /usr/local/etc/php/conf.d/session.ini
                 subPath: session.ini
                 readOnly: true
+      wflogs:
+        type: emptyDir
+        advancedMounts:
+          wordpress-poc:
+            app:
+              - path: /var/www/html/wp-content/wflogs
       tmp:
         type: emptyDir
         advancedMounts:
