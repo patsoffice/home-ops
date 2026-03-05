@@ -28,8 +28,9 @@ spec:
             - name: ghcr-registry
         initContainers:
           init-uploads:
-            image:
+            image: &wordpress-image
               repository: ghcr.io/patsoffice/patsoffice-wordpress-image
+              # renovate: datasource=docker depName=ghcr.io/patsoffice/patsoffice-wordpress-image
               tag: v6.9.1-15@sha256:7f69dcc6b019ef4a8acaae58836a57f3e67f3690a51d42ad54dd0fa8ceed28d5
               pullPolicy: IfNotPresent
             command: ["/bin/bash", "-c"]
@@ -46,10 +47,7 @@ spec:
                 drop: ["ALL"]
                 add: ["CHOWN"]
           init-postfix:
-            image:
-              repository: ghcr.io/patsoffice/patsoffice-wordpress-image
-              tag: v6.9.1-15@sha256:7f69dcc6b019ef4a8acaae58836a57f3e67f3690a51d42ad54dd0fa8ceed28d5
-              pullPolicy: IfNotPresent
+            image: *wordpress-image
             command: ["/bin/bash", "-c"]
             args:
               - |
@@ -78,10 +76,7 @@ spec:
                 add: ["CHOWN", "DAC_OVERRIDE", "FOWNER", "SETUID", "SETGID"]
         containers:
           app:
-            image:
-              repository: ghcr.io/patsoffice/patsoffice-wordpress-image
-              tag: v6.9.1-15@sha256:7f69dcc6b019ef4a8acaae58836a57f3e67f3690a51d42ad54dd0fa8ceed28d5
-              pullPolicy: IfNotPresent
+            image: *wordpress-image
             env:
               WORDPRESS_DB_HOST: mariadb-wordpress-poc.database.svc.cluster.local
               WORDPRESS_DB_NAME: wordpress
