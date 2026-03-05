@@ -16,7 +16,7 @@ spec:
             - name: wp-cron
               # renovate: datasource=docker depName=curlimages/curl
               image: docker.io/curlimages/curl:8.18.0@sha256:d94d07ba9e7d6de898b6d96c1a072f6f8266c687af78a74f380087a0addf5d17
-              command: ["curl", "-fsS", "http://wordpress-poc.self-hosted.svc.cluster.local/wp-cron.php"]
+              command: ["curl", "-fsS", "--retry", "3", "--retry-delay", "5", "--retry-all-errors", "http://wordpress-poc.self-hosted.svc.cluster.local/wp-cron.php"]
               resources:
                 requests:
                   cpu: 10m
