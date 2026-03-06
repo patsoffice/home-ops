@@ -21,6 +21,14 @@
   ignorePaths: [
     '**/*.sops.*',
   ],
+  hostRules: [
+    {
+      matchHost: 'ghcr.io',
+      hostType: 'docker',
+      username: 'patsoffice',
+      password: '{{ secrets.renovate_ghcr_read }}',
+    },
+  ],
   flux: {
     managerFilePatterns: [
       '/(^|/)kubernetes/.+\\.ya?ml(?:\\.j2)?$/',
