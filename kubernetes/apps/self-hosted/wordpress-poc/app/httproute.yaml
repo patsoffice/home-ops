@@ -15,7 +15,7 @@ spec:
     - "${SECRET_DOMAIN_POC}"
     - "www.${SECRET_DOMAIN_POC}"
   parentRefs:
-    - name: envoy-internal
+    - name: envoy-external
       namespace: network
   rules:
     - backendRefs:

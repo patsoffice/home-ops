@@ -19,7 +19,7 @@ spec:
   values:
     controllers:
       wordpress-poc:
-        replicas: 1
+        replicas: 3
         strategy: RollingUpdate
         annotations:
           reloader.stakater.com/auto: "true"
