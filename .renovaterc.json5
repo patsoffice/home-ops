@@ -48,6 +48,13 @@
   },
   packageRules: [
     {
+      description: 'Custom versioning for patsoffice-wordpress-image',
+      matchPackageNames: [
+        'ghcr.io/patsoffice/patsoffice-wordpress-image',
+      ],
+      versioning: 'regex:^v?(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)-(?<build>\\d+)$',
+    },
+    {
       description: 'Cert-Manager Group',
       groupName: 'Cert-Manager',
       matchDatasources: [
