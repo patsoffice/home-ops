@@ -5,6 +5,8 @@ kind: Kustomization
 resources:
   - ./externalsecret.yaml
   - ./grafana-instance.yaml
+  - ./grafanadashboard-node-exporter.yaml
+  - ./grafanadashboard-zfs.yaml
   - ./helmrelease.yaml
   - ./httproute.yaml
   - ./ocirepository.yaml

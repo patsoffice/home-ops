@@ -1,0 +1,17 @@
+---
+# yaml-language-server: $schema=https://schemas.ajgon.casa/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: zfs
+spec:
+  allowCrossNamespaceImport: true
+  instanceSelector:
+    matchLabels:
+      grafana.internal/instance: grafana
+  datasources:
+    - datasourceName: Prometheus
+      inputName: DS_PROMETHEUS
+  # renovate: depName="ZFS"
+  # gnetId: 7845
+  url: https://grafana.com/api/dashboards/7845/revisions/4/download

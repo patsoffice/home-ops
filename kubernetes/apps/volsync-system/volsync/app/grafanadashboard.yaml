@@ -1,0 +1,19 @@
+---
+# yaml-language-server: $schema=https://schemas.ajgon.casa/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: volsync
+spec:
+  allowCrossNamespaceImport: true
+  instanceSelector:
+    matchLabels:
+      grafana.internal/instance: grafana
+  datasources:
+    - datasourceName: Prometheus
+      inputName: DS_PROMETHEUS
+    - datasourceName: ".*-dst"
+      inputName: VAR_REPLICATIONDESTNAME
+  # renovate: depName="VolSync Dashboard"
+  # gnetId: 21356
+  url: https://grafana.com/api/dashboards/21356/revisions/3/download

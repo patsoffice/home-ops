@@ -5,6 +5,14 @@ kind: Kustomization
 resources:
   - ./alertmanagerconfig.yaml
   - ./externalsecret.yaml
+  - ./grafanadashboard-kubernetes-api-server.yaml
+  - ./grafanadashboard-kubernetes-coredns.yaml
+  - ./grafanadashboard-kubernetes-global.yaml
+  - ./grafanadashboard-kubernetes-namespaces.yaml
+  - ./grafanadashboard-kubernetes-nodes.yaml
+  - ./grafanadashboard-kubernetes-pods.yaml
+  - ./grafanadashboard-kubernetes-volumes.yaml
+  - ./grafanadashboard-prometheus.yaml
   - ./helmrelease.yaml
   - ./ocirepository.yaml
   - ./scrapeconfig.yaml

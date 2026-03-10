@@ -1,0 +1,18 @@
+---
+# yaml-language-server: $schema=https://schemas.ajgon.casa/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: unifi-uap
+spec:
+  allowCrossNamespaceImport: true
+  folder: Unifi
+  instanceSelector:
+    matchLabels:
+      grafana.internal/instance: grafana
+  datasources:
+    - datasourceName: Prometheus
+      inputName: DS_PROMETHEUS
+  # renovate: depName="UniFi-Poller: UAP Insights - Prometheus"
+  # gnetId: 11314
+  url: https://grafana.com/api/dashboards/11314/revisions/10/download

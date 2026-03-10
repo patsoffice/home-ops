@@ -252,5 +252,26 @@
       ],
       datasourceTemplate: '{{#if datasource}}{{{datasource}}}{{else}}github-releases{{/if}}',
     },
+    {
+      description: 'Process Grafana dashboard revisions',
+      customType: 'regex',
+      managerFilePatterns: [
+        '/(^|/)kubernetes/.+\\.ya?ml(?:\\.j2)?$/',
+      ],
+      matchStrings: [
+        '#\\s+renovate:\\s+depName="(?<depName>.+)"\\n\\s+#\\s+gnetId:\\s+(?<packageName>\\d+)\\n\\s+url:\\s+https://grafana\\.com/api/dashboards/\\d+/revisions/(?<currentValue>\\d+)/download',
+      ],
+      versioningTemplate: 'regex:^(?<major>\\d+)$',
+      datasourceTemplate: 'custom.grafana-dashboards',
+    },
   ],
+  customDatasources: {
+    'grafana-dashboards': {
+      defaultRegistryUrlTemplate: 'https://grafana.com/api/dashboards/{{packageName}}',
+      format: 'json',
+      transformTemplates: [
+        '{"releases":[{"version": $string(revision)}]}',
+      ],
+    },
+  },
 }
