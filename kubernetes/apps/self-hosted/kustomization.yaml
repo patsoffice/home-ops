@@ -13,6 +13,7 @@ resources:
   - ./homepage/ks.yaml
   - ./it-tools/ks.yaml
   - ./jrommanager/ks.yaml
+  - ./manyfold/ks.yaml
   - ./miniflux/ks.yaml
   - ./spoolman/ks.yaml
   - ./wordpress-gds/ks.yaml
