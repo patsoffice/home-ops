@@ -11,7 +11,7 @@ metadata:
     gethomepage.dev/group: Apps
     gethomepage.dev/name: Paperless
     gethomepage.dev/widget.type: paperlessngx
-    gethomepage.dev/widget.url: "http://paperless.default.svc.cluster.local:${APP_PORT}"
+    gethomepage.dev/widget.url: "http://paperless.self-hosted.svc.cluster.local:${APP_PORT}"
     gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_PAPERLESS_API_KEY}}"
 spec:
   hostnames:
@@ -23,5 +23,5 @@ spec:
   rules:
     - backendRefs:
         - name: ${APP}
-          namespace: default
+          namespace: self-hosted
           port: ${APP_PORT}

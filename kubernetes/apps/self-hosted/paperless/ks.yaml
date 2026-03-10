@@ -4,7 +4,7 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app paperless
-  namespace: &namespace default
+  namespace: &namespace self-hosted
 spec:
   commonMetadata:
     labels:
@@ -23,7 +23,7 @@ spec:
     - name: volsync
       namespace: volsync-system
   interval: 30m
-  path: ./kubernetes/apps/default/paperless/app
+  path: ./kubernetes/apps/self-hosted/paperless/app
   postBuild:
     substitute:
       APP: *app
@@ -31,6 +31,7 @@ spec:
       APP_UID: "568"
       APP_GID: "568"
       VOLSYNC_CACHE_CAPACITY: 50Gi
+      VOLSYNC_SOURCE_NAMESPACE: default
     substituteFrom:
       - name: cluster-secrets
         kind: Secret

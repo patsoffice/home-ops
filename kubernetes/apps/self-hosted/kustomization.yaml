@@ -16,6 +16,7 @@ resources:
   - ./jrommanager/ks.yaml
   - ./manyfold/ks.yaml
   - ./miniflux/ks.yaml
+  - ./paperless/ks.yaml
   - ./spoolman/ks.yaml
   - ./tandoor/ks.yaml
   - ./wordpress-gds/ks.yaml
