@@ -4,7 +4,7 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app tandoor
-  namespace: &namespace default
+  namespace: &namespace self-hosted
 spec:
   commonMetadata:
     labels:
@@ -21,13 +21,14 @@ spec:
     - name: volsync
       namespace: volsync-system
   interval: 30m
-  path: ./kubernetes/apps/default/tandoor/app
+  path: ./kubernetes/apps/self-hosted/tandoor/app
   postBuild:
     substitute:
       APP: *app
       APP_PORT: "8080"
       APP_UID: "568"
       APP_GID: "568"
+      VOLSYNC_SOURCE_NAMESPACE: default
     substituteFrom:
       - name: cluster-secrets
         kind: Secret

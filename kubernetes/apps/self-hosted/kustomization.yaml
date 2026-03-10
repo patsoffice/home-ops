@@ -17,6 +17,7 @@ resources:
   - ./manyfold/ks.yaml
   - ./miniflux/ks.yaml
   - ./spoolman/ks.yaml
+  - ./tandoor/ks.yaml
   - ./wordpress-gds/ks.yaml
   - ./wordpress-poc/ks.yaml
   - ./wordle-solver/ks.yaml

@@ -8,4 +8,3 @@ components:
 resources:
   - ./paperless/ks.yaml
   - ./syncthing/ks.yaml
-  - ./tandoor/ks.yaml
