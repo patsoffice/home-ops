@@ -76,6 +76,11 @@ spec:
           discovery:
             port: 21027
             protocol: UDP
+    serviceMonitor:
+      app:
+        serviceName: syncthing
+        endpoints:
+          - port: http
     persistence:
       config:
         existingClaim: "{{ .Release.Name }}"
