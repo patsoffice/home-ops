@@ -3,23 +3,14 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app grafana
+  name: &app grafana-operator
   namespace: &namespace observability
 spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  dependsOn:
-    - name: grafana-operator
-      namespace: observability
   interval: 1h
-  path: ./kubernetes/apps/observability/grafana/app
-  postBuild:
-    substitute:
-      APP: *app
-    substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
+  path: ./kubernetes/apps/observability/grafana-operator/app
   prune: true
   retryInterval: 2m
   sourceRef:
@@ -28,4 +19,4 @@ spec:
     namespace: flux-system
   targetNamespace: *namespace
   timeout: 5m
-  wait: false
+  wait: true
