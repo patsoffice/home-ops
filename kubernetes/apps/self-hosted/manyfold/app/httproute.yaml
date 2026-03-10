@@ -19,5 +19,5 @@ spec:
   rules:
     - backendRefs:
         - name: ${APP}
-          namespace: default
+          namespace: self-hosted
           port: ${APP_PORT}
