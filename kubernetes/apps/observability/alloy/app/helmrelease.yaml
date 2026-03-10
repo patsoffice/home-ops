@@ -81,9 +81,9 @@ spec:
           }
 
           loki.process "pods" {
-            // Add log level label when detected
-            stage.logfmt {
-              mapping = {"level" = ""}
+            // Extract log level from logfmt (level=info) or JSON ("level":"info") formats
+            stage.regex {
+              expression = "(?i)(?:level=|\"level\":\\s*\")(?P<level>\\w+)"
             }
 
             stage.labels {
