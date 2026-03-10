@@ -23,6 +23,7 @@ spec:
       APP: *app
       APP_PORT: "3214"
       VOLSYNC_CAPACITY: 5Gi
+      VOLSYNC_SOURCE_NAMESPACE: default
     substituteFrom:
       - name: cluster-secrets
         kind: Secret
