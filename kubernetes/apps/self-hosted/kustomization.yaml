@@ -18,6 +18,7 @@ resources:
   - ./miniflux/ks.yaml
   - ./paperless/ks.yaml
   - ./spoolman/ks.yaml
+  - ./syncthing/ks.yaml
   - ./tandoor/ks.yaml
   - ./wordpress-gds/ks.yaml
   - ./wordpress-poc/ks.yaml

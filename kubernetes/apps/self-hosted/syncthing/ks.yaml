@@ -4,7 +4,7 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app syncthing
-  namespace: &namespace default
+  namespace: &namespace self-hosted
 spec:
   commonMetadata:
     labels:
@@ -15,13 +15,14 @@ spec:
     - name: rook-ceph-cluster
       namespace: rook-ceph
   interval: 1h
-  path: ./kubernetes/apps/default/syncthing/app
+  path: ./kubernetes/apps/self-hosted/syncthing/app
   postBuild:
     substitute:
       APP: *app
       APP_PORT: "8384"
       VOLSYNC_CACHE_CAPACITY: 20Gi
       VOLSYNC_CAPACITY: 15Gi
+      VOLSYNC_SOURCE_NAMESPACE: default
     substituteFrom:
       - name: cluster-secrets
         kind: Secret
