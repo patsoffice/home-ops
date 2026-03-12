@@ -19,6 +19,17 @@ spec:
   values:
     controllers:
       atuin:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/home-operations/postgres-init
+              tag: 18.3.0@sha256:6fa1f331cddd2eb0b6afa7b8d3685c864127a81ab01c3d9400bc3ff5263a51cf
+              pullPolicy: IfNotPresent
+            envFrom: &envFrom
+              - secretRef:
+                  name: atuin-secret
         containers:
           app:
             image:
@@ -28,12 +39,11 @@ spec:
             args:
               - start
             env:
-              ATUiN_CONFIG_DIR: /config
-              ATUIN_DB_URI: "sqlite:///config/atuin.db"
               ATUIN_HOST: 0.0.0.0
               ATUIN_PORT: &port ${APP_PORT}
               ATUIN_OPEN_REGISTRATION: "true"
               TZ: America/Los_Angeles
+            envFrom: *envFrom
             probes:
               liveness: &probes
                 enabled: true
@@ -65,6 +75,3 @@ spec:
           http:
             primary: true
             port: *port
-    persistence:
-      config:
-        existingClaim: *app
