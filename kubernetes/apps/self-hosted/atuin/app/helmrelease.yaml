@@ -75,3 +75,8 @@ spec:
           http:
             primary: true
             port: *port
+    persistence:
+      config:
+        type: emptyDir
+        globalMounts:
+          - path: /config
