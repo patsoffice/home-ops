@@ -7,6 +7,7 @@ metadata:
 spec:
   staticConfigs:
     - targets:
+        - nas1.internal:9100
         - pve001.internal:9100
         - pve002.internal:9100
         - pve005.internal:9100
@@ -24,6 +25,7 @@ metadata:
 spec:
   staticConfigs:
     - targets:
+        - nas1.internal:9633
         - pve001.internal:9633
         - pve002.internal:9633
         - pve005.internal:9633
