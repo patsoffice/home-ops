@@ -52,6 +52,21 @@ tasks:
     preconditions:
       - which kubectl
 
+  shell:
+    desc: Open a shell in a pod by app name [APP=required] [SHELL={{.SHELL}}]
+    interactive: true
+    cmd: kubectl exec -n {{.NS}} -it {{.POD}} -- {{.SHELL}}
+    vars:
+      POD_INFO:
+        sh: kubectl get pods --all-namespaces -l app.kubernetes.io/name={{.APP}} -o jsonpath='{.items[0].metadata.namespace},{.items[0].metadata.name}'
+      SHELL: '{{.SHELL | default "bash"}}'
+      NS: '{{index (splitList "," .POD_INFO) 0}}'
+      POD: '{{index (splitList "," .POD_INFO) 1}}'
+    requires:
+      vars: [APP]
+    preconditions:
+      - which kubectl
+
   privileged-pod:
     desc: Run a privileged pod [NODE=required]
     cmd:
