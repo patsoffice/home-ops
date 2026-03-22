@@ -12,6 +12,8 @@ spec:
   components:
     - ../../../../components/volsync
   dependsOn:
+    - name: dragonfly-cluster
+      namespace: database
     - name: external-secrets-stores
       namespace: external-secrets
     - name: mariadb-cluster

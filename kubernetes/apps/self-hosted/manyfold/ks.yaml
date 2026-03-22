@@ -12,6 +12,8 @@ spec:
   components:
     - ../../../../components/volsync
   dependsOn:
+    - name: dragonfly-cluster
+      namespace: database
     - name: pg-cluster17
       namespace: database
     - name: external-secrets-stores
