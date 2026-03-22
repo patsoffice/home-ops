@@ -51,6 +51,7 @@ spec:
               PORT: &httpPort ${APP_PORT}
               REDIS_URL: redis://dragonfly.database.svc.cluster.local:6379/4
               REGISTRATION: false
+              RUBY_TCP_NO_FAST_FALLBACK: "1"
               SECRET_KEY_BASE:
                 valueFrom:
                   secretKeyRef:
