@@ -7,9 +7,4 @@ resources:
   - ./helmrelease.yaml
   - ./httproute.yaml
   - ./ocirepository.yaml
-configMapGenerator:
-  - name: blocky-config
-    files:
-      - ./configs/config.yaml
-generatorOptions:
-  disableNameSuffixHash: true
+
