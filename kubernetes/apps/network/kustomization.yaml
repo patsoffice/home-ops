@@ -7,6 +7,7 @@ components:
   - ../../components/common
   - ../../components/repos/app-template
 resources:
+  - ./blocky/ks.yaml
   - ./certificates/ks.yaml
   - ./cloudflare-tunnel/ks.yaml
   - ./echo/ks.yaml
