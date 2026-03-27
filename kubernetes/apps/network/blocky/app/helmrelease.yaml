@@ -138,7 +138,7 @@ spec:
         controller: blocky
         type: LoadBalancer
         annotations:
-          lbipam.cilium.io/ips: "192.168.0.102"
+          lbipam.cilium.io/ips: "192.168.0.102,192.168.0.103"
         ports:
           dns-tcp:
             port: 53
