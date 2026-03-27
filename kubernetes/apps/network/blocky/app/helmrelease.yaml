@@ -106,7 +106,7 @@ spec:
                 secretKeyRef:
                   name: blocky-db-app
                   key: DB_URI
-              BLOCKY_API_URL: http://blocky-k8s:4000
+              BLOCKY_API_URL: http://blocky-k8s.network.svc.cluster.local:4000
             probes:
               liveness:
                 enabled: true
@@ -129,12 +129,12 @@ spec:
             subPath: config.yaml
             readOnly: true
     service:
-      blocky-k8s:
+      k8s:
         controller: blocky
         ports:
           http:
             port: *httpPort
-      blocky-dns:
+      dns:
         controller: blocky
         type: LoadBalancer
         annotations:
@@ -146,7 +146,7 @@ spec:
           dns-udp:
             port: 53
             protocol: UDP
-      blocky-ui:
+      ui:
         controller: blocky-ui
         ports:
           http:
