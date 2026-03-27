@@ -11,8 +11,8 @@ conditional:
 customDNS:
   mapping:
     brother-printer.internal: 192.168.7.153
-    nas0.internal: 192.168.1.201
-    nas1.internal: 192.168.1.0
+    nas0.internal: 192.168.1.0
+    nas1.internal: 192.168.1.201
     pve001.internal: 192.168.1.1
     pve002.internal: 192.168.1.2
     pve005.internal: 192.168.1.5
