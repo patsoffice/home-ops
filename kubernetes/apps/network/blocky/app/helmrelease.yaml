@@ -18,6 +18,7 @@ spec:
       strategy: rollback
       retries: 3
   values:
+    fullnameOverride: blocky
     controllers:
       blocky:
         replicas: 2
