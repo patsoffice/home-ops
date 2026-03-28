@@ -37,6 +37,7 @@ spec:
               tag: 2.6.1@sha256:22a93021d14c1f4b0f7a3eebac22f3cddba4328b7a43861630881a4008d09d8d
               pullPolicy: IfNotPresent
             env:
+              ALLOWED_HOSTS: "*"
               COMMENT_PREF_DEFAULT: 0
               DEBUG: 1
               ENABLE_SIGNUP: 0
