@@ -20,6 +20,7 @@ spec:
     substitute:
       APP: *app
       APP_PORT: "8083"
+      GATUS_SUBDOMAIN: calibre
       VOLSYNC_CAPACITY: 5Gi
     substituteFrom:
       - name: cluster-secrets
