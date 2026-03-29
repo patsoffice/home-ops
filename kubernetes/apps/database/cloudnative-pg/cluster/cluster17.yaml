@@ -37,11 +37,11 @@ spec:
       wal:
         compression: bzip2
         maxParallel: 4
-      destinationPath: s3://backups/cloudnative-pg
-      endpointURL: http://192.168.1.182:9000/
+      destinationPath: s3://backups-cnpg/
+      endpointURL: http://nas1.internal:3900
       # Note: serverName version needs to be incremented
       # when recovering from an existing cnpg cluster
-      serverName: &currentCluster postgres-v1
+      serverName: &currentCluster postgres-v2
       s3Credentials:
         accessKeyId:
           name: cloudnative-pg-secret
