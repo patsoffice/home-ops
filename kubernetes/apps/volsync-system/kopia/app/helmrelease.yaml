@@ -68,9 +68,11 @@ spec:
           repository.config: |-
             {
               "storage": {
-                "type": "filesystem",
+                "type": "s3",
                 "config": {
-                  "path": "/repository"
+                  "bucket": "volsync-kopia",
+                  "endpoint": "nas1.internal:3900",
+                  "doNotUseTLS": true
                 }
               },
               "hostname": "volsync.{{ .Release.Namespace }}.svc.cluster.local",
@@ -85,12 +87,6 @@ spec:
         globalMounts:
           - path: /config/repository.config
             subPath: repository.config
-      repository:
-        type: nfs
-        server: nas0.internal
-        path: /tank/backups/VolsyncKopia
-        globalMounts:
-          - path: /repository
       tmpfs:
         type: emptyDir
         advancedMounts:
