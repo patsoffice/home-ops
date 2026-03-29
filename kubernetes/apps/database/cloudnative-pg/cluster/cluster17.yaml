@@ -38,7 +38,7 @@ spec:
         compression: bzip2
         maxParallel: 4
       destinationPath: s3://backups-cnpg/
-      endpointURL: http://nas1.internal:3900
+      endpointURL: http://nas0.internal:3900
       # Note: serverName version needs to be incremented
       # when recovering from an existing cnpg cluster
       serverName: &currentCluster postgres-v2

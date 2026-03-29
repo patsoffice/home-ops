@@ -71,7 +71,7 @@ spec:
                 "type": "s3",
                 "config": {
                   "bucket": "volsync-kopia",
-                  "endpoint": "nas1.internal:3900",
+                  "endpoint": "nas0.internal:3900",
                   "doNotUseTLS": true
                 }
               },
