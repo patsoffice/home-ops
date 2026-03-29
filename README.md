@@ -38,7 +38,8 @@ My Kubernetes cluster is deployed with [Talos](https://www.talos.dev/), a minima
 
 - **[Cilium](https://github.com/cilium/cilium)** - eBPF-based networking and network policies
 - **[Cert-Manager](https://github.com/cert-manager/cert-manager)** - Automatic SSL/TLS certificate management
-- **[External DNS](https://github.com/kubernetes-sigs/external-dns)** - Automatic DNS record synchronization
+- **[Blocky](https://github.com/0xerr0r/blocky)** - DNS proxy with ad-blocking for LAN clients
+- **[External DNS](https://github.com/kubernetes-sigs/external-dns)** - Automatic DNS record synchronization to Cloudflare
 - **[External Secrets](https://github.com/external-secrets/external-secrets)** - Kubernetes secret management with external providers
 - **[Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/)** - Secure access to internal services
 - **[Rook Ceph](https://github.com/rook/rook)** - Distributed block storage for persistent volumes
@@ -93,13 +94,11 @@ The cluster runs a diverse set of applications:
 
 ### DNS
 
-Three instances of [ExternalDNS](https://github.com/kubernetes-sigs/external-dns) provide DNS services:
+- **[Blocky](https://github.com/0xerr0r/blocky)** - LAN DNS resolver with ad-blocking, forwards internal domains to k8s-gateway and external queries via DNS-over-HTTPS (Cloudflare + Quad9)
+- **[K8s Gateway](https://github.com/k8s-gateway/k8s_gateway)** - Authoritative DNS for internal `${SECRET_DOMAIN}` records, watches HTTPRoute/Service/Ingress resources
+- **[ExternalDNS](https://github.com/kubernetes-sigs/external-dns)** - Syncs public DNS records to Cloudflare
 
-1. **Cloudflare** - Syncs public DNS records for external access
-2. **Pi-Hole** - Internal DNS with local overrides and adblocking
-3. **Docker (on existing Proxmox cluster)** - Standalone Pi-Hole for cluster bootstrapping
-
-DNS is divided into two gateways:
+Traffic is routed through two gateways:
 
 - **Internal** - Only exposed to internal network
 - **External** - Exposed internally and externally via Cloudflare
@@ -141,7 +140,7 @@ While most infrastructure is self-hosted, key services rely on cloud providers f
 
 - Multiple managed switches with VLAN support (mostly UniFi)
 - Cloudflare Tunnel for secure external access (no port forwarding)
-- Pi-Hole for internal DNS and ad-blocking
+- Blocky for internal DNS and ad-blocking
 
 ---
 
