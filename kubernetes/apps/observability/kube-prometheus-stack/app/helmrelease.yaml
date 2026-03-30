@@ -74,6 +74,7 @@ spec:
             - name: envoy-internal
               namespace: network
       prometheusSpec:
+        externalUrl: https://prometheus.${SECRET_DOMAIN}
         podMonitorSelectorNilUsesHelmValues: false
         probeSelectorNilUsesHelmValues: false
         ruleSelectorNilUsesHelmValues: false
