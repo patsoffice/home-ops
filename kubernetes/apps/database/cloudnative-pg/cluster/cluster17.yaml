@@ -49,6 +49,9 @@ spec:
         secretAccessKey:
           name: cloudnative-pg-secret
           key: s3_secret_access_key
+        region:
+          name: cloudnative-pg-secret
+          key: s3_region
   bootstrap:
     initdb:
       database: app
