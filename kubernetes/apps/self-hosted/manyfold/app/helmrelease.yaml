@@ -88,6 +88,8 @@ spec:
         forceRename: *app
         primary: true
         controller: *app
+        annotations:
+          gatus.home-operations.com/enabled: "false"
         ports:
           http:
             port: *httpPort
