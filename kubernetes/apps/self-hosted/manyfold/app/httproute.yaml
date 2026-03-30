@@ -5,9 +5,6 @@ kind: HTTPRoute
 metadata:
   name: ${APP}
   annotations:
-    gatus.home-operations.com/endpoint: |-
-      conditions: ["[STATUS] == 200"]
-      path: /health
     gethomepage.dev/description: "Manyfold is self-hosted file sharing and collaboration for 3D prints."
     gethomepage.dev/enabled: "true"
     gethomepage.dev/icon: manyfold.svg

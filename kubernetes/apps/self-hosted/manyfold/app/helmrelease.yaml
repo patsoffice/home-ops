@@ -89,7 +89,12 @@ spec:
         primary: true
         controller: *app
         annotations:
-          gatus.home-operations.com/enabled: "false"
+          gatus.home-operations.com/enabled: "true"
+          gatus.home-operations.com/endpoint: |-
+            url: http://manyfold.self-hosted.svc.cluster.local:3214/health
+            group: internal
+            conditions:
+              - "[STATUS] == 200"
         ports:
           http:
             port: *httpPort
