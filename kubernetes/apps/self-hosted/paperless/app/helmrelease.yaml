@@ -66,8 +66,6 @@ spec:
                 memory: 1000Mi
               limits:
                 memory: 5000Mi
-            securityContext:
-              supplementalGroups: ["568"]
             probes:
               liveness: &probes
                 enabled: true
@@ -110,6 +108,9 @@ spec:
             securityContext:
               runAsUser: 65534
               runAsGroup: 65534
+    defaultPodOptions:
+      securityContext:
+        supplementalGroups: [568]
     service:
       app:
         controller: *app
