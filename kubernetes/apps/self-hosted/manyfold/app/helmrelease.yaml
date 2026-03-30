@@ -93,8 +93,10 @@ spec:
           gatus.home-operations.com/endpoint: |-
             url: http://manyfold.self-hosted.svc.cluster.local:3214/health
             group: internal
+            client:
+              ignore-redirect: true
             conditions:
-              - "[STATUS] == 200"
+              - "[STATUS] < 500"
         ports:
           http:
             port: *httpPort

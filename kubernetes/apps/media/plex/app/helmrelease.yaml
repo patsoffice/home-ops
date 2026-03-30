@@ -78,6 +78,12 @@ spec:
         controller: *app
         type: LoadBalancer
         annotations:
+          gatus.home-operations.com/enabled: "true"
+          gatus.home-operations.com/endpoint: |-
+            url: http://plex.media.svc.cluster.local:32400/identity
+            group: internal
+            conditions:
+              - "[STATUS] == 200"
           lbipam.cilium.io/ips: 192.168.5.101
         ports:
           http:
