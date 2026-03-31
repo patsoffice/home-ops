@@ -14,4 +14,4 @@ spec:
       inputName: DS_PROMETHEUS
   # renovate: depName="Node Exporter Full"
   # gnetId: 1860
-  url: https://grafana.com/api/dashboards/1860/revisions/42/download
+  url: https://grafana.com/api/dashboards/1860/revisions/43/download
