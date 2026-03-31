@@ -35,7 +35,7 @@ spec:
           app:
             image:
               repository: ghcr.io/patsoffice/aliasman
-              tag: 2.2.0@sha256:0cdc25805378c90eb4f1cb64cb990a54d385849f78e0521f98d44080f47305d4
+              tag: 2.2.1@sha256:0afc5e693a2868b78aa67c89b3c85f76b44be9ea2439345188176ba7d15cacfb
             probes:
               liveness:
                 enabled: true
