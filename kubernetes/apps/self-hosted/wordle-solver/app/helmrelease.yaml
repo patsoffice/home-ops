@@ -24,7 +24,7 @@ spec:
           app:
             image:
               repository: ghcr.io/patsoffice/wordle-solver
-              tag: 1.0.3@sha256:f9ca7c8c8737cc52ac3187b70421d94f822d24256cb4eccbb2ddfbb9bf2262c6
+              tag: 1.1.0@sha256:491394d9c8036de667606781023955fe59093fe7a31bcd675fb6651732c9b3e9
               pullPolicy: IfNotPresent
             probes:
               liveness:
