@@ -14,4 +14,16 @@ connectivity:
   checker:
     target: 9.9.9.9:53
     interval: 1m
-endpoints: []
+endpoints:
+  - name: nas0-nfs
+    group: infrastructure
+    url: tcp://nas0.internal:2049
+    interval: 1m
+    conditions:
+      - "[CONNECTED] == true"
+  - name: nas0-smb
+    group: infrastructure
+    url: tcp://nas0.internal:445
+    interval: 1m
+    conditions:
+      - "[CONNECTED] == true"
