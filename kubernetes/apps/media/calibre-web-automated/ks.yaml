@@ -22,6 +22,7 @@ spec:
       APP_PORT: "8083"
       GATUS_SUBDOMAIN: calibre
       VOLSYNC_CAPACITY: 5Gi
+      VOLSYNC_CACHE_CAPACITY: 10Gi
     substituteFrom:
       - name: cluster-secrets
         kind: Secret
