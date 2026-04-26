@@ -44,10 +44,11 @@ spec:
                     kind: Backend
                     group: gateway.envoyproxy.io
                     port: 9000
-                path: /outpost.goauthentik.io/auth/nginx
+                path: /outpost.goauthentik.io/auth/traefik
                 headersToBackend:
                   - Host
                   - Cookie
                   - X-Forwarded-For
                   - X-Forwarded-Host
                   - X-Forwarded-Proto
+                  - X-Forwarded-Uri
