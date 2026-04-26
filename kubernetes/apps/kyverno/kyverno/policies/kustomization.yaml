@@ -4,4 +4,5 @@ kind: Kustomization
 resources:
   - ingress-add-external-dns.yaml
   - ingress-add-authentik-annotations.yaml
+  - kyverno-envoy-securitypolicy-rbac.yaml
   - remove-cpu-limits.yaml
