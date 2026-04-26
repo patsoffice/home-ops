@@ -25,7 +25,7 @@ spec:
       APP: *app
       APP_PORT: "80"
       VOLSYNC_CAPACITY: 2Gi
-      VOLSYNC_CACHE_CAPACITY: 5Gi
+      VOLSYNC_CACHE_CAPACITY: 6Gi
     substituteFrom:
       - name: cluster-secrets
         kind: Secret
