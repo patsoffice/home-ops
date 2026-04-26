@@ -38,12 +38,12 @@ spec:
                 name: "{{ request.object.metadata.name }}"
             extAuth:
               http:
-                backendRef:
-                  name: authentik-outpost
-                  namespace: network
-                  kind: Backend
-                  group: gateway.envoyproxy.io
-                  port: 9000
+                backendRefs:
+                  - name: authentik-outpost
+                    namespace: network
+                    kind: Backend
+                    group: gateway.envoyproxy.io
+                    port: 9000
                 path: /outpost.goauthentik.io/auth/nginx
                 headersToBackend:
                   - Cookie

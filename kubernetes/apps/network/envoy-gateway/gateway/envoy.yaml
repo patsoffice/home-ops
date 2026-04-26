@@ -275,6 +275,21 @@ spec:
         hostname: ak-outpost-authentik-embedded-outpost.security.svc.cluster.local
         port: 9000
 ---
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: ReferenceGrant
+metadata:
+  name: authentik-outpost
+  namespace: network
+spec:
+  from:
+    - group: gateway.envoyproxy.io
+      kind: SecurityPolicy
+      namespace: self-hosted
+  to:
+    - group: gateway.envoyproxy.io
+      kind: Backend
+      name: authentik-outpost
+---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
