@@ -45,6 +45,6 @@ spec:
                     group: gateway.envoyproxy.io
                     port: 9000
                 path: /outpost.goauthentik.io/auth/envoy
-                headersToBackend:
+                headersToExtAuth:
                   - Cookie
                   - X-Forwarded-Proto
