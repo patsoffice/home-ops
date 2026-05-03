@@ -1,0 +1,11 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/observability.giantswarm.io/silence_v1alpha2.json
+apiVersion: monitoring.giantswarm.io/v1alpha1
+kind: Silence
+metadata:
+  name: ceph-pg-imbalance
+  namespace: observability
+spec:
+  matchers:
+    - name: alertname
+      value: CephPGImbalance
