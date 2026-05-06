@@ -34,7 +34,7 @@ spec:
             args:
               - --leader-elect
               - --metrics-bind-address=:8080
-              - --alertmanager-address=http://alertmanager.observability.svc.cluster.local:9093
+              - --alertmanager-address=http://kube-prometheus-stack-alertmanager.observability.svc.cluster.local:9093
             probes:
               liveness:
                 enabled: true
