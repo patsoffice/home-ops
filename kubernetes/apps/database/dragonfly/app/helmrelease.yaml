@@ -21,6 +21,7 @@ spec:
       dragonfly-operator:
         strategy: RollingUpdate
         pod:
+          automountServiceAccountToken: true
           labels:
             control-plane: controller-manager
           securityContext:
