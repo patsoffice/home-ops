@@ -1,0 +1,48 @@
+version: 1
+metadata:
+  name: Chez-Lawrence brand
+entries:
+  - model: authentik_brands.brand
+    state: present
+    identifiers:
+      domain: chez-lawrence
+      default: true
+    attrs:
+      branding_title: Chez-Lawrence
+      branding_logo: /static/dist/assets/icons/logo-custom-%(theme)s.svg
+      branding_favicon: /static/dist/assets/icons/logo-custom-light.svg
+      branding_custom_css: |
+        :root,
+        :host {
+          --ak-accent: #202a5c;
+          --ak-global--Color--brand: #202a5c;
+          --pf-global--primary-color--100: #202a5c;
+          --pf-global--primary-color--200: #1a234d;
+          --pf-global--active-color--100: #202a5c;
+          --pf-global--link--Color: #3b4a8c;
+          --pf-global--link--Color--hover: #202a5c;
+          --pf-global--BackgroundColor--100: #ffffff;
+          --pf-global--BackgroundColor--150: #fafaf9;
+          --pf-global--BackgroundColor--200: #f4f4f5;
+          --pf-global--Color--100: #0a0e1f;
+          --pf-global--Color--200: #2c2f3a;
+          --pf-global--BorderColor--100: #e4e4e7;
+          --pf-global--BorderColor--200: #d4d4d8;
+        }
+        :host([theme="dark"]),
+        :root[data-ak-theme="dark"] {
+          --ak-accent: #5468d4;
+          --ak-global--Color--brand: #5468d4;
+          --pf-global--primary-color--100: #5468d4;
+          --pf-global--primary-color--200: #3b4a8c;
+          --pf-global--active-color--100: #5468d4;
+          --pf-global--link--Color: #7c8ee8;
+          --pf-global--link--Color--hover: #a3b1ef;
+          --pf-global--BackgroundColor--100: #0a0e1f;
+          --pf-global--BackgroundColor--150: #11162e;
+          --pf-global--BackgroundColor--200: #161b3a;
+          --pf-global--Color--100: #e6e8f0;
+          --pf-global--Color--200: #c1c5d4;
+          --pf-global--BorderColor--100: #1f2a5c;
+          --pf-global--BorderColor--200: #2a3676;
+        }

@@ -8,3 +8,13 @@ resources:
   - ./helmrelease.yaml
   - ./httproute.yaml
   - ./ocirepository.yaml
+configMapGenerator:
+  - name: authentik-theme
+    files:
+      - ./resources/logo-light.svg
+      - ./resources/logo-dark.svg
+  - name: authentik-blueprints
+    files:
+      - ./resources/brand.yaml
+generatorOptions:
+  disableNameSuffixHash: true

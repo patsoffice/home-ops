@@ -21,11 +21,15 @@ spec:
     global:
       podAnnotations:
         secret.reloader.stakater.com/reload: &secret authentik-secret
+        configmap.reloader.stakater.com/reload: authentik-theme
       deploymentStrategy:
         type: RollingUpdate
       envFrom:
         - secretRef:
             name: *secret
+    blueprints:
+      configMaps:
+        - authentik-blueprints
     authentik:
       redis:
         host: dragonfly.database.svc.cluster.local
@@ -41,6 +45,19 @@ spec:
           envFrom:
             - secretRef:
                 name: *secret
+      volumes:
+        - name: theme-assets
+          configMap:
+            name: authentik-theme
+      volumeMounts:
+        - name: theme-assets
+          mountPath: /web/dist/assets/icons/logo-custom-light.svg
+          subPath: logo-light.svg
+          readOnly: true
+        - name: theme-assets
+          mountPath: /web/dist/assets/icons/logo-custom-dark.svg
+          subPath: logo-dark.svg
+          readOnly: true
       metrics:
         enabled: true
         serviceMonitor:
