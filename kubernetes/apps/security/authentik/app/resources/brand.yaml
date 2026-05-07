@@ -19,6 +19,10 @@ entries:
     identifiers:
       domain: chez-lawrence
   - model: authentik_brands.brand
+    state: absent
+    identifiers:
+      domain: ${SECRET_DOMAIN}
+  - model: authentik_brands.brand
     state: present
     identifiers:
       domain: ${SECRET_DOMAIN}
