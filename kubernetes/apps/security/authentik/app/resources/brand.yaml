@@ -24,8 +24,8 @@ entries:
       domain: ${SECRET_DOMAIN}
     attrs:
       branding_title: Chez-Lawrence
-      branding_logo: /static/dist/assets/icons/logo-custom.png
-      branding_favicon: /static/dist/assets/icons/logo-custom.png
+      branding_logo: /static/dist/assets/icons/logo-custom.svg
+      branding_favicon: /static/dist/assets/icons/logo-custom.svg
       branding_custom_css: |
         :root,
         :host {
