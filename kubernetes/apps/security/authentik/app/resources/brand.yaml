@@ -3,10 +3,13 @@ metadata:
   name: Chez-Lawrence brand
 entries:
   - model: authentik_brands.brand
-    state: present
+    state: absent
     identifiers:
       domain: chez-lawrence
-      default: true
+  - model: authentik_brands.brand
+    state: present
+    identifiers:
+      domain: ${SECRET_DOMAIN}
     attrs:
       branding_title: Chez-Lawrence
       branding_logo: /static/dist/assets/icons/logo-custom-%(theme)s.svg
