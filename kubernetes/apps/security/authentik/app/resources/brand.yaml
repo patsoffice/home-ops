@@ -2,6 +2,18 @@ version: 1
 metadata:
   name: Chez-Lawrence brand
 entries:
+  - model: authentik_flows.flow
+    state: present
+    identifiers:
+      slug: default-authentication-flow
+    attrs:
+      title: Welcome to Chez-Lawrence!
+  - model: authentik_flows.flow
+    state: present
+    identifiers:
+      slug: default-invalidation-flow
+    attrs:
+      title: You've been logged out
   - model: authentik_brands.brand
     state: absent
     identifiers:
@@ -12,8 +24,8 @@ entries:
       domain: ${SECRET_DOMAIN}
     attrs:
       branding_title: Chez-Lawrence
-      branding_logo: /static/dist/assets/icons/logo-custom-%(theme)s.svg
-      branding_favicon: /static/dist/assets/icons/logo-custom-light.svg
+      branding_logo: /static/dist/assets/icons/logo-custom.png
+      branding_favicon: /static/dist/assets/icons/logo-custom.png
       branding_custom_css: |
         :root,
         :host {

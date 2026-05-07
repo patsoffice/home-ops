@@ -51,12 +51,8 @@ spec:
             name: authentik-theme
       volumeMounts:
         - name: theme-assets
-          mountPath: /web/dist/assets/icons/logo-custom-light.svg
-          subPath: logo-light.svg
-          readOnly: true
-        - name: theme-assets
-          mountPath: /web/dist/assets/icons/logo-custom-dark.svg
-          subPath: logo-dark.svg
+          mountPath: /web/dist/assets/icons/logo-custom.png
+          subPath: logo.png
           readOnly: true
       metrics:
         enabled: true

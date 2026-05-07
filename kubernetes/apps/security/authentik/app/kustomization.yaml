@@ -11,8 +11,7 @@ resources:
 configMapGenerator:
   - name: authentik-theme
     files:
-      - ./resources/logo-light.svg
-      - ./resources/logo-dark.svg
+      - ./resources/logo.png
   - name: authentik-blueprints
     files:
       - ./resources/brand.yaml
