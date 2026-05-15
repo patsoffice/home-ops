@@ -7,7 +7,7 @@ metadata:
   namespace: database # Required for Renovate lookups
 spec:
   interval: 1h
-  url: https://helm.mariadb.com/mariadb-operator
+  url: https://mariadb-operator.github.io/mariadb-operator
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
