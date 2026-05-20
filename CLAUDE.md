@@ -28,7 +28,7 @@ This is a Kubernetes home-ops GitOps repository managed by Flux CD. It contains 
 
 ## Read-Only Tooling (sak)
 
-`sak` is a strictly read-only "Swiss Army Knife for LLMs" installed on this machine — safe to call freely. Run `sak <domain> --help` or `sak <domain> <cmd> --help` for details. Domains: `fs`, `git`, `json`, `config`, `k8s`, `lxc`, `docker`, `sqlite`.
+`sak` is a strictly read-only "Swiss Army Knife for LLMs" installed on this machine — safe to call freely. Run `sak <domain> --help` or `sak <domain> <cmd> --help` for details. Domains: `fs`, `git`, `json`, `config`, `csv`, `cert`, `talos`, `k8s`, `lxc`, `docker`, `sqlite`, `prom`.
 
 **Prefer `sak` over hand-rolled `kubectl` for live-cluster triage** — output is concise and composable:
 
@@ -46,11 +46,43 @@ This is a Kubernetes home-ops GitOps repository managed by Flux CD. It contains 
 - `sak config query .spec.values.image.tag <file.yaml>` — extract a value
 - `sak config keys --depth 2 --types <file.yaml>` — explore structure
 - `sak config flatten <file.yaml>` — `path<TAB>value` for grep-friendly search
+- `sak config grep <regex> <file.yaml>` — find paths whose key or value matches
+- `sak config convert --to json <file.yaml>` — convert between TOML/YAML/plist/JSON
+- `sak config diff <a.yaml> <b.yaml>` — structural diff (cross-format)
 - `sak config validate <file.yaml>` — syntax check
 
-**`sak json`** (`query`, `keys`, `flatten`, `schema`, `validate`) chains nicely after `sak k8s get --path` or `sak k8s schema`.
+**`sak json`** (`query`, `select`, `keys`, `flatten`, `paths`, `grep`, `schema`, `diff`, `validate`) chains nicely after `sak k8s get --path` or `sak k8s schema`. Use `select` to project a few fields, `paths` to enumerate leaf paths, `grep` to find paths by key/value regex.
+
+**`sak csv`** (`headers`, `query`, `stats`, `validate`) for delimited data:
+
+- `sak csv headers <file.csv>` — list column names and indices
+- `sak csv query -c name,age <file.csv>` — project columns and filter rows
+- `sak csv stats <file.csv>` — per-column summary statistics
+- `sak csv validate <file.csv>` — structure / parse-error check
 
 **`sak sqlite`** (`tables`, `schema`, `info`, `count`, `dump`, `query`) is read-only and only accepts `SELECT` / `WITH` / `EXPLAIN` / `PRAGMA` — safe for poking at app databases.
+
+**`sak cert`** parses X.509 certs from PEM, DER, base64-wrapped PEM (Kubernetes Secret shape), or stdin:
+
+- `sak cert inspect <file>` / `sak cert inspect --field not_after <file>` — full or single-field
+- `sak cert from-kubeconfig ~/.kube/config [--ca]` — walk a kubeconfig's client (and optional CA) certs
+- `sak cert from-yaml <file> --path /data/tls.crt` — extract+inspect a cert at a YAML path (use JSON Pointer when keys contain dots, like `tls.crt`)
+- `sak cert expiring --days 30 <file>` — **exit codes are inverted vs. other sak commands**: 0 = no matches (healthy), 1 = at least one match (alert). Drives `if sak cert expiring; then …; fi`.
+
+**`sak talos`** is the read-only `talosctl` wrapper for the homelab cluster:
+
+- `sak talos certs` — fan-out cert inventory across every node in the active talosconfig (the killer feature; pair with `--tsv` or `--field not_after` for audits)
+- `sak talos read <path>` — `talosctl read` across nodes; **use `--node <ip>` for byte-faithful single-node output** when piping into `sak cert inspect`
+- `sak talos get <resource> [name]` — COSI resources (`members`, `services`, `mounts`, ...)
+- If `sak talos certs` exits 1 with no output, suspect an expired *client* cert in `~/.talos/config` before assuming nodes are unreachable — check with `sak cert from-yaml ~/.talos/config --path /contexts/<name>/crt --field not_after`.
+
+**`sak prom`** hits the Prometheus / Alertmanager HTTP APIs (env vars `PROMETHEUS_URL` and `ALERTMANAGER_URL`, overridable with `--url`):
+
+- `sak prom alerts [--firing|--pending|--all] [--name REGEX]`
+- `sak prom targets [--down] [--job REGEX]`, `sak prom rules [--firing]`
+- `sak prom query '<promql>'`, `sak prom query-range '<promql>' --since 1h --step 1m`
+- `sak prom histogram <metric>` — auto-detects unit from metric name (`_seconds`→duration, `_bytes`→bytes)
+- `sak prom am alerts` / `sak prom am silences` — Alertmanager state
 
 **Always use `sak git` instead of raw `git`** for read-only inspection (`status`, `diff`, `log`, `show`, `blame`, `branch`, `tags`, `remote`, `stash-list`, `contributors`). A PreToolUse hook blocks raw `git` read commands. Raw `git` is still required for mutations (`commit`, `push`, `add`, etc.) since `sak` is read-only.
 
