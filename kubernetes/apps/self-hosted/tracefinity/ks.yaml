@@ -24,6 +24,9 @@ spec:
       APP_PORT: "3000"
       VOLSYNC_CAPACITY: 10Gi
       VOLSYNC_CACHE_CAPACITY: 20Gi
+      # Required: the volsync CRD now rejects an empty sourceNamespace (renders
+      # as null). Set it to this app's namespace (the implicit default).
+      VOLSYNC_SOURCE_NAMESPACE: self-hosted
     substituteFrom:
       - name: cluster-secrets
         kind: Secret
