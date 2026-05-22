@@ -19,6 +19,7 @@ spec:
   path: ./kubernetes/apps/media/tautulli/app
   postBuild:
     substitute:
+      VOLSYNC_SCHEDULE: "50 * * * *"
       APP: *app
       APP_PORT: "80"
       VOLSYNC_CAPACITY: 3Gi

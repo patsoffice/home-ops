@@ -24,6 +24,7 @@ spec:
   path: './kubernetes/apps/llm/open-webui/app/'
   postBuild:
     substitute:
+      VOLSYNC_SCHEDULE: "8 * * * *"
       APP: *app
       APP_PORT: "8080"
       VOLSYNC_CAPACITY: 5Gi

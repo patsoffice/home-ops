@@ -22,6 +22,7 @@ spec:
   path: ./kubernetes/apps/self-hosted/manyfold/app
   postBuild:
     substitute:
+      VOLSYNC_SCHEDULE: "33 * * * *"
       APP: *app
       APP_PORT: "3214"
       VOLSYNC_CAPACITY: 5Gi

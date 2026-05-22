@@ -18,6 +18,7 @@ spec:
   path: ./kubernetes/apps/media/calibre-web-automated/app
   postBuild:
     substitute:
+      VOLSYNC_SCHEDULE: "20 * * * *"
       APP: *app
       APP_PORT: "8083"
       GATUS_SUBDOMAIN: calibre

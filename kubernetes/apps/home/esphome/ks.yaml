@@ -19,6 +19,7 @@ spec:
   path: ./kubernetes/apps/home/esphome/app
   postBuild:
     substitute:
+      VOLSYNC_SCHEDULE: "48 * * * *"
       APP: *app
       APP_PORT: "6052"
       CODE_PORT: "12321"

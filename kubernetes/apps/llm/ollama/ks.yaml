@@ -23,6 +23,7 @@ spec:
   path: ./kubernetes/apps/llm/ollama/app
   postBuild:
     substitute:
+      VOLSYNC_SCHEDULE: "36 * * * *"
       APP: *app
       APP_PORT: "11434"
       VOLSYNC_CAPACITY: 2Gi

@@ -7,7 +7,10 @@ metadata:
 spec:
   sourcePVC: ${APP}
   trigger:
-    schedule: 0 * * * *
+    # Staggered per-app to avoid a synchronized backup fan-out (see
+    # scripts/volsync-schedules.py). Override is set in each app's
+    # ks.yaml postBuild.substitute; default keeps the legacy top-of-hour.
+    schedule: ${VOLSYNC_SCHEDULE:=0 * * * *}
   kopia:
     accessModes:
       - ${VOLSYNC_SNAP_ACCESSMODES:=ReadWriteOnce}

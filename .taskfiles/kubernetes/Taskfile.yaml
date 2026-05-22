@@ -102,3 +102,17 @@ tasks:
       - test -f {{.KUBERNETES_RESOURCES_DIR}}/privileged-pod-pvc.tmpl.yaml
       - which envsubst
       - which kubectl
+
+  volsync-schedules:
+    desc: Stagger VolSync backup schedules across apps (writes VOLSYNC_SCHEDULE)
+    cmd: python3 {{.ROOT_DIR}}/scripts/volsync-schedules.py
+    preconditions:
+      - test -f {{.ROOT_DIR}}/scripts/volsync-schedules.py
+      - which python3
+
+  volsync-schedules-check:
+    desc: Verify VolSync backup schedules are up to date (CI/pre-commit; non-zero on drift)
+    cmd: python3 {{.ROOT_DIR}}/scripts/volsync-schedules.py --check
+    preconditions:
+      - test -f {{.ROOT_DIR}}/scripts/volsync-schedules.py
+      - which python3

@@ -22,6 +22,7 @@ spec:
   path: ./kubernetes/apps/media/radarr/app
   postBuild:
     substitute:
+      VOLSYNC_SCHEDULE: "51 * * * *"
       APP: *app
       APP_PORT: "80"
       VOLSYNC_CAPACITY: 5Gi

@@ -26,6 +26,7 @@ spec:
   path: ./kubernetes/apps/self-hosted/paperless/app
   postBuild:
     substitute:
+      VOLSYNC_SCHEDULE: "16 * * * *"
       APP: *app
       APP_PORT: "8000"
       APP_UID: "568"

@@ -23,6 +23,7 @@ spec:
   path: ./kubernetes/apps/home/home-assistant/app
   postBuild:
     substitute:
+      VOLSYNC_SCHEDULE: "49 * * * *"
       APP: *app
       APP_PORT: "8123"
       CODE_PORT: "12321"

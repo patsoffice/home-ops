@@ -19,6 +19,7 @@ spec:
   path: ./kubernetes/apps/self-hosted/jrommanager/app
   postBuild:
     substitute:
+      VOLSYNC_SCHEDULE: "28 * * * *"
       APP: *app
       APP_PORT: "8080"
       VOLSYNC_CACHE_CAPACITY: 35Gi

@@ -21,6 +21,7 @@ spec:
   path: ./kubernetes/apps/media/plex/app
   postBuild:
     substitute:
+      VOLSYNC_SCHEDULE: "54 * * * *"
       APP: *app
       APP_PORT: "32400"
       VOLSYNC_CACHE_CAPACITY: 125Gi

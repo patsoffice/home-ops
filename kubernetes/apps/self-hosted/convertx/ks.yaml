@@ -20,6 +20,7 @@ spec:
   path: ./kubernetes/apps/self-hosted/convertx/app
   postBuild:
     substitute:
+      VOLSYNC_SCHEDULE: "41 * * * *"
       APP: *app
       APP_PORT: "3000"
       VOLSYNC_CAPACITY: 2Gi

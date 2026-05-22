@@ -24,6 +24,7 @@ spec:
   path: ./kubernetes/apps/self-hosted/tandoor/app
   postBuild:
     substitute:
+      VOLSYNC_SCHEDULE: "34 * * * *"
       APP: *app
       APP_PORT: "8080"
       APP_UID: "568"

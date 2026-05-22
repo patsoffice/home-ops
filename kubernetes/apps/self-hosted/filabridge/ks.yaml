@@ -19,6 +19,7 @@ spec:
   path: ./kubernetes/apps/self-hosted/filabridge/app
   postBuild:
     substitute:
+      VOLSYNC_SCHEDULE: "59 * * * *"
       APP: *app
       APP_PORT: "5000"
       VOLSYNC_CAPACITY: 2Gi

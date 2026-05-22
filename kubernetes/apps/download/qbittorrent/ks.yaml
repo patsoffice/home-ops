@@ -24,6 +24,7 @@ spec:
     namespace: flux-system
   postBuild:
     substitute:
+      VOLSYNC_SCHEDULE: "12 * * * *"
       APP: *app
       APP_PORT: "80"
       VOLSYNC_CAPACITY: 2Gi

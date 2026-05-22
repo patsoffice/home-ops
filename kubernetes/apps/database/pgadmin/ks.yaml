@@ -19,6 +19,7 @@ spec:
   path: ./kubernetes/apps/database/pgadmin/app
   postBuild:
     substitute:
+      VOLSYNC_SCHEDULE: "42 * * * *"
       APP: *app
       APP_PORT: "80"
       VOLSYNC_CAPACITY: 5Gi
