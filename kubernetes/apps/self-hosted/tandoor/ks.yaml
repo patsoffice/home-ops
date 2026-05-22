@@ -29,7 +29,6 @@ spec:
       APP_PORT: "8080"
       APP_UID: "568"
       APP_GID: "568"
-      VOLSYNC_SOURCE_NAMESPACE: default
     substituteFrom:
       - name: cluster-secrets
         kind: Secret
