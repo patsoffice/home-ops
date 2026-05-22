@@ -29,8 +29,9 @@ spec:
           type: Kubernetes
           kubernetes:
             deploy:
-              # ControlPlaneNamespace (the default) co-locates the proxies with the
-              # controller in this namespace without the GatewayNamespace mode's
-              # JWT-secured xDS channel, whose 1h SA-token expiry intermittently froze
-              # proxy config and left them dialing stale (dead) upstream pod IPs.
-              type: ControlPlaneNamespace
+              # NOTE: keep GatewayNamespace. ControlPlaneNamespace renames the managed
+              # gateway LB Services (envoy-internal -> envoy-network-envoy-internal-*),
+              # which drops their Cilium L2 IP announcement and blackholes the gateway
+              # VIPs (192.168.6.202/.203). The stale-endpoint/JWT-xDS issue must be
+              # solved without changing deploy mode.
+              type: GatewayNamespace
