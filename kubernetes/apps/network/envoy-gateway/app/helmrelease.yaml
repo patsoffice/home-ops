@@ -12,7 +12,11 @@ spec:
   install:
     crds: Create
   upgrade:
-    crds: CreateReplace
+    # Create (not CreateReplace): the v1.8.0 chart ships the safe-upgrades
+    # ValidatingAdmissionPolicy in its CRD set, and Flux's CreateReplace looks it
+    # up as kind CustomResourceDefinition, fails ("not found"), and aborts every
+    # upgrade. Create still installs missing CRDs but skips the broken replace.
+    crds: Create
   values:
     global:
       imageRegistry: mirror.gcr.io
