@@ -22,6 +22,7 @@ resources:
   - ./spoolman/ks.yaml
   - ./syncthing/ks.yaml
   - ./tandoor/ks.yaml
+  - ./tracefinity/ks.yaml
   - ./wordpress-gds/ks.yaml
   - ./wordpress-poc/ks.yaml
   - ./wordle-solver/ks.yaml

@@ -1,0 +1,63 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/app-template-4.5.0/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app tracefinity
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: tracefinity
+  interval: 30m
+  values:
+    controllers:
+      tracefinity:
+        strategy: RollingUpdate
+        containers:
+          app:
+            image:
+              repository: ghcr.io/tracefinity/tracefinity
+              # renovate: datasource=docker depName=ghcr.io/tracefinity/tracefinity
+              tag: 0.3.0@sha256:18e02cad36134085cb5415ac77fd66ae815a3a86c781183265fed9c31bd1f6d0
+              pullPolicy: IfNotPresent
+            env:
+              TZ: America/Los_Angeles
+              # Local ONNX models on CPU; no GOOGLE_API_KEY / Gemini
+              TRACEFINITY_ONNX_PROVIDER: cpu
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+            resources:
+              requests:
+                cpu: 100m
+                memory: 4Gi
+              limits:
+                memory: 12Gi
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: &port ${APP_PORT}
+    persistence:
+      # Single volsync-backed PVC, mounted at three subPaths:
+      # - /app/storage              app uploads/processed/outputs
+      # - /root/.u2net              rembg model cache (isnet, birefnet-lite)
+      # - /root/.transparent-background  InSPyReNet model cache
+      # The model libraries download weights at runtime to home-dir defaults;
+      # persisting them avoids re-downloading hundreds of MB on every restart.
+      data:
+        existingClaim: *app
+        globalMounts:
+          - path: /app/storage
+            subPath: storage
+          - path: /root/.u2net
+            subPath: u2net
+          - path: /root/.transparent-background
+            subPath: transparent-background
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
