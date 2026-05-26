@@ -1,0 +1,62 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app flaresolverr-proxy
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    controllers:
+      flaresolverr-proxy:
+        strategy: RollingUpdate
+        containers:
+          app:
+            image:
+              repository: ghcr.io/lenni0451/flaresolverr-proxy
+              # renovate: datasource=docker depName=ghcr.io/lenni0451/flaresolverr-proxy
+              tag: main
+            env:
+              TZ: America/Los_Angeles
+              # Bridge that exposes FlareSolverr's /v1 API as a plain HTTP(S)
+              # forward proxy so apps like Miniflux can use it.
+              FLARESOLVERR_URL: http://flaresolverr.network.svc.cluster.local:8191/v1
+              PROXY_PORT: &port 8888
+              FLARESOLVERR_TIMEOUT: "120000"
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: *port
+                  initialDelaySeconds: 10
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              readiness: *probes
+            securityContext:
+              # Generates /app/cert.pem + /app/key.pem at startup and runs as
+              # root, so the root filesystem must stay writable.
+              allowPrivilegeEscalation: false
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 256Mi
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: *port

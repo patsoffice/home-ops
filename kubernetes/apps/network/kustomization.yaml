@@ -13,6 +13,7 @@ resources:
   - ./echo/ks.yaml
   - ./envoy-gateway/ks.yaml
   - ./flaresolverr/ks.yaml
+  - ./flaresolverr-proxy/ks.yaml
   - ./external-dns-cloudflare/ks.yaml
   - ./internal-services/ks.yaml
   - ./k8s-gateway/ks.yaml
