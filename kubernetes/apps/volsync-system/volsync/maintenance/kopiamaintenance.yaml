@@ -7,6 +7,9 @@ metadata:
   namespace: volsync-system
 spec:
   enabled: true
+  # Retain ~10 days of maintenance Jobs (runs every 8h → 3/day) so the kopia
+  # index-blob trend is observable across a full week+ rather than ~1 day.
+  successfulJobsHistoryLimit: 30
   trigger:
     schedule: 30 */8 * * *
   repository:
