@@ -4,7 +4,15 @@
 # Provides the same CLI tools, the [env] variables, and an auto-created
 # Python virtualenv at ./.venv — the equivalent of mise's
 #   _.python.venv = { path = ".venv", create = true }
-{ pkgs ? import <nixpkgs> { } }:
+#
+# nixpkgs is pinned in ./nix/nixpkgs.json (tracks nixpkgs-unstable) so the
+# dev shell is reproducible and independent of the host's channels/registry.
+# Bump the pin with:  task nix:update
+{ pkgs ? import (
+    let pin = builtins.fromJSON (builtins.readFile ./nix/nixpkgs.json);
+    in fetchTarball { inherit (pin) url sha256; }
+  ) { }
+}:
 
 let
   python = pkgs.python314;

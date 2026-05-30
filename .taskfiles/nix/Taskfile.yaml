@@ -1,0 +1,30 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: '3'
+
+vars:
+  PIN_FILE: '{{.ROOT_DIR}}/nix/nixpkgs.json'
+
+tasks:
+
+  update:
+    desc: 'Bump the pinned nixpkgs for shell.nix (var BRANCH, default nixpkgs-unstable)'
+    dir: '{{.ROOT_DIR}}'
+    vars:
+      BRANCH: '{{.BRANCH | default "nixpkgs-unstable"}}'
+    cmds:
+      - |
+        rev=$(git ls-remote https://github.com/NixOS/nixpkgs.git "refs/heads/{{.BRANCH}}" | cut -f1)
+        [ -n "$rev" ] || { echo "error: could not resolve {{.BRANCH}} HEAD" >&2; exit 1; }
+        url="https://github.com/NixOS/nixpkgs/archive/${rev}.tar.gz"
+        echo "Prefetching nixpkgs {{.BRANCH}} @ ${rev} ..."
+        sha256=$(nix-prefetch-url --unpack --type sha256 "$url")
+        jq -n \
+          --arg owner NixOS --arg repo nixpkgs --arg branch "{{.BRANCH}}" \
+          --arg rev "$rev" --arg url "$url" --arg sha256 "$sha256" \
+          '{owner: $owner, repo: $repo, branch: $branch, rev: $rev, url: $url, sha256: $sha256}' \
+          > "{{.PIN_FILE}}"
+        echo "Pinned nixpkgs {{.BRANCH}} -> ${rev}"
+    preconditions:
+      - msg: requires git, jq and nix-prefetch-url on PATH
+        sh: which git jq nix-prefetch-url
