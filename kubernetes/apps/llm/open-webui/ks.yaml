@@ -29,6 +29,8 @@ spec:
       APP_PORT: "8080"
       VOLSYNC_CAPACITY: 5Gi
       VOLSYNC_CACHE_CAPACITY: 10Gi
+      VOLSYNC_KOPIA_CONTENT_CACHE_MB: "2048"
+      VOLSYNC_KOPIA_METADATA_CACHE_MB: "4096"
     substituteFrom:
       - name: cluster-secrets
         kind: Secret

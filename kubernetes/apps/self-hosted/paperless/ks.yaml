@@ -32,6 +32,8 @@ spec:
       APP_UID: "568"
       APP_GID: "568"
       VOLSYNC_CACHE_CAPACITY: 50Gi
+      VOLSYNC_KOPIA_CONTENT_CACHE_MB: "10240"
+      VOLSYNC_KOPIA_METADATA_CACHE_MB: "20480"
     substituteFrom:
       - name: cluster-secrets
         kind: Secret

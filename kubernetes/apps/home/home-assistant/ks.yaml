@@ -28,6 +28,8 @@ spec:
       APP_PORT: "8123"
       CODE_PORT: "12321"
       VOLSYNC_CACHE_CAPACITY: 15Gi
+      VOLSYNC_KOPIA_CONTENT_CACHE_MB: "3072"
+      VOLSYNC_KOPIA_METADATA_CACHE_MB: "6144"
       VOLSYNC_CAPACITY: 10Gi
     substituteFrom:
       - name: cluster-secrets

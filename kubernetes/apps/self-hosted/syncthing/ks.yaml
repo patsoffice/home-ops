@@ -22,6 +22,8 @@ spec:
       APP: *app
       APP_PORT: "8384"
       VOLSYNC_CACHE_CAPACITY: 20Gi
+      VOLSYNC_KOPIA_CONTENT_CACHE_MB: "4096"
+      VOLSYNC_KOPIA_METADATA_CACHE_MB: "8192"
       VOLSYNC_CAPACITY: 15Gi
     substituteFrom:
       - name: cluster-secrets
