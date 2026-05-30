@@ -17,6 +17,14 @@ spec:
     cacheAccessModes:
       - ${VOLSYNC_CACHE_ACCESSMODES:=ReadWriteOnce}
     cacheCapacity: ${VOLSYNC_CACHE_CAPACITY:=5Gi}
+    # Pin kopia's cache hard limits instead of the operator's auto-calc, which
+    # allots metadata=70%/content=20% (90% of cacheCapacity) and leaves too
+    # little headroom for kopia logs/temp/between-sweep overshoot — small cache
+    # PVCs fill and backups fail with ENOSPC. We use content=20%/metadata=40%
+    # (60% total, ~40% headroom). Defaults below are sized for the 5Gi default;
+    # apps overriding VOLSYNC_CACHE_CAPACITY scale these in their ks.yaml.
+    contentCacheSizeLimitMB: ${VOLSYNC_KOPIA_CONTENT_CACHE_MB:=1024}
+    metadataCacheSizeLimitMB: ${VOLSYNC_KOPIA_METADATA_CACHE_MB:=2048}
     cacheStorageClassName: ${VOLSYNC_CACHE_SNAPSHOTCLASS:=ceph-block}
     compression: zstd-fastest
     copyMethod: Snapshot
