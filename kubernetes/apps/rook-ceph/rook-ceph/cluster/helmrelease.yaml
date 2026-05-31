@@ -53,6 +53,15 @@ spec:
             enabled: true
           - name: rook
             enabled: true
+      resources:
+        mgr:
+          requests:
+            cpu: 500m
+            memory: 1Gi
+          limits:
+            # mgr working set grows ~23 MB/day; 1Gi (chart default) OOMs
+            # the active mgr every ~13 days. 2Gi gives ~2 months headroom.
+            memory: 2Gi
       network:
         provider: host
         addressRanges:
