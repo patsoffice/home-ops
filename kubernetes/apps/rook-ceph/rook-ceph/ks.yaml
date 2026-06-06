@@ -38,6 +38,8 @@ spec:
   dependsOn:
     - name: rook-ceph
       namespace: *namespace
+    - name: ceph-csi-drivers
+      namespace: *namespace
     - name: volsync
       namespace: volsync-system
   healthChecks:

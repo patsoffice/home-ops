@@ -108,6 +108,21 @@
       },
     },
     {
+      description: 'Rook-Ceph Group',
+      groupName: 'Rook-Ceph',
+      matchDatasources: [
+        'docker',
+      ],
+      matchPackageNames: [
+        '/rook-ceph/',
+        '/rook-ceph-cluster/',
+        '/ceph-csi-drivers/',
+      ],
+      group: {
+        commitMessageTopic: '{{{groupName}}} group',
+      },
+    },
+    {
       description: 'Auto-merge GitHub Actions',
       matchManagers: [
         'github-actions',
