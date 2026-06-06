@@ -20,17 +20,29 @@ spec:
     operatorConfig:
       driverSpecDefaults:
         clusterName: rook-ceph
+        # Ceph runs host networking (CephCluster network.provider: host), so the
+        # CSI controllers must use hostNetwork to reach the mons. Preserve the
+        # replicas: 2 HA the bundled v1.19 csi-operator gave us.
+        controllerPlugin:
+          hostNetwork: true
+          replicas: 2
     drivers:
       rbd:
         enabled: true
         name: rook-ceph.rbd.csi.ceph.com
         snapshotPolicy: volumeSnapshot
+        controllerPlugin:
+          hostNetwork: true
+          replicas: 2
       cephfs:
         enabled: true
         name: rook-ceph.cephfs.csi.ceph.com
         snapshotPolicy: volumeGroupSnapshot
         kernelMountOptions:
           ms_mode: prefer-crc
+        controllerPlugin:
+          hostNetwork: true
+          replicas: 2
       nfs:
         enabled: false
       nvmeof:
