@@ -69,7 +69,7 @@ spec:
           mariadb:
             image:
               repository: docker.io/library/mariadb
-              tag: "12.2.2-ubi10"
+              tag: "12.3.2-ubi10"
             env:
               MARIADB_DATABASE: wordpress
             envFrom:
