@@ -123,6 +123,33 @@
       },
     },
     {
+      description: '1Password Connect Group',
+      groupName: '1Password Connect',
+      matchDatasources: [
+        'docker',
+      ],
+      matchPackageNames: [
+        '/connect-api/',
+        '/connect-sync/',
+      ],
+      group: {
+        commitMessageTopic: '{{{groupName}}} group',
+      },
+    },
+    {
+      description: 'Tdarr Group',
+      groupName: 'Tdarr',
+      matchDatasources: [
+        'docker',
+      ],
+      matchPackageNames: [
+        '/tdarr/',
+      ],
+      group: {
+        commitMessageTopic: '{{{groupName}}} group',
+      },
+    },
+    {
       description: 'Auto-merge GitHub Actions',
       matchManagers: [
         'github-actions',
