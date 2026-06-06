@@ -28,67 +28,54 @@ This is a Kubernetes home-ops GitOps repository managed by Flux CD. It contains 
 
 ## Read-Only Tooling (sak)
 
-`sak` is a strictly read-only "Swiss Army Knife for LLMs" installed on this machine — safe to call freely. Run `sak <domain> --help` or `sak <domain> <cmd> --help` for details. Domains: `fs`, `git`, `json`, `config`, `csv`, `cert`, `talos`, `k8s`, `lxc`, `docker`, `sqlite`, `prom`.
+`sak` is a strictly read-only "Swiss Army Knife for LLMs" installed on this machine — safe to call freely. Domains: `fs`, `git`, `json`, `config`, `csv`, `cert`, `hash`, `talos`, `gh`, `helm`, `nix`, `k8s`, `lxc`, `docker`, `sqlite`, `prom`, `loki`, `hook`. Run `sak <domain> --help` or `sak <domain> <cmd> --help` for details.
 
-**Prefer `sak` over hand-rolled `kubectl` for live-cluster triage** — output is concise and composable:
+**Whenever a read-only operation is in scope, prefer `sak <domain> <cmd>` over the underlying CLI** (`kubectl`, `helm`, `talosctl`, `gh`, `nix`, `git`, `openssl`, `sha256sum`, `curl + jq`, etc.). Output is concise, deterministic, LLM-shaped, and a PreToolUse hook actively blocks the raw equivalents of several of these. The harness's built-in Read/Glob/Grep tools remain the right call for plain file reads — reach for `sak fs` only for what those don't cover (`largest`, `duplicates`, `find`, `tree`, `stat`, `wc`).
 
-- `sak k8s failing -A` / `sak k8s pending -A` — pods not Running/Succeeded, pods stuck Pending
-- `sak k8s restarts -A --min 3` — crash-looping containers
-- `sak k8s events -A --limit 30` / `sak k8s events --for deploy/foo -n bar` — recent events
-- `sak k8s describe <kind> <name> -n <ns>` — aggregated object/status/containers/owners/events
-- `sak k8s logs <pod> -n <ns> --tail 100 --grep ERROR` (also `--since 10m`, `-c`, `--all-containers`, `-p`)
-- `sak k8s get <kind> [name] -A --path .spec.replicas` — list/get with optional field extraction
-- `sak k8s images [kind] -A` — audit container images (default kind: pods)
-- `sak k8s schema <Kind>` — OpenAPI v3 schema (pipe through `sak json keys/query`)
+### Substitutions (use the right-hand command, not the left)
 
-**Prefer `sak config` over ad-hoc grep for YAML manifests** (HelmRelease, Kustomization, etc.) — auto-detects TOML/YAML/plist:
+- `git status|log|diff|show|blame` → `sak git status|log|diff|show|blame` (raw `git` reads are hook-blocked)
+- `kubectl get|describe|logs|events` → `sak k8s get|describe|logs|events|failing|pending|restarts|not-ready|images|env|schema`
+- `helm list|status|get|template|lint` → `sak helm list|status|get|history|show|template|lint|search|repo-list|dependency-list`
+- `for n in <ips>; do talosctl -n $n read|get …` → `sak talos certs|read|get` (fan-out across all nodes in the active talosconfig)
+- `gh pr|issue|run|release view|list` → `sak gh pr-view|issue-view|run-view|release-view|pr-list|issue-list|run-list|release-list|api`
+- `nix flake show|store info|eval|registry list` → `sak nix flake-show|store-info|eval|registry-list|profile-list|references|path-info|flake-metadata`
+- `curl + jq` vs Prometheus / Alertmanager → `sak prom alerts|query|query-range|histogram|targets|rules|labels|label-values|series|metadata|tsdb-stats|am alerts|am silences`
+- `curl + jq` vs Loki → `sak loki query|query-range|labels|label-values|series`
+- `openssl x509 | grep|awk` → `sak cert inspect|expiring|from-kubeconfig|from-yaml`
+- `sha256sum|sha1sum|md5sum|b3sum` → `sak hash sha256|sha1|md5|blake3` (add `--verify <sumfile>`)
+- `cat|head|tail|wc|stat|tree` → `sak fs read|head|tail|wc|stat|tree` (Read still preferred for plain text)
+- `find . -size … -mtime …` → `sak fs find . --size +1M --mtime -7d` (also `largest`, `duplicates`)
+- `jq` on JSON → `sak json query|select|keys|flatten|paths|grep|schema|diff|validate`
+- ad-hoc grep on YAML/TOML/plist → `sak config query|keys|flatten|paths|grep|convert|diff|validate` (HelmRelease, Kustomization, etc.)
+- `sqlite3 'SELECT …'` → `sak sqlite tables|schema|count|dump|query|info` (`SELECT`/`WITH`/`EXPLAIN`/`PRAGMA` only)
+- `lxc list|info` / `docker ps|logs` → `sak lxc list|info|config|images` / `sak docker list|info|config|images|logs`
 
-- `sak config query .spec.values.image.tag <file.yaml>` — extract a value
-- `sak config keys --depth 2 --types <file.yaml>` — explore structure
-- `sak config flatten <file.yaml>` — `path<TAB>value` for grep-friendly search
-- `sak config grep <regex> <file.yaml>` — find paths whose key or value matches
-- `sak config convert --to json <file.yaml>` — convert between TOML/YAML/plist/JSON
-- `sak config diff <a.yaml> <b.yaml>` — structural diff (cross-format)
-- `sak config validate <file.yaml>` — syntax check
+### Repo-specific patterns
 
-**`sak json`** (`query`, `select`, `keys`, `flatten`, `paths`, `grep`, `schema`, `diff`, `validate`) chains nicely after `sak k8s get --path` or `sak k8s schema`. Use `select` to project a few fields, `paths` to enumerate leaf paths, `grep` to find paths by key/value regex.
+- **Flux / cluster triage** — `sak k8s not-ready kustomization -A` and `sak k8s not-ready helmrelease -A` are the fastest way to surface broken Flux objects. Pair with `sak k8s failing -A` / `sak k8s pending -A` / `sak k8s restarts -A --min 3` / `sak k8s events -A --limit 30` / `sak k8s describe` / `sak k8s logs <pod> -n <ns> --tail 100 --grep ERROR`.
+- **HelmRelease / Kustomization inspection** — `sak config query .spec.values.image.tag <file.yaml>`, `sak config keys --depth 2 --types <file.yaml>`, `sak config flatten` + grep for finding where a value lives, `sak config grep <regex>` for key-or-value regex search.
+- **Helm release state in-cluster** — `sak helm list -A`, `sak helm status <release> -n <ns>`, `sak helm get <release> --what manifest|values|notes -n <ns>`, `sak helm history <release> -n <ns>`. For chart-local work: `sak helm template ./chart`, `sak helm lint ./chart` (see gotcha), `sak helm dependency-list ./chart`.
+- **GitHub** — `sak gh pr-list --state open`, `sak gh pr-view <num>`, `sak gh run-list --workflow ci.yml`, `sak gh run-view <id> --log-failed`, `sak gh api <endpoint>` as the escape hatch (GET-only).
+- **Cluster certificate audit** — `sak talos certs --tsv` for fleet-wide inventory; `sak cert from-kubeconfig ~/.kube/config --ca` for kubeconfig certs; `sak cert expiring --days 30 *.pem` in `if` blocks.
+- **Prometheus / Alertmanager / Loki** — `sak prom alerts --firing`, `sak prom targets --down`, `sak prom rules --firing`, `sak prom query 'up == 0'`, `sak loki query '{namespace="flux-system"} |= "error"'`.
+- **CRD schema lookup** — `sak k8s schema HelmRelease | sak json keys .properties.spec --depth 2`.
 
-**`sak csv`** (`headers`, `query`, `stats`, `validate`) for delimited data:
+### Exit-code gotchas (two commands invert 0/1)
 
-- `sak csv headers <file.csv>` — list column names and indices
-- `sak csv query -c name,age <file.csv>` — project columns and filter rows
-- `sak csv stats <file.csv>` — per-column summary statistics
-- `sak csv validate <file.csv>` — structure / parse-error check
+- `sak cert expiring` — exit 0 = no matches (healthy), exit 1 = at least one match (alert). Drives `if sak cert expiring; then …; fi`.
+- `sak helm lint` — exit 0 = chart passes lint, exit 1 = chart fails. Drives `if sak helm lint ./chart; then …; fi`.
 
-**`sak sqlite`** (`tables`, `schema`, `info`, `count`, `dump`, `query`) is read-only and only accepts `SELECT` / `WITH` / `EXPLAIN` / `PRAGMA` — safe for poking at app databases.
+Every other sak command follows the standard convention: 0 = results, 1 = no results, 2 = tool error.
 
-**`sak cert`** parses X.509 certs from PEM, DER, base64-wrapped PEM (Kubernetes Secret shape), or stdin:
+### Other gotchas
 
-- `sak cert inspect <file>` / `sak cert inspect --field not_after <file>` — full or single-field
-- `sak cert from-kubeconfig ~/.kube/config [--ca]` — walk a kubeconfig's client (and optional CA) certs
-- `sak cert from-yaml <file> --path /data/tls.crt` — extract+inspect a cert at a YAML path (use JSON Pointer when keys contain dots, like `tls.crt`)
-- `sak cert expiring --days 30 <file>` — **exit codes are inverted vs. other sak commands**: 0 = no matches (healthy), 1 = at least one match (alert). Drives `if sak cert expiring; then …; fi`.
+- **`sak cert from-yaml --path` with dotted keys** — use JSON Pointer (`/data/tls.crt`) not dot notation (`.data.tls.crt`) when a key contains a dot. Kubernetes Secrets are the classic case.
+- **`sak talos certs` exit 1 with no output** — suspect an expired *client* cert in `~/.talos/config` before assuming nodes are unreachable. Verify with `sak cert from-yaml ~/.talos/config --path /contexts/<name>/crt --field not_after`.
+- **`sak talos read` multi-node mode is not byte-faithful** — use `--node <single-ip>` when piping into `sak cert inspect`.
+- **`sak k8s get` emits NDJSON, not a List wrapper** — `--path` is applied per-object; use `.metadata.name`, not `.items[0].metadata.name`. Pipe one line at a time into `sak json`.
 
-**`sak talos`** is the read-only `talosctl` wrapper for the homelab cluster:
-
-- `sak talos certs` — fan-out cert inventory across every node in the active talosconfig (the killer feature; pair with `--tsv` or `--field not_after` for audits)
-- `sak talos read <path>` — `talosctl read` across nodes; **use `--node <ip>` for byte-faithful single-node output** when piping into `sak cert inspect`
-- `sak talos get <resource> [name]` — COSI resources (`members`, `services`, `mounts`, ...)
-- If `sak talos certs` exits 1 with no output, suspect an expired *client* cert in `~/.talos/config` before assuming nodes are unreachable — check with `sak cert from-yaml ~/.talos/config --path /contexts/<name>/crt --field not_after`.
-
-**`sak prom`** hits the Prometheus / Alertmanager HTTP APIs (env vars `PROMETHEUS_URL` and `ALERTMANAGER_URL`, overridable with `--url`):
-
-- `sak prom alerts [--firing|--pending|--all] [--name REGEX]`
-- `sak prom targets [--down] [--job REGEX]`, `sak prom rules [--firing]`
-- `sak prom query '<promql>'`, `sak prom query-range '<promql>' --since 1h --step 1m`
-- `sak prom histogram <metric>` — auto-detects unit from metric name (`_seconds`→duration, `_bytes`→bytes)
-- `sak prom am alerts` / `sak prom am silences` — Alertmanager state
-
-**Always use `sak git` instead of raw `git`** for read-only inspection (`status`, `diff`, `log`, `show`, `blame`, `branch`, `tags`, `remote`, `stash-list`, `contributors`). A PreToolUse hook blocks raw `git` read commands. Raw `git` is still required for mutations (`commit`, `push`, `add`, etc.) since `sak` is read-only.
-
-**Do not reach for `sak fs`** — the built-in Read/Glob/Grep are faster and better integrated. Use `sak fs` only when piping into other `sak` commands.
-
-`sak` cannot mutate state. For anything that changes the cluster (`kubectl apply`, `flux reconcile`, `helm upgrade`, `git push`) use the real tool and follow the confirmation rules for risky actions.
+`sak` cannot mutate state. For anything that changes the cluster (`kubectl apply`, `flux reconcile`, `helm upgrade`, `git push`) use the real tool and follow the confirmation rules for risky actions. Raw `git` is still required for mutations (`commit`, `push`, `add`, etc.) — the PreToolUse hook only blocks read-only git verbs.
 
 ## Issue Tracking (beads)
 
