@@ -123,6 +123,20 @@
       },
     },
     {
+      description: 'MariaDB Operator Group',
+      groupName: 'MariaDB Operator',
+      matchDatasources: [
+        'docker',
+      ],
+      matchPackageNames: [
+        '/mariadb-operator/',
+        '/mariadb-operator-crds/',
+      ],
+      group: {
+        commitMessageTopic: '{{{groupName}}} group',
+      },
+    },
+    {
       description: '1Password Connect Group',
       groupName: '1Password Connect',
       matchDatasources: [
