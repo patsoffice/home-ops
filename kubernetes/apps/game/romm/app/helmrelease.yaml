@@ -16,7 +16,11 @@ spec:
     timeout: 15m
     cleanupOnFail: true
     remediation:
-      retries: 3
+      # Do NOT auto-rollback: ROMM runs forward-only DB migrations, so an
+      # older image cannot boot against a migrated schema. A rollback here
+      # wedges the app (old pod crash-loops on "unknown revision"). Leave a
+      # failed upgrade in place so it can self-heal / be fixed forward.
+      retries: 0
   values:
     controllers:
       romm:
