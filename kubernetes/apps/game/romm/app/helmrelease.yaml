@@ -63,6 +63,21 @@ spec:
                   timeoutSeconds: 1
                   failureThreshold: 3
               readiness: *probes
+              # 4.9.0's startup tasks take longer than the liveness budget
+              # (initialDelaySeconds 0, failureThreshold 3 = ~30s); gate
+              # liveness/readiness behind a startup probe so the app can bind
+              # :8080 before it gets killed. 60 * 10s = 10m startup budget.
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: *port
+                  initialDelaySeconds: 5
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 60
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
