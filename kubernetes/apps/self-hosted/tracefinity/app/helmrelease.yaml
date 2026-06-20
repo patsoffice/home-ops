@@ -18,7 +18,7 @@ spec:
             image:
               repository: ghcr.io/tracefinity/tracefinity
               # renovate: datasource=docker depName=ghcr.io/tracefinity/tracefinity
-              tag: 0.4.0@sha256:39df55295788e95d6777cca10ec3f8501097e74a2d6597473b402c1185134db7
+              tag: 0.5.1@sha256:d40044690261834ee2e96c1bff32074291748eac5bbd14894dbddd41f9819579
               pullPolicy: IfNotPresent
             env:
               TZ: America/Los_Angeles
