@@ -1,8 +1,12 @@
 ---
+# NOTE: the dragonfly-operator owns a NetworkPolicy named `dragonfly`
+# (intra-namespace 6379 + peer/operator 9999) and reconciles it back to its
+# own spec. These additive policies MUST use distinct names, or the operator
+# clobbers them and all cross-namespace access breaks.
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: dragonfly
+  name: dragonfly-allow-clients
 spec:
   podSelector:
     matchLabels:
@@ -12,7 +16,6 @@ spec:
   policyTypes:
     - Ingress
   ingress:
-    # Redis clients (6379)
     - from:
         - namespaceSelector:
             matchExpressions:
@@ -25,7 +28,20 @@ spec:
       ports:
         - port: 6379
           protocol: TCP
-    # Prometheus metrics (9999)
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: dragonfly-allow-prometheus
+spec:
+  podSelector:
+    matchLabels:
+      app: dragonfly
+      app.kubernetes.io/name: dragonfly
+      app.kubernetes.io/part-of: dragonfly
+  policyTypes:
+    - Ingress
+  ingress:
     - from:
         - namespaceSelector:
             matchLabels:
