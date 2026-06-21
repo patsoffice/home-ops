@@ -46,6 +46,34 @@ spec:
               ENABLE_RAG_WEB_SEARCH: false
               ENABLE_SEARCH_QUERY: false
             envFrom: *envFrom
+            probes:
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet: &probeHttp
+                    path: /health
+                    port: ${APP_PORT}
+                  initialDelaySeconds: 10
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 30
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet: *probeHttp
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet: *probeHttp
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 3
             resources:
               requests:
                 cpu: 500m
