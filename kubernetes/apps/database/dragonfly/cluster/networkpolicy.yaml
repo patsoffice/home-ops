@@ -2,7 +2,7 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: dragonfly-allow-prometheus
+  name: dragonfly
 spec:
   podSelector:
     matchLabels:
@@ -12,73 +12,24 @@ spec:
   policyTypes:
     - Ingress
   ingress:
+    # Redis clients (6379)
+    - from:
+        - namespaceSelector:
+            matchExpressions:
+              - key: kubernetes.io/metadata.name
+                operator: In
+                values:
+                  - self-hosted
+                  - game
+                  - llm
+      ports:
+        - port: 6379
+          protocol: TCP
+    # Prometheus metrics (9999)
     - from:
         - namespaceSelector:
             matchLabels:
               kubernetes.io/metadata.name: observability
       ports:
         - port: 9999
-          protocol: TCP
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: dragonfly-allow-self-hosted
-spec:
-  podSelector:
-    matchLabels:
-      app: dragonfly
-      app.kubernetes.io/name: dragonfly
-      app.kubernetes.io/part-of: dragonfly
-  policyTypes:
-    - Ingress
-  ingress:
-    - from:
-        - namespaceSelector:
-            matchLabels:
-              kubernetes.io/metadata.name: self-hosted
-      ports:
-        - port: 6379
-          protocol: TCP
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: dragonfly-allow-game
-spec:
-  podSelector:
-    matchLabels:
-      app: dragonfly
-      app.kubernetes.io/name: dragonfly
-      app.kubernetes.io/part-of: dragonfly
-  policyTypes:
-    - Ingress
-  ingress:
-    - from:
-        - namespaceSelector:
-            matchLabels:
-              kubernetes.io/metadata.name: game
-      ports:
-        - port: 6379
-          protocol: TCP
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: dragonfly-allow-llm
-spec:
-  podSelector:
-    matchLabels:
-      app: dragonfly
-      app.kubernetes.io/name: dragonfly
-      app.kubernetes.io/part-of: dragonfly
-  policyTypes:
-    - Ingress
-  ingress:
-    - from:
-        - namespaceSelector:
-            matchLabels:
-              kubernetes.io/metadata.name: llm
-      ports:
-        - port: 6379
           protocol: TCP
