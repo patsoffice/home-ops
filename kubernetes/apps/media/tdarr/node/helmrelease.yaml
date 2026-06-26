@@ -23,7 +23,7 @@ spec:
           app:
             image:
               repository: haveagitgat/tdarr_node
-              tag: 2.78.01@sha256:1ec96caf6735d3c1bae5e71540cfb686bfa3ad960eff5a2a526cc68e53551779
+              tag: 2.81.01@sha256:a0f47ec35dae7bfec7674a4d5749efe91c3a06ceb15ea038ff0dd83132f8568e
               pullPolicy: IfNotPresent
             env:
               - name: TZ
