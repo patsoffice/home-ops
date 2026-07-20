@@ -24,11 +24,12 @@ spec:
   path: ./kubernetes/apps/self-hosted/tandoor/app
   postBuild:
     substitute:
-      VOLSYNC_SCHEDULE: "34 * * * *"
       APP: *app
       APP_PORT: "8080"
       APP_UID: "568"
       APP_GID: "568"
+      VOLSYNC_SCHEDULE: "34 * * * *"
+      VOLSYNC_CACHE_CAPACITY: 5Gi
     substituteFrom:
       - name: cluster-secrets
         kind: Secret
