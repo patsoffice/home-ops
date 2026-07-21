@@ -57,7 +57,3 @@ spec:
             subPath: u2net
           - path: /root/.transparent-background
             subPath: transparent-background
-      tmp:
-        type: emptyDir
-        globalMounts:
-          - path: /tmp
