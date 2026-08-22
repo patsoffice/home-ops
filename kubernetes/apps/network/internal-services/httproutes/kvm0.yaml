@@ -5,6 +5,11 @@ kind: Backend
 metadata:
   name: kvm0
 spec:
+  # PiKVM's nginx advertises h2 via ALPN, and Envoy's default auto-negotiation
+  # picks it. nginx does not support WebSockets over HTTP/2, so the /api/ws
+  # upgrade is rejected with 400. wss pins the upstream to HTTP/1.1.
+  appProtocols:
+    - gateway.envoyproxy.io/wss
   endpoints:
     - ip:
         address: 192.168.0.30
