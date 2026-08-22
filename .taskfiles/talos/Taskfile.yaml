@@ -101,3 +101,14 @@ tasks:
       - talosctl config info
       - talosctl --nodes {{.NODE}} get machineconfig
       - which talosctl
+
+  shutdown-node:
+    desc: Gracefully power off a single node for maintenance [NODE=required]
+    prompt: This will power off {{.NODE}} until it is manually powered back on... continue?
+    cmd: talosctl --nodes {{.NODE}} shutdown
+    requires:
+      vars: [NODE]
+    preconditions:
+      - talosctl config info
+      - talosctl --nodes {{.NODE}} get machineconfig
+      - which talosctl
