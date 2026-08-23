@@ -43,6 +43,17 @@ spec:
         urlPrefix: /
         ssl: false
         prometheusEndpoint: http://prometheus-operated.observability.svc.cluster.local:9090
+      healthCheck:
+        # These three cannot clear while the CSI keys stay on `aes` (see
+        # security.cephx.csi below). Rook mutes with `--sticky`, so they stay
+        # muted even once fixed — flip to `policy: unmute` to re-expose them.
+        muteHealthWarning:
+          AUTH_INSECURE_CLIENT_KEY_TYPE:
+            policy: mute
+          AUTH_INSECURE_KEYS_ALLOWED:
+            policy: mute
+          AUTH_INSECURE_KEYS_CREATABLE:
+            policy: mute
       mgr:
         modules:
           - name: diskprediction_local
@@ -62,6 +73,22 @@ spec:
             # mgr working set grows ~23 MB/day; 1Gi (chart default) OOMs
             # the active mgr every ~13 days. 2Gi gives ~2 months headroom.
             memory: 2Gi
+      security:
+        # CVE-2025-30156: cephx AES-CBC service tickets have no effective
+        # integrity check, so their caps can be escalated undetected. Fixed by
+        # rotating keys to the aes256k type added in Ceph v20.2.4 / Rook v1.20.6.
+        cephx:
+          # Rotates mon/mgr/osd/mds plus the admin, crash and ceph-exporter
+          # keys, which restarts those daemons. keyType is left unset: Rook has
+          # already set auth_preferred_cipher=aes256k, so rotation picks it up.
+          daemon:
+            keyRotationPolicy: KeyGeneration
+            keyGeneration: 2
+          # Pinned to the pre-CVE type on purpose. aes256k for CSI PVCs needs
+          # kernel 7.0+ on every node; Talos is on 6.18, and rotating these
+          # would break every krbd and kernel-cephfs mount in the cluster.
+          csi:
+            keyType: aes
       network:
         provider: host
         addressRanges:
