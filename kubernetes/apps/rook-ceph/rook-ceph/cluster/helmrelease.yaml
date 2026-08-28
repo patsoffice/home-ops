@@ -100,6 +100,9 @@ spec:
         config:
           osdsPerDevice: "1"
         nodes:
+          - name: k8s-00
+            devices:
+              - name: "/dev/disk/by-id/nvme-SAMSUNG_MZ1L21T9HCLS-00A07_S666NE0R400468"
           - name: k8s-01
             devices:
               - name: "/dev/disk/by-id/nvme-CT2000P310SSD8_24484CC1C012"
