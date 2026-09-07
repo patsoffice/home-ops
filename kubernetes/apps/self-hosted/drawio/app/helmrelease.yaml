@@ -24,7 +24,7 @@ spec:
           app:
             image:
               repository: docker.io/jgraph/drawio
-              tag: latest@sha256:19d71d91d092e65132ea22b2e1cfcddf9716402a01386fbaae7190cf689adeb0
+              tag: latest@sha256:7b0cd0d943b6b46825ce42bc0f406e26b1f5155bf71892fc2095069c73a817d5
               pullPolicy: IfNotPresent
             probes:
               liveness:
