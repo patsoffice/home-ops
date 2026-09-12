@@ -19,7 +19,9 @@ spec:
     # content=20%/metadata=40% of cacheCapacity, ~40% headroom. Scaled per-app.
     contentCacheSizeLimitMB: ${VOLSYNC_KOPIA_CONTENT_CACHE_MB:=1024}
     metadataCacheSizeLimitMB: ${VOLSYNC_KOPIA_METADATA_CACHE_MB:=2048}
-    cacheStorageClassName: ${VOLSYNC_CACHE_SNAPSHOTCLASS:=ceph-block}
+    # XFS so kopia's many small cache files can't exhaust a fixed ext4 inode
+    # table before the byte limits above bite — see replicationsource.yaml.
+    cacheStorageClassName: ${VOLSYNC_CACHE_SNAPSHOTCLASS:=ceph-block-xfs}
     capacity: ${VOLSYNC_CAPACITY:=5Gi}
     cleanupCachePVC: true
     cleanupTempPVC: true

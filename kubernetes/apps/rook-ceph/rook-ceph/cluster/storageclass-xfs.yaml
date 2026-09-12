@@ -1,0 +1,38 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/storage.k8s.io/storageclass_v1.json
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: ceph-block-xfs
+# Same RBD pool and CSI wiring as `ceph-block` (defined inline by the
+# rook-ceph-cluster HelmRelease), but formatted XFS instead of ext4. The chart
+# only renders one storageClass per cephBlockPools entry, so this is a standalone
+# manifest rather than a second entry in that list — keep the parameters below in
+# sync with helmrelease.yaml's ceph-block storageClass.
+#
+# Why XFS: ext4 fixes its bytes-per-inode ratio at mkfs time (16Ki here, so a
+# 10Gi volume gets exactly 655360 inodes, forever). Kopia's volsync cache files
+# average 9-15KB, under that ratio, so the inode table is exhausted while the
+# volume is only ~55-84% full and backups fail ENOSPC with space to spare. XFS
+# allocates inodes dynamically (imaxpct=25 by default), so inodes cannot run out
+# before bytes do. Intended for volsync cache PVCs; see VOLSYNC_CACHE_SNAPSHOTCLASS
+# in kubernetes/components/volsync/.
+provisioner: rook-ceph.rbd.csi.ceph.com
+reclaimPolicy: Delete
+allowVolumeExpansion: true
+volumeBindingMode: Immediate
+mountOptions: ["discard"]
+parameters:
+  clusterID: rook-ceph
+  pool: ceph-blockpool
+  compression_mode: aggressive
+  compression_algorithm: zstd
+  imageFormat: "2"
+  imageFeatures: layering,fast-diff,object-map,deep-flatten,exclusive-lock
+  csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
+  csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
+  csi.storage.k8s.io/controller-expand-secret-name: rook-csi-rbd-provisioner
+  csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
+  csi.storage.k8s.io/node-stage-secret-name: rook-csi-rbd-node
+  csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
+  csi.storage.k8s.io/fstype: xfs

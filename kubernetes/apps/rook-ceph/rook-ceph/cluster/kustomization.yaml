@@ -8,3 +8,4 @@ resources:
   - ./grafanadashboard-pools.yaml
   - ./helmrelease.yaml
   - ./ocirepository.yaml
+  - ./storageclass-xfs.yaml

@@ -23,9 +23,18 @@ spec:
     # PVCs fill and backups fail with ENOSPC. We use content=20%/metadata=40%
     # (60% total, ~40% headroom). Defaults below are sized for the 5Gi default;
     # apps overriding VOLSYNC_CACHE_CAPACITY scale these in their ks.yaml.
+    # NOTE: these cap the cache in BYTES only, nothing caps file count — see the
+    # cacheStorageClassName comment below for why that matters.
     contentCacheSizeLimitMB: ${VOLSYNC_KOPIA_CONTENT_CACHE_MB:=1024}
     metadataCacheSizeLimitMB: ${VOLSYNC_KOPIA_METADATA_CACHE_MB:=2048}
-    cacheStorageClassName: ${VOLSYNC_CACHE_SNAPSHOTCLASS:=ceph-block}
+    # XFS, not ext4 (ceph-block). ext4 fixes bytes-per-inode at mkfs time (16Ki,
+    # so a 10Gi cache gets 655360 inodes forever) while kopia's cache files
+    # average 9-15KB — so the inode table exhausts while the volume is only
+    # ~55-84% full, tripping KubePersistentVolumeInodesFillingUp and eventually
+    # ENOSPC with bytes to spare. XFS allocates inodes dynamically. The source
+    # cache PVC is long-lived (cleanupCachePVC is destination-only), so it
+    # accrues this over months. See kubernetes/apps/rook-ceph/.../storageclass-xfs.yaml
+    cacheStorageClassName: ${VOLSYNC_CACHE_SNAPSHOTCLASS:=ceph-block-xfs}
     compression: zstd-fastest
     copyMethod: Snapshot
     moverSecurityContext:
