@@ -76,6 +76,8 @@ kind: Service
 metadata:
   name: postgres17-lb
   annotations:
+    # NOTE: stays on the alpha prefix — consumed by k8s_gateway (internal DNS),
+    # which hardcodes external-dns.alpha.kubernetes.io/hostname.
     external-dns.alpha.kubernetes.io/hostname: postgres17.chezlawrence.com
     lbipam.cilium.io/ips: 192.168.5.10
 spec:
