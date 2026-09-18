@@ -21,7 +21,7 @@ spec:
     substitute:
       VOLSYNC_SCHEDULE: "42 * * * *"
       APP: *app
-      APP_PORT: "80"
+      APP_PORT: "8080"
       VOLSYNC_CAPACITY: 5Gi
       VOLSYNC_CACHE_CAPACITY: 10Gi
       VOLSYNC_KOPIA_CONTENT_CACHE_MB: "2048"
