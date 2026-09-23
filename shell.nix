@@ -1,9 +1,17 @@
-# Reproduces the mise environment (.mise.toml) as a nix-shell.
+# The Linux dev shell — the counterpart to mise (.mise.toml), which handles
+# macOS.
 # Usage:  nix-shell        (from the repo root)
 #
-# Provides the same CLI tools, the [env] variables, and an auto-created
+# Provides the same CLI tools, the same [env] variables, and an auto-created
 # Python virtualenv at ./.venv — the equivalent of mise's
 #   _.python.venv = { path = ".venv", create = true }
+#
+# It deliberately does NOT track mise's tool *versions*. Those come from aqua;
+# these come from the nixpkgs pin below. Matching them per-tool would mean an
+# overlay-with-its-own-hash for every entry, re-done on every Renovate bump,
+# to buy patch-level parity on clients where it doesn't matter. The one
+# exception is flux-local (see shellHook), pinned to match CI so that a local
+# run predicts the PR check.
 #
 # nixpkgs is pinned in ./nix/nixpkgs.json (tracks nixpkgs-unstable) so the
 # dev shell is reproducible and independent of the host's channels/registry.
@@ -67,8 +75,14 @@ pkgs.mkShell {
       ${python}/bin/python -m venv "$ROOT_DIR/.venv"
       # flux-local is not packaged in nixpkgs; best-effort pip install.
       # (makejinja is provided by nixpkgs above, no pip needed.)
+      #
+      # Keep level with the flux-local image in
+      # .github/workflows/flux-local.yaml — a local run only predicts the PR
+      # check when the versions match. Renovate bumps both, plus .mise.toml.
+      # renovate: datasource=pypi depName=flux-local
+      flux_local_version=8.4.0
       "$ROOT_DIR/.venv/bin/pip" install --quiet --upgrade pip \
-        && "$ROOT_DIR/.venv/bin/pip" install --quiet flux-local==8.2.0 \
+        && "$ROOT_DIR/.venv/bin/pip" install --quiet "flux-local==$flux_local_version" \
         || echo "shell.nix: warning — 'flux-local' pip install failed (enable programs.nix-ld if you need it)."
     fi
     source "$ROOT_DIR/.venv/bin/activate"
