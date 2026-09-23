@@ -10,7 +10,7 @@ spec:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: 26.6.0
+    tag: 26.10.1
   url: oci://ghcr.io/mariadb-operator/charts/mariadb-operator-crds
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/ocirepository_v1.json
@@ -24,5 +24,5 @@ spec:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: 26.6.0
+    tag: 26.10.1
   url: oci://ghcr.io/mariadb-operator/charts/mariadb-operator
