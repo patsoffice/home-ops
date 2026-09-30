@@ -63,16 +63,40 @@ spec:
           - name: pg_autoscaler
             enabled: true
           - name: rook
-            enabled: true
+            # Disabled for the mgr memory leak: get_osds(), get_resource() and
+            # the device fetchers each build a KubernetesResource per call,
+            # leaking a watcher thread and HTTPS connection every time, so
+            # polling the orchestrator walks the active mgr into its limit
+            # (ceph/ceph#71754, not in 20.2.4). Rook reconciles through its
+            # CRDs and does not need the module; the cost is that `ceph orch`
+            # and the dashboard's orchestrator-backed views stop working.
+            # Re-enable once the fix ships.
+            enabled: false
       resources:
         mgr:
           requests:
             cpu: 500m
             memory: 1Gi
           limits:
-            # mgr working set grows ~23 MB/day; 1Gi (chart default) OOMs
-            # the active mgr every ~13 days. 2Gi gives ~2 months headroom.
+            # Measured ~95 MB/day over 30d on 20.2.4 with the rook module
+            # still on -- ~4x the ~23 MB/day this was first tuned for, making
+            # 2Gi about 3 weeks rather than the ~2 months claimed before.
+            # Holding at 2Gi on the assumption that disabling rook above
+            # removes most of it; re-measure before trusting the headroom.
             memory: 2Gi
+        mon:
+          requests:
+            # Chart defaults, kept as-is so scheduling does not change.
+            cpu: 1000m
+            memory: 1Gi
+          limits:
+            # mon leaks ~55-100 MB/day on 20.2.4 while the cluster is
+            # HEALTH_OK with every PG active+clean, so the chart's 2Gi default
+            # OOMs each mon ~4 weeks after it starts: mon-n and mon-o both
+            # died that way within 16h of each other. 4Gi is ~6 weeks, which
+            # outlasts the Talos upgrade cadence that recycles them -- revisit
+            # if upgrades ever get further apart than that.
+            memory: 4Gi
       security:
         # CVE-2025-30156: cephx AES-CBC service tickets have no effective
         # integrity check, so their caps can be escalated undetected. Fixed by
