@@ -8,7 +8,9 @@ spec:
   mariaDbRef:
     name: mariadb-wordpress-poc
   schedule:
-    cron: "0 */4 * * *"
+    # Offset from mariadb-wordpress-gds-backup's "0 */4 * * *": both firing on
+    # the hour drove the operator's working set into its memory limit.
+    cron: "20 */4 * * *"
   maxRetention: 336h
   storage:
     s3:

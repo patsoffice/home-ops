@@ -41,4 +41,7 @@ spec:
         cpu: 10m
         memory: 150Mi
       limits:
-        memory: 256Mi
+        # Idles at ~160Mi (i.e. at its request) but peaks to 247-255Mi when the
+        # Backup schedules fire, so 256Mi left only ~1.6x headroom over
+        # baseline and OOMKilled the controller 3x in the week of 2026-09-22.
+        memory: 512Mi
