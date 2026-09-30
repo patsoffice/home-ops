@@ -78,7 +78,13 @@ exclude:
       - '*.Stfolder'
       - syncthing
 filesystem:
-  roms_folder: roms
+  # 5.3.0 removed filesystem.roms_folder/firmware_folder and no longer detects
+  # the layout — an instance that still sets either refuses to start. These
+  # templates are RomM's "structure B", matching nas0:/tank/roms, which holds
+  # <platform>/roms/<game> and <platform>/bios.
+  structure:
+    default: "{platform}/roms/{game}"
+    firmware: "{platform}/bios"
 system:
   platforms:
     3do: 3do
