@@ -14,4 +14,4 @@ spec:
       inputName: DS_PROMETHEUS
   # renovate: depName="SMARTctl Exporter Dashboard"
   # gnetId: 22604
-  url: https://grafana.com/api/dashboards/22604/revisions/3/download
+  url: https://grafana.com/api/dashboards/22604/revisions/4/download
