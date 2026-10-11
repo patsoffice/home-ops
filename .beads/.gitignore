@@ -3,6 +3,11 @@
 *.db-journal
 *.db-shm
 *.db-wal
+*.db-wal*
+*.fsqlite-migration-state
+*.vacuum-wal-cert*
+*-fsqlite-ns-gate
+*-fsqlite-ns-use
 
 # Lock files
 *.lock
@@ -38,3 +43,7 @@ redirect
 
 # bv (beads viewer) lock file
 .bv.lock
+
+# Ephemeral recovery and WAL-index state
+.br_recovery/
+.br-wal-index-*/

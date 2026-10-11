@@ -21,3 +21,5 @@ talosconfig
 .claude/
 .DS_Store
 Thumbs.db
+# br doctor per-run artifacts
+.doctor/

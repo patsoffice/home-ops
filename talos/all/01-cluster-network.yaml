@@ -1,0 +1,11 @@
+# Cluster-wide network (from talconfig top-level fields).
+# Machine certSANs live in 02-machine-certsans.yaml.tpl (domain is SOPS-encrypted).
+cluster:
+  network:
+    # Disable built-in CNI to use Cilium
+    cni:
+      name: none
+    podSubnets:
+      - "10.192.0.0/16"
+    serviceSubnets:
+      - "10.193.0.0/16"

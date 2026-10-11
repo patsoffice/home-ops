@@ -1,0 +1,4 @@
+machine:
+  install:
+    diskSelector:
+      serial: 24524D2E4CCA

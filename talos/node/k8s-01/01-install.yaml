@@ -1,0 +1,4 @@
+machine:
+  install:
+    diskSelector:
+      serial: 25044DBF2A09
