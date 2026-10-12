@@ -24,6 +24,39 @@
 
 let
   python = pkgs.python314;
+
+  # topf is not in nixpkgs — install the pinned upstream release binary
+  # (Linux x86_64; macOS gets it via aqua in .mise.toml). The version is the
+  # single source of truth in the release URL below so Renovate can bump it;
+  # after a bump, refresh sha256 with:
+  #   nix-prefetch-url --type sha256 <url> | xargs nix-hash --to-base32 --type sha256
+  topf =
+    let
+      # renovate: datasource=github-releases depName=postfinance/topf
+      url = "https://github.com/postfinance/topf/releases/download/v0.6.1/topf_linux_amd64.tar.gz";
+      version = builtins.head (builtins.match ".*/v([0-9.]+)/.*" url);
+    in
+    pkgs.stdenv.mkDerivation {
+      pname = "topf";
+      inherit version;
+      src = pkgs.fetchurl {
+        inherit url;
+        sha256 = "0hfkh0f01id5wy5xk0jyrps815n4c6dax3njsw18nn5qgi99wfbg";
+      };
+      sourceRoot = ".";
+      dontConfigure = true;
+      dontBuild = true;
+      installPhase = ''
+        runHook preInstall
+        install -Dm755 topf -t $out/bin
+        runHook postInstall
+      '';
+      meta = with pkgs.lib; {
+        description = "Talos orchestrator by PostFinance";
+        homepage = "https://github.com/postfinance/topf";
+        platforms = [ "x86_64-linux" ];
+      };
+    };
 in
 pkgs.mkShell {
   name = "home-ops";
@@ -33,7 +66,8 @@ pkgs.mkShell {
 
     # [tools] from .mise.toml — nixpkgs equivalents
     makejinja # pipx:makejinja
-    talhelper # aqua:budimanjojo/talhelper
+    topf # aqua:postfinance/topf
+    talhelper # aqua:budimanjojo/talhelper (retire after the topf cutover)
     cilium-cli # aqua:cilium/cilium-cli
     gh # aqua:cli/cli
     cloudflared # aqua:cloudflare/cloudflared
