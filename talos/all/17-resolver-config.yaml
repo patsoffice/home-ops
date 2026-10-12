@@ -1,0 +1,12 @@
+# Replaces legacy machine.network nameservers/disableSearchDomain (removed from
+# v1alpha1 in Talos 1.14). disableDefault covers the FQDN-derived default; with
+# static IPs on metal there are no DHCP/platform search domains to clear.
+# hostDNS stays at the generator default (enabled, forwardKubeDNSToHost).
+apiVersion: v1alpha1
+kind: ResolverConfig
+nameservers:
+  - address: 192.168.0.100
+  - address: 192.168.0.101
+  - address: 9.9.9.9
+searchDomains:
+  disableDefault: true

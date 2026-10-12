@@ -1,0 +1,5 @@
+# CoreDNS stays disabled (replaces legacy cluster.coreDNS.disabled).
+# DNS is served by the external CoreDNS deployment.
+apiVersion: v1alpha1
+kind: KubeCoreDNSConfig
+enabled: false

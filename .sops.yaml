@@ -1,5 +1,9 @@
 ---
 creation_rules:
+  - path_regex: talos/topf\.yaml$
+    encrypted_regex: ^data$
+    mac_only_encrypted: true
+    age: "age19um8c7z6ckqsddthp6ecprlh69dg66kfwhfs9d6jvq7wze9pj5nqxy5dau"
   - path_regex: talos/.*\.sops\.ya?ml
     mac_only_encrypted: true
     age: "age19um8c7z6ckqsddthp6ecprlh69dg66kfwhfs9d6jvq7wze9pj5nqxy5dau"

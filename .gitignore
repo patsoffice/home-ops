@@ -13,6 +13,8 @@
 # Kubernetes
 kubeconfig
 talosconfig
+# topf render output (default ./output under talos/)
+talos/output/
 # Misc.
 .obsidian/
 .private/
@@ -21,3 +23,5 @@ talosconfig
 .claude/
 .DS_Store
 Thumbs.db
+# br doctor per-run artifacts
+.doctor/

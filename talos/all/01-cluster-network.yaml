@@ -1,0 +1,10 @@
+# Cluster-wide network as the typed 1.14 document (replaces legacy
+# cluster.network, removed from v1alpha1 in Talos 1.14). dnsDomain stays at
+# the generator default (cluster.local); CNI stays disabled via the
+# KubeFlannelCNIConfig delete in control-plane/08-kube-flannel-cni-delete.yaml.
+apiVersion: v1alpha1
+kind: KubeNetworkConfig
+podSubnets:
+  - "10.192.0.0/16"
+serviceSubnets:
+  - "10.193.0.0/16"

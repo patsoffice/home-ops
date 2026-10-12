@@ -1,0 +1,5 @@
+# kube-proxy stays disabled (Cilium handles it). Replaces legacy
+# cluster.proxy.disabled.
+apiVersion: v1alpha1
+kind: KubeProxyConfig
+enabled: false

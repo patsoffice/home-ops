@@ -1,0 +1,10 @@
+# cluster.etcd has no multi-doc replacement in Talos 1.14 and stays v1alpha1.
+# Scheduling (allowSchedulingOnControlPlanes) moved to the KubeNodeConfig
+# taint delete in all/11-machine-kubelet.yaml; CoreDNS moved to
+# control-plane/09-kube-coredns-disable.yaml.
+cluster:
+  etcd:
+    extraArgs:
+      listen-metrics-urls: http://0.0.0.0:2381
+    advertisedSubnets:
+      - 192.168.0.0/21

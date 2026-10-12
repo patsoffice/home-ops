@@ -1,0 +1,9 @@
+# Talos 1.14 auto-emits PodSecurity (enforce: baseline) admission config. This
+# cluster has always run without admission config (the legacy 1.13 field was
+# deleted too) — keep it deleted so privileged workloads keep working.
+# NOTE: the delete must name the doc (name: PodSecurity) to match anything.
+# NOTE: single $ — talhelper's envsubst required $$ escaping, topf does not.
+apiVersion: v1alpha1
+kind: KubeAdmissionControlConfig
+name: PodSecurity
+$patch: delete

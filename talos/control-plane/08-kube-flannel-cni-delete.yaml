@@ -1,0 +1,6 @@
+# The 1.14 generator emits a KubeFlannelCNIConfig doc by default; this cluster
+# runs Cilium with no built-in CNI (legacy cluster.network.cni.name: none),
+# so delete it to preserve the effective config.
+apiVersion: v1alpha1
+kind: KubeFlannelCNIConfig
+$patch: delete

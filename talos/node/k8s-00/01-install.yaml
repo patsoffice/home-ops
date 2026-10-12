@@ -1,0 +1,11 @@
+# Install disk as the typed 1.14 document (replaces legacy
+# machine.install.diskSelector, removed from v1alpha1 in Talos 1.14).
+# The serial pin keeps reinstalls targeting this exact disk instead of the
+# generator default (/dev/sda). wipe: false preserves the old behavior.
+# Installer image comes from the generator (schematicId + talosVersion).
+apiVersion: v1alpha1
+kind: UnattendedInstallConfig
+provisioning:
+  diskSelector:
+    match: disk.serial == "24494CB39CDC"
+  wipe: false

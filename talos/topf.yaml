@@ -1,0 +1,47 @@
+clusterName: kubernetes
+clusterEndpoint: https://192.168.6.0:6443
+# renovate: datasource=docker depName=ghcr.io/siderolabs/installer-base
+talosVersion: v1.14.2
+# renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
+kubernetesVersion: v1.37.1
+# Installer image derived from factory + schematicId + talosVersion
+# (replaces per-node talosImageURL; verify with `topf schematic-ids`).
+schematicId: '@schematic.yaml'
+# Talos secrets bundle (same format talhelper used).
+secretsPath: talsecret.sops.yaml
+# Templating values. Only `data` is SOPS-encrypted (see .sops.yaml rule for
+# topf.yaml) so the rest of this file stays diffable.
+data:
+  controlPlaneSAN: ENC[AES256_GCM,data:1kJigWzM6oYELR+ipG0kRdYtkuMLbqk1,iv:cQ3eBt46nYvDcCY3KNoQaxVZPUDt9H5h/qT54NW+Z8M=,tag:zDJlHG4Ad9XE3sTLfQDsVg==,type:str]
+nodes:
+  - host: k8s-00
+    ip: 192.168.1.10
+    role: control-plane
+  - host: k8s-01
+    ip: 192.168.1.11
+    role: control-plane
+  - host: k8s-02
+    ip: 192.168.1.12
+    role: control-plane
+  - host: k8s-03
+    ip: 192.168.1.13
+    role: control-plane
+  - host: k8s-04
+    ip: 192.168.1.14
+    role: control-plane
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBncExSNUZLY2RwdStJQUV1
+        RWpyd1NyUjFLNHIwQk5YWUhaTUlwazU0ZHdjClduUkpKZ1owbXIzc1NjODIvZm5D
+        YXR4cDdxVWJ2bE5TeHB3cXVJZGVNa2cKLS0tIHdmbER3ZXFxYnlvRFpGWFhyelN4
+        RUpLUk9CN0JBL2FESkFTRDFVNUpHeW8KjNEQlWPSmzkrXqEDXL5/sDvxygstDt6p
+        1NhxhCwmWE+oy6vKFdQYTyww2lhtg9A68FdXqJ7NzhhtJkU8C+SQJg==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age19um8c7z6ckqsddthp6ecprlh69dg66kfwhfs9d6jvq7wze9pj5nqxy5dau
+  encrypted_regex: ^data$
+  lastmodified: "2026-10-11T17:46:17Z"
+  mac: ENC[AES256_GCM,data:ejw98XBnYGctf4IEAMo5DhNB4PJcZE3IZ9qvBCG9mWK4rx4zDvscLfcGaYHlKqVGqfMXw4cpSLNhiQQKF1SGlms5SSAzcI3fJn4VsX04bCwQY8g6VqKWb92P+FOxZEJi4FJqF7wm8TRoPdlNlgPTvseX1pJ4DsJH62xHvT4hxN4=,iv:PKzSinuuVo7jqVwVZt177Prn38iG9WSGXMRXhYYpzMA=,tag:9TP3qyDQF2/IMNdF/+8AcA==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3

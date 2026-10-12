@@ -1,0 +1,9 @@
+# NTP servers as the typed 1.14 document (replaces legacy machine.time,
+# removed from v1alpha1 in Talos 1.14). Sync stays enabled, which matches
+# the old `disabled: false`.
+apiVersion: v1alpha1
+kind: TimeSyncConfig
+ntp:
+  servers:
+    - 162.159.200.1
+    - 162.159.200.123
