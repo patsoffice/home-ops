@@ -1,11 +1,27 @@
-machine:
-  kubelet:
-    extraConfig:
-      featureGates:
-        ResourceHealthStatus: true
-      serializeImagePulls: false
-      imageGCHighThresholdPercent: 70
-      imageGCLowThresholdPercent: 50
-    nodeIP:
-      validSubnets:
-        - 192.168.0.0/21
+# Kubelet extra config as the typed 1.14 document (replaces legacy
+# machine.kubelet.extraConfig, renamed to `config` in Talos 1.14).
+# Image comes from the generator (topf.yaml kubernetesVersion).
+apiVersion: v1alpha1
+kind: KubeletConfig
+config:
+  featureGates:
+    ResourceHealthStatus: true
+  serializeImagePulls: false
+  imageGCHighThresholdPercent: 70
+  imageGCLowThresholdPercent: 50
+---
+# Kubelet node IP as the typed 1.14 document (replaces legacy
+# machine.kubelet.nodeIP). Nodes have several addresses, so keep picking
+# the node IP from the LAN subnet. Merges with the generated doc that
+# carries the control-plane labels and taints.
+apiVersion: v1alpha1
+kind: KubeNodeConfig
+nodeIP:
+  validSubnets:
+    - 192.168.0.0/21
+# Scheduling runs on the control planes (replaces legacy
+# cluster.allowSchedulingOnControlPlanes). Delete the generator default
+# NoSchedule taint so workloads keep landing here.
+taints:
+  node-role.kubernetes.io/control-plane:
+    $patch: delete

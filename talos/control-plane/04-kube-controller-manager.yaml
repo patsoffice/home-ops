@@ -1,0 +1,5 @@
+# Controller manager bind (replaces legacy cluster.controllerManager.extraArgs).
+apiVersion: v1alpha1
+kind: KubeControllerManagerConfig
+extraArgs:
+  bind-address: 0.0.0.0

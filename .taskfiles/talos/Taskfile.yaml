@@ -80,10 +80,14 @@ tasks:
   upgrade-k8s:
     desc: Upgrade Kubernetes to topf.yaml kubernetesVersion (via talosctl, per topf docs)
     dir: '{{.TALOS_DIR}}'
-    cmd: talosctl upgrade-k8s --to '{{.KUBERNETES_VERSION}}'
+    # upgrade-k8s orchestrates cluster-wide through exactly one node; pin the
+    # first control-plane node from topf.yaml (talosconfig lists all endpoints).
+    cmd: talosctl upgrade-k8s --nodes '{{.NODE_IP}}' --to '{{.KUBERNETES_VERSION}}'
     vars:
       KUBERNETES_VERSION:
         sh: yq '.kubernetesVersion' {{.TALOS_DIR}}/topf.yaml
+      NODE_IP:
+        sh: yq '.nodes[0].ip' {{.TALOS_DIR}}/topf.yaml
     preconditions:
       - talosctl config info
       - test -f {{.TALOSCONFIG}}

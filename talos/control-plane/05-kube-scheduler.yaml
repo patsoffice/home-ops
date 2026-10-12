@@ -1,0 +1,5 @@
+# Scheduler bind (replaces legacy cluster.scheduler.extraArgs).
+apiVersion: v1alpha1
+kind: KubeSchedulerConfig
+extraArgs:
+  bind-address: 0.0.0.0
