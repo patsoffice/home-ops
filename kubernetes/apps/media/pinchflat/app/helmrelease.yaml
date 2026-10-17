@@ -29,7 +29,7 @@ spec:
           app:
             image:
               repository: ghcr.io/thebadfella/pinchflat-ngx
-              tag: 2026.9.28@sha256:b5e3b8098cf8a4478ea4e00e062d0657c68b4fd21efa8e63ae5b5c18ef472a23
+              tag: 2026.10.16@sha256:cd3d79471950e99d0874845124ee09d74edb780d2aac1240512eed3edb2b2ad8
               pullPolicy: IfNotPresent
             env:
               TZ: America/Los_Angeles
