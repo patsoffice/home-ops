@@ -28,3 +28,46 @@ tasks:
     preconditions:
       - msg: requires git, jq and nix-prefetch-url on PATH
         sh: which git jq nix-prefetch-url
+
+  diff:
+    desc: 'Preview tool version changes a nixpkgs pin bump would bring (var BRANCH, default nixpkgs-unstable)'
+    dir: '{{.ROOT_DIR}}'
+    vars:
+      BRANCH: '{{.BRANCH | default "nixpkgs-unstable"}}'
+    cmds:
+      - |
+        set -eu
+        rev=$(git ls-remote https://github.com/NixOS/nixpkgs.git "refs/heads/{{.BRANCH}}" | cut -f1)
+        [ -n "$rev" ] || { echo "error: could not resolve {{.BRANCH}} HEAD" >&2; exit 1; }
+        old_rev=$(jq -r .rev "{{.PIN_FILE}}")
+        if [ "$rev" = "$old_rev" ]; then
+          echo "Pin already at {{.BRANCH}} HEAD (${rev}); nothing would change."
+          exit 0
+        fi
+        url="https://github.com/NixOS/nixpkgs/archive/${rev}.tar.gz"
+        echo "Prefetching nixpkgs {{.BRANCH}} @ ${rev} ..."
+        sha256=$(nix-prefetch-url --unpack --type sha256 "$url")
+        old_url=$(jq -r .url "{{.PIN_FILE}}")
+        old_sha256=$(jq -r .sha256 "{{.PIN_FILE}}")
+        # Nixpkgs attribute names matching the shell.nix package list.
+        # topf is pinned in shell.nix itself, so it never changes here.
+        names="python314 makejinja talhelper cilium-cli gh cloudflared cue age fluxcd sops go-task kubernetes-helm helmfile jq kustomize kubectl yq-go talosctl kubeconform envsubst krew restic trivy"
+        versions() {
+          list=$(printf '"%s" ' $3)
+          nix-instantiate --eval --strict --json -E "let pkgs = import (fetchTarball { url = \"$1\"; sha256 = \"$2\"; }) {}; in builtins.listToAttrs (map (n: { name = n; value = (pkgs.\${n}.version or \"n/a\"); }) [ $list ])"
+        }
+        old_versions=$(versions "$old_url" "$old_sha256" "$names")
+        new_versions=$(versions "$url" "$sha256" "$names")
+        jq -n --argjson old "$old_versions" --argjson new "$new_versions" -r '
+          ($new | to_entries) as $entries
+          | ([$entries[] | select($old[.key] != .value)]) as $changed
+          | if ($changed | length) == 0 then
+              "No tool version changes (\($entries | length) tools compared; topf is pinned in shell.nix)."
+            else
+              ($changed[] | "\(.key): \($old[.key]) -> \(.value)"),
+              "---",
+              "\($changed | length) of \($entries | length) tools change ({{.BRANCH}} ${old_rev} -> ${rev}; topf is pinned in shell.nix)"
+            end'
+    preconditions:
+      - msg: requires git, jq, nix-prefetch-url and nix-instantiate on PATH
+        sh: which git jq nix-prefetch-url nix-instantiate
