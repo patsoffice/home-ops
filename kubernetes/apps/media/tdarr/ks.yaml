@@ -53,6 +53,8 @@ spec:
   components:
     - ../../../../components/gpu
   dependsOn:
+    - name: external-secrets-stores
+      namespace: external-secrets
     - name: intel-gpu-resource-driver
       namespace: kube-system
   interval: 1h
