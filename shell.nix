@@ -33,7 +33,7 @@ let
   topf =
     let
       # renovate: datasource=github-releases depName=postfinance/topf
-      url = "https://github.com/postfinance/topf/releases/download/v0.6.1/topf_linux_amd64.tar.gz";
+      url = "https://github.com/postfinance/topf/releases/download/v0.6.2/topf_linux_amd64.tar.gz";
       version = builtins.head (builtins.match ".*/v([0-9.]+)/.*" url);
     in
     pkgs.stdenv.mkDerivation {
