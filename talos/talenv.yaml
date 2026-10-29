@@ -3,4 +3,4 @@
 # Restored to v1.14.2/v1.37.1 with the 1.14 conversion.
 talosVersion: v1.13.10
 # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
-kubernetesVersion: v1.37.1
+kubernetesVersion: v1.37.2
