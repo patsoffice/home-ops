@@ -45,7 +45,10 @@ spec:
     service:
       app:
         controller: *app
+        # Valetudo vacuums on the IoT VLAN publish here (UniFi group "MQTT Broker")
+        type: LoadBalancer
         annotations:
+          lbipam.cilium.io/ips: 192.168.5.106
           gatus.home-operations.com/enabled: "true"
           gatus.home-operations.com/endpoint: |-
             url: tcp://mosquitto.home.svc.cluster.local:1883
