@@ -33,5 +33,6 @@ spec:
             type: PathPrefix
             value: /loki/api/v1/index
       backendRefs:
-        - name: loki-gateway
-          port: 80
+        # Single-binary Loki; loki-gateway has no pods behind it.
+        - name: loki
+          port: 3100
