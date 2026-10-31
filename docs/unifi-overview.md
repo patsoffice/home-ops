@@ -40,15 +40,15 @@ blocking), k8s-gateway `.6.100`, Envoy `.6.202`/`.6.203`
 - Explicit DNS exception lets guests reach only the two filtered DNS
   IPs on port 53. IoT needs no exception (same zone as DNS).
 
-## Port forwards
+## Port forwards (reviewed 2026-10-31)
 
 - Two WAN port forwards exist (media server and one other). Targets
-  and ports are in the private file. Both are under review for
-  necessity and tunnel redundancy.
+  and ports are in the private file. Both are intentional: Plex remote
+  uses its direct port, the torrent client needs its inbound peer port
+  (UDP now open to match). Web UIs stay internal-only.
 
 ## Remaining gaps
 
-1. SSID sprawl on main (4 SSIDs, one network).
-2. Cilium LB pool is the whole `/21` (collision risk with DHCP/statics).
-3. Second port-forward exposure still to review.
-4. No IaC or backup record for UniFi config.
+1. SSID sprawl on main (3 SSIDs, one network, was 4).
+2. Cilium LB pool shrunk 2026-10-31 (pool object live, all VIPs kept).
+3. No IaC or backup record for UniFi config.

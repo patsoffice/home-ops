@@ -55,6 +55,10 @@ spec:
             enabled: true
             port: *torrentPort
             protocol: TCP
+          bittorrent-udp:
+            enabled: true
+            port: *torrentPort
+            protocol: UDP
     persistence:
       config:
         existingClaim: *app
