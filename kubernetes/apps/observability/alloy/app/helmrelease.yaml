@@ -108,8 +108,18 @@ spec:
               target_label  = "host"
             }
 
+            // UniFi APs/switches put "<mac>,<model>-<firmware>" in the
+            // TAG. Keep the model, never the firmware (new stream per
+            // upgrade); only plain TAGs become app.
             rule {
               source_labels = ["__syslog_message_app_name"]
+              regex         = "[0-9a-f]{12},(.+?)-[0-9][0-9.+]*"
+              target_label  = "model"
+            }
+
+            rule {
+              source_labels = ["__syslog_message_app_name"]
+              regex         = "([^,]+)"
               target_label  = "app"
             }
 
@@ -117,6 +127,26 @@ spec:
               source_labels = ["__syslog_message_severity"]
               target_label  = "level"
             }
+          }
+
+          // With the TAG taken, UniFi's real program leads the message:
+          // "syswrapper[1][2]:", "mcad: mcad[1]:", ": cfgmtd[1]:",
+          // "/sbin/sysmon[1]:", "kernel: ...". The UDM prefixes its own
+          // hostname instead: "<host> mcad[1]:".
+          loki.process "syslog" {
+            stage.regex {
+              expression = "^[A-Za-z0-9._-]+ (?P<program>[A-Za-z0-9_.-]+)\\[\\d+\\]"
+            }
+
+            stage.regex {
+              expression = "^(?:: )?(?:[^\\s:\\[]*/)?(?P<program>[A-Za-z0-9_.-]+)(?:\\[\\d+\\])*:"
+            }
+
+            stage.labels {
+              values = {app = "program"}
+            }
+
+            forward_to = [loki.write.default.receiver]
           }
 
           loki.source.syslog "network" {
@@ -128,7 +158,7 @@ spec:
             }
 
             relabel_rules = loki.relabel.syslog.rules
-            forward_to    = [loki.write.default.receiver]
+            forward_to    = [loki.process.syslog.receiver]
           }
 
           loki.write "default" {
