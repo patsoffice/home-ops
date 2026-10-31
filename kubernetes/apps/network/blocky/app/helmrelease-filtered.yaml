@@ -1,0 +1,138 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app blocky-filtered
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: blocky
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    fullnameOverride: blocky-filtered
+    controllers:
+      filtered:
+        replicas: 2
+        strategy: RollingUpdate
+        annotations:
+          reloader.stakater.com/auto: "true"
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/home-operations/postgres-init
+              tag: 18.6.0@sha256:87627badd0cabed4ebe033e75038e5c7b6b081c18e86514c99067179a90719
+              pullPolicy: IfNotPresent
+            envFrom: &envFrom
+              - secretRef:
+                  name: blocky-filtered-db-app
+        containers:
+          app:
+            image:
+              repository: ghcr.io/0xerr0r/blocky
+              tag: v0.26@sha256:b259ada3f943e7328f1fc5e84ac9a791afec7de86515d1aeccc03d2c39e595
+              pullPolicy: IfNotPresent
+            env:
+              TZ: America/Los_Angeles
+            envFrom: *envFrom
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/blocking/status
+                    port: &httpPort 4000
+                  initialDelaySeconds: 5
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/blocking/status
+                    port: *httpPort
+                  initialDelaySeconds: 5
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+                add:
+                  - NET_BIND_SERVICE
+            resources:
+              requests:
+                cpu: 10m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+        pod:
+          securityContext:
+            runAsUser: 568
+            runAsGroup: 568
+            runAsNonRoot: true
+          topologySpreadConstraints:
+            - maxSkew: 1
+              topologyKey: kubernetes.io/hostname
+              whenUnsatisfiable: DoNotSchedule
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: *app
+                  app.kubernetes.io/controller: filtered
+    persistence:
+      config:
+        type: secret
+        name: blocky-filtered-db-app
+        globalMounts:
+          - path: /app/config.yml
+            subPath: config.yaml
+            readOnly: true
+    service:
+      k8s:
+        controller: filtered
+        ports:
+          http:
+            port: *httpPort
+      dns-a:
+        controller: filtered
+        type: LoadBalancer
+        annotations:
+          lbipam.cilium.io/ips: "192.168.0.102"
+        ports:
+          dns-tcp:
+            port: 53
+            protocol: TCP
+          dns-udp:
+            port: 53
+            protocol: UDP
+      dns-b:
+        controller: filtered
+        type: LoadBalancer
+        annotations:
+          lbipam.cilium.io/ips: "192.168.0.103"
+        ports:
+          dns-tcp:
+            port: 53
+            protocol: TCP
+          dns-udp:
+            port: 53
+            protocol: UDP
+    serviceMonitor:
+      app:
+        serviceName: blocky-filtered-k8s
+        endpoints:
+          - port: http

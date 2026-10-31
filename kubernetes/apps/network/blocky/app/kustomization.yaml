@@ -4,7 +4,9 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ./externalsecret.yaml
+  - ./externalsecret-filtered.yaml
   - ./helmrelease.yaml
+  - ./helmrelease-filtered.yaml
   - ./httproute.yaml
   - ./ocirepository.yaml
 
