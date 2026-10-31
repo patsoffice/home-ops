@@ -7,36 +7,38 @@ beyond what the repo already states. Full detail lives in
 
 ## Console
 
-- UDM-Pro gateway. All subsystems healthy except VPN (inactive
-  site-to-site tunnels present, no active remote clients).
+- UDM-Pro gateway. Policy Engine upgraded to the zone-based firewall.
+  All subsystems healthy except VPN (inactive site-to-site tunnels).
 
 ## Networks
 
 - Main LAN, untagged, `192.168.0.0/21` (see `talos/node/k8s-*/02-network.yaml`).
-- IoT VLAN (tagged; see private file for ID/subnet).
-- Storage VLAN (tagged; Talos static `10.30.1.x`, DHCP disabled).
+- IoT VLAN, DHCP with filtered DNS.
+- Storage VLAN (Talos static clients, DHCP disabled).
 - Remote-access VPN subnet exists (see private file).
+- Guest VLAN with own subnet, Hotspot zone, filtered DNS, DHCP pool at
+  the top of the range.
 
-Repo consumers: Talos nodes `192.168.1.10`–`.14`, Blocky
-`.0.100`–`.103`, k8s-gateway `.6.100`, Envoy `.6.202`/`.6.203`
+Repo consumers: Talos nodes `192.168.1.10`–`.14`, Blocky main pair,
+Blocky filtered pair (IoT + Guest, no internal zones, ad + smart-TV
+blocking), k8s-gateway `.6.100`, Envoy `.6.202`/`.6.203`
 (see `kubernetes/apps/kube-system/cilium/app/networks.yaml`,
 `kubernetes/apps/network/*`).
 
 ## WLANs
 
-- One primary SSID plus legacy/household SSIDs on main LAN (4 total,
-  see private file). SSID count exceeds need.
-- Separate IoT and Guest SSIDs exist, but both currently land in the
-  same IoT subnet. Guest shares a broadcast domain with IoT.
+- One primary SSID plus legacy/household SSIDs on main LAN (3 total,
+  see private file; Chez-Palmer removed 2026-10-31). SSID count still
+  exceeds need.
+- Separate IoT and Guest SSIDs on their own VLANs/subnets. Guest is
+  open with guest isolation; client test passed.
 
 ## Firewall
 
-- LAN_IN allows established, NTP, and remote-VPN traffic, then a set
-  of IoT-specific allows (home automation, media, DNS, MQTT), then a
-  drop for IoT to LAN. The drop's index numbering makes the order
-  fragile: allows are numbered both above and below it.
-- One address-group member references a subnet with no matching
-  network (stale entry, see private file).
+- Zone-based: guests get return-only access toward internal zones,
+  full access outward, nothing toward other guest/DMZ zones.
+- Explicit DNS exception lets guests reach only the two filtered DNS
+  IPs on port 53. IoT needs no exception (same zone as DNS).
 
 ## Port forwards
 
@@ -44,11 +46,9 @@ Repo consumers: Talos nodes `192.168.1.10`–`.14`, Blocky
   and ports are in the private file. Both are under review for
   necessity and tunnel redundancy.
 
-## Known gaps before changes
+## Remaining gaps
 
-1. Guest and IoT share one VLAN/subnet.
-2. SSID sprawl on main (4 SSIDs, one network).
-3. Firewall index numbering invites misordering.
-4. Stale address-group member.
-5. Cilium LB pool is the whole `/21` (collision risk with DHCP/statics).
-6. No IaC or backup record for UniFi config.
+1. SSID sprawl on main (4 SSIDs, one network).
+2. Cilium LB pool is the whole `/21` (collision risk with DHCP/statics).
+3. Second port-forward exposure still to review.
+4. No IaC or backup record for UniFi config.
