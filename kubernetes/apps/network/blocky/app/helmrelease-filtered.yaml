@@ -107,23 +107,11 @@ spec:
         ports:
           http:
             port: *httpPort
-      dns-a:
+      dns:
         controller: filtered
         type: LoadBalancer
         annotations:
-          lbipam.cilium.io/ips: "192.168.0.102"
-        ports:
-          dns-tcp:
-            port: 53
-            protocol: TCP
-          dns-udp:
-            port: 53
-            protocol: UDP
-      dns-b:
-        controller: filtered
-        type: LoadBalancer
-        annotations:
-          lbipam.cilium.io/ips: "192.168.0.103"
+          lbipam.cilium.io/ips: "192.168.0.102,192.168.0.103"
         ports:
           dns-tcp:
             port: 53
