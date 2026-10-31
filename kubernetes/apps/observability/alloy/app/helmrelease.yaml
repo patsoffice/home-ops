@@ -36,6 +36,12 @@ spec:
       create: true
     alloy:
       enableReporting: false
+      # Syslog from the UniFi console, via the alloy-syslog LoadBalancer
+      extraPorts:
+        - name: syslog-udp
+          port: 1514
+          targetPort: 1514
+          protocol: UDP
       configMap:
         content: |-
           // Discover and collect logs from Kubernetes pods
@@ -91,6 +97,38 @@ spec:
             }
 
             forward_to = [loki.write.default.receiver]
+          }
+
+          // Receive BSD-style (RFC3164) syslog from network gear
+          loki.relabel "syslog" {
+            forward_to = []
+
+            rule {
+              source_labels = ["__syslog_message_hostname"]
+              target_label  = "host"
+            }
+
+            rule {
+              source_labels = ["__syslog_message_app_name"]
+              target_label  = "app"
+            }
+
+            rule {
+              source_labels = ["__syslog_message_severity"]
+              target_label  = "level"
+            }
+          }
+
+          loki.source.syslog "network" {
+            listener {
+              address       = "0.0.0.0:1514"
+              protocol      = "udp"
+              syslog_format = "rfc3164"
+              labels        = {job = "syslog"}
+            }
+
+            relabel_rules = loki.relabel.syslog.rules
+            forward_to    = [loki.write.default.receiver]
           }
 
           loki.write "default" {

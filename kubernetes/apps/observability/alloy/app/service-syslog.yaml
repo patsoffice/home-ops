@@ -1,0 +1,19 @@
+---
+# yaml-language-server: $schema=https://kubernetesjsonschema.dev/v1.10.3-standalone/service-v1.json
+apiVersion: v1
+kind: Service
+metadata:
+  name: alloy-syslog
+  annotations:
+    # Remote syslog target configured on the UniFi console
+    lbipam.cilium.io/ips: 192.168.5.104
+spec:
+  type: LoadBalancer
+  ports:
+    - name: syslog-udp
+      port: 514
+      protocol: UDP
+      targetPort: 1514
+  selector:
+    app.kubernetes.io/instance: alloy
+    app.kubernetes.io/name: alloy
