@@ -10,3 +10,14 @@ resources:
   - ./mariadb-wordpress-poc.yaml
   - ./backup-wordpress-gds.yaml
   - ./backup-wordpress-poc.yaml
+configMapGenerator:
+  - name: mariadb-loki-rules
+    files:
+      - mariadb.yaml=./lokirule.yaml
+    options:
+      labels:
+        loki_rule: "true"
+generatorOptions:
+  disableNameSuffixHash: true
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled

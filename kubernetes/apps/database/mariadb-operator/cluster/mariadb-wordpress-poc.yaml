@@ -15,6 +15,12 @@ spec:
     recovery:
       enabled: true
   image: docker.io/library/mariadb:13.0.2
+  # The operator never runs mariadb-upgrade, and Galera doesn't replicate
+  # mysql.* tables. This makes each pod's entrypoint upgrade its own system
+  # tables on the first start after a bump. See docs/mariadb-upgrades.md.
+  env:
+    - name: MARIADB_AUTO_UPGRADE
+      value: "1"
   rootPasswordSecretKeyRef:
     name: mariadb-wordpress-poc-secret
     key: root-password

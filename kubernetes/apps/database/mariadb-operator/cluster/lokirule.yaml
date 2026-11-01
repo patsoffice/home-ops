@@ -1,0 +1,18 @@
+---
+groups:
+  - name: mariadb
+    rules:
+      # The image entrypoint logs this at start when an upgrade is due but
+      # MARIADB_AUTO_UPGRADE is unset. Both MariaDBs set it, so this means
+      # the setting went missing and system tables can fall behind the
+      # binaries. Only logged at start, hence the 24h window.
+      # See docs/mariadb-upgrades.md.
+      - alert: MariaDBUpgradeSkipped
+        expr: |
+          sum by (namespace, pod) (count_over_time({namespace="database", container="mariadb"} |= "upgrade (mariadb-upgrade or creating healthcheck users) required, but skipped" [24h])) > 0
+        annotations:
+          summary: >-
+            {{ $labels.pod }} runs newer MariaDB binaries than its system
+            tables; run mariadb-upgrade on every pod (docs/mariadb-upgrades.md)
+        labels:
+          severity: warning
