@@ -146,6 +146,25 @@ spec:
               values = {app = "program"}
             }
 
+            // UDM firewall policy logs: "<host> [LAN_WAN-D-10000] DESCR="Block
+            // IoT to External DNS" IN=br12 ... SRC= DST= PROTO= DPT=". Policy
+            // names are a short, fixed list, so they're safe as a label.
+            stage.match {
+              selector = `{job="syslog"} |~ "^\\S+ \\[[A-Z0-9_]+-[A-Z]-\\d+\\] DESCR=\""`
+
+              stage.regex {
+                expression = `DESCR="(?P<rule>[^"]+)"`
+              }
+
+              stage.static_labels {
+                values = {app = "firewall"}
+              }
+
+              stage.labels {
+                values = {rule = ""}
+              }
+            }
+
             forward_to = [loki.write.default.receiver]
           }
 
