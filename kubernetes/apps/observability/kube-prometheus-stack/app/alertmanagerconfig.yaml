@@ -69,8 +69,10 @@ spec:
                 </small>
               {{- end }}
             {{- end }}
+          # Only critical pages (1 = high, bypasses quiet hours). Everything
+          # else arrives silently (-1) but stays in the Pushover history.
           priority: |-
-            {{ if eq .Status "firing" }}1{{ else }}0{{ end }}
+            {{ if eq .CommonLabels.severity "critical" }}{{ if eq .Status "firing" }}1{{ else }}0{{ end }}{{ else }}-1{{ end }}
           sendResolved: true
           sound: gamelan
           title: >-
