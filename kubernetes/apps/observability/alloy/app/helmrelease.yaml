@@ -34,6 +34,8 @@ spec:
     fullnameOverride: *app
     crds:
       create: true
+    serviceMonitor:
+      enabled: true
     alloy:
       enableReporting: false
       # Syslog from the UniFi console, via the alloy-syslog LoadBalancer

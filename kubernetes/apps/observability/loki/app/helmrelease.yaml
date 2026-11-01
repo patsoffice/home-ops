@@ -91,6 +91,12 @@ spec:
       enabled: false
     lokiCanary:
       enabled: false
+    monitoring:
+      serviceMonitor:
+        enabled: true
+        # Grafana Agent CR; this cluster scrapes with Prometheus Operator
+        metricsInstance:
+          enabled: false
     test:
       enabled: false
     sidecar:
