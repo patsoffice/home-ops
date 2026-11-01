@@ -88,9 +88,10 @@ The cluster runs a diverse set of applications:
 
 | VLAN | ID | CIDR | Purpose |
 | --- | --- | --- | --- |
-| Default | 1 | 192.168.0.0/21 | General-purpose devices |
-| Default | 1 | 192.168.12.0/24 | IoT devices |
-| Default | 1 | 10.30.0.0/16 | Storage Network |
+| Main | untagged | 192.168.0.0/21 | General-purpose devices, cluster nodes, LoadBalancer VIPs |
+| IoT | 12 | 192.168.12.0/24 | IoT devices, filtered DNS, blocked from other internal networks |
+| Storage | 30 | 10.30.0.0/16 | Storage network (Ceph, NAS) |
+| Guest | 13 | 192.168.13.0/24 | Guest WiFi, isolated, filtered DNS |
 
 ### DNS
 
@@ -139,7 +140,7 @@ While most infrastructure is self-hosted, key services rely on cloud providers f
 ### Network Hardware
 
 - Multiple managed switches with VLAN support (mostly UniFi)
-- Cloudflare Tunnel for secure external access (no port forwarding)
+- Cloudflare Tunnel for external web access; web UIs are never port-forwarded (only a media server and a torrent client use direct port forwards)
 - Blocky for internal DNS and ad-blocking
 
 ---
