@@ -17,5 +17,6 @@ resources:
   - ./external-dns-cloudflare/ks.yaml
   - ./internal-services/ks.yaml
   - ./k8s-gateway/ks.yaml
+  - ./netbootxyz/ks.yaml
   - ./netshoot/ks.yaml
   - ./smtp-relay/ks.yaml
