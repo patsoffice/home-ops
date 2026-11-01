@@ -226,6 +226,22 @@ spec:
     - type: Gzip
   connection:
     bufferLimit: 8Mi
+  # Passive outlier detection: eject endpoints that keep failing. A stale
+  # EDS snapshot after an upgrade once left Envoy dialing dead pod IPs
+  # indefinitely (home-ops-ypg). This must live in this policy: a second
+  # gateway-level BackendTrafficPolicy is marked Conflicted, not merged.
+  healthCheck:
+    passive:
+      # Count connect failures/timeouts on their own, so the dead-pod-IP
+      # case trips consecutiveLocalOriginFailures.
+      splitExternalLocalOriginErrors: true
+      consecutiveLocalOriginFailures: 5
+      consecutive5XxErrors: 5
+      interval: 10s
+      baseEjectionTime: 30s
+      # Let a fully stale cluster eject everything and fail fast (503)
+      # instead of hanging on dead IPs.
+      maxEjectionPercent: 100
   targetSelectors:
     - group: gateway.networking.k8s.io
       kind: Gateway
