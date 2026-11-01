@@ -100,3 +100,6 @@ spec:
         pullPolicy: IfNotPresent
       rules:
         searchNamespace: ALL
+        # auth_enabled is false, so the ruler reads tenant "fake" from
+        # <storage.local.directory>/fake; rules dropped in /rules never load.
+        folder: /rules/fake
