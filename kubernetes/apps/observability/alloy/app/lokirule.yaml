@@ -1,0 +1,21 @@
+---
+# Loki recording rules for the syslog pipeline. The ruler remote-writes the
+# results to Prometheus, so multi-day panels and step-change alerts can use
+# cheap PromQL instead of re-scanning logs. Rates are per second (x60 for
+# per minute).
+groups:
+  - name: syslog-recording
+    interval: 1m
+    rules:
+      - record: host:syslog_lines:rate5m
+        expr: |
+          sum by (host) (rate({job="syslog"}[5m]))
+
+      - record: rule:unifi_firewall_blocks:rate5m
+        expr: |
+          sum by (rule) (rate({job="syslog", app="firewall"}[5m]))
+
+      # Source kept only for IoT (one /24), so the label stays bounded.
+      - record: rule_src:unifi_firewall_blocks:rate5m
+        expr: |
+          sum by (rule, src) (rate({job="syslog", app="firewall"} | regexp `SRC=(?P<src>[0-9.]+) ` | src =~ `192\.168\.12\..+` [5m]))

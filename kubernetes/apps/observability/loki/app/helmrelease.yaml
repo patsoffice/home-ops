@@ -71,6 +71,15 @@ spec:
             local:
               directory: /rules
           rule_path: /rules/fake
+          # Recording rules land in Prometheus, where multi-day views and
+          # step-change alerts are cheap PromQL instead of long LogQL scans.
+          wal:
+            dir: /var/loki/ruler-wal
+          remote_write:
+            enabled: true
+            clients:
+              prometheus:
+                url: http://kube-prometheus-stack-prometheus.observability.svc.cluster.local:9090/api/v1/write
     singleBinary:
       replicas: 1
       persistence:

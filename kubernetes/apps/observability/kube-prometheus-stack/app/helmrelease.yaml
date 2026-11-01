@@ -81,6 +81,8 @@ spec:
         scrapeConfigSelectorNilUsesHelmValues: false
         serviceMonitorSelectorNilUsesHelmValues: false
         enableAdminAPI: true
+        # Loki ruler pushes recording-rule results here
+        enableRemoteWriteReceiver: true
         walCompression: true
         enableFeatures:
           - memory-snapshot-on-shutdown

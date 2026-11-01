@@ -5,3 +5,14 @@ kind: Kustomization
 resources:
   - ./helmrelease.yaml
   - ./service-syslog.yaml
+configMapGenerator:
+  - name: syslog-loki-rules
+    files:
+      - syslog.yaml=./lokirule.yaml
+    options:
+      labels:
+        loki_rule: "true"
+generatorOptions:
+  disableNameSuffixHash: true
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
