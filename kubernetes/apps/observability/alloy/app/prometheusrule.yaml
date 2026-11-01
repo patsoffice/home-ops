@@ -1,0 +1,58 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/prometheusrule_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: unifi-syslog
+spec:
+  groups:
+    # Built on the Loki recording rules in lokirule.yaml. Series started
+    # 2026-11-01, so the history-based alerts only become meaningful once
+    # their lookback has data (1h for new/step, 1d for silence).
+    - name: unifi-syslog.rules
+      rules:
+        # "Chatty" = present in over half of the minutes yesterday (UDM and
+        # APs today; their longest natural gap is ~45m). Sporadic senders
+        # like switches, the PDU and the hourly UDB are left out on purpose.
+        - alert: SyslogHostSilent
+          expr: |
+            (count_over_time(host:syslog_lines:rate5m[1d] offset 2h) > 720)
+              unless on (host)
+            count_over_time(host:syslog_lines:rate5m[2h])
+          annotations:
+            summary: >-
+              {{ $labels.host }} usually logs most of the day but has sent no
+              syslog for 2h
+          labels:
+            severity: warning
+
+        # First time an IoT device hits a given block policy in 7 days. The
+        # trailing "and" keeps it quiet until the recorded history exists.
+        - alert: IoTFirewallNewSource
+          expr: |
+            count by (rule, src) (rule_src:unifi_firewall_blocks:rate5m)
+              unless on (rule, src)
+            count by (rule, src) (count_over_time(rule_src:unifi_firewall_blocks:rate5m[7d] offset 1h))
+              and on ()
+            count(count_over_time(rule_src:unifi_firewall_blocks:rate5m[7d] offset 1h)) > 0
+          annotations:
+            summary: >-
+              {{ $labels.src }} newly blocked by "{{ $labels.rule }}" (not
+              seen in the last 7 days)
+          labels:
+            severity: warning
+
+        # An IoT device blocking at 4x its own 24h average and at least
+        # 5/min, sustained for 15m.
+        - alert: IoTFirewallBlockSpike
+          expr: |
+            (rule_src:unifi_firewall_blocks:rate5m * 60 > 5)
+              and
+            (rule_src:unifi_firewall_blocks:rate5m > 4 * avg_over_time(rule_src:unifi_firewall_blocks:rate5m[1d] offset 1h))
+          for: 15m
+          annotations:
+            summary: >-
+              {{ $labels.src }} blocked by "{{ $labels.rule }}" at
+              {{ $value | humanize }}/min, over 4x its 24h average
+          labels:
+            severity: warning
