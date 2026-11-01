@@ -1,0 +1,50 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/prometheusrule_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: log-pipeline
+spec:
+  groups:
+    # Evaluated by Prometheus, so these still fire when Loki is the thing
+    # that's broken. Alloy retries pushes for ~8-9 minutes, so a short Loki
+    # restart loses nothing; LokiDown is for the long ones.
+    - name: log-pipeline.rules
+      rules:
+        - alert: LokiDown
+          expr: |
+            up{job="observability/loki"} == 0 or absent(up{job="observability/loki"})
+          for: 5m
+          annotations:
+            summary: >-
+              Loki is down; logs are buffering in Alloy and are dropped
+              after ~9 minutes, and Loki alert rules aren't evaluating
+          labels:
+            severity: critical
+
+        - alert: LokiRulerUnhealthy
+          expr: |
+            sum(increase(loki_prometheus_rule_evaluation_failures_total[15m])) > 0
+              or absent(loki_prometheus_rule_group_rules)
+          for: 15m
+          annotations:
+            summary: >-
+              Loki ruler has failing evaluations or no rule groups loaded,
+              so log-based alerts aren't running
+          labels:
+            severity: warning
+
+        # Total across every sender (~20 lines/min today, all UniFi gear set
+        # up from the UDM). Zero for 15m means the senders stopped (the UDM
+        # setting once saved with no categories) or the receiver did.
+        # Per-host silence is a separate alert.
+        - alert: SyslogIngestStopped
+          expr: |
+            sum(rate(loki_source_syslog_entries_total[15m])) == 0
+          for: 15m
+          annotations:
+            summary: >-
+              No syslog received from any device for 15m+ (alloy-syslog
+              LoadBalancer 192.168.5.104:514 -> Alloy loki.source.syslog)
+          labels:
+            severity: warning
