@@ -13,6 +13,8 @@
   instead of hanging. Add any new gateway-wide backend settings to that
   same policy: Envoy Gateway attaches only the oldest BackendTrafficPolicy
   per Gateway and marks the others `Conflicted`; they don't merge.
+  A route-level BackendTrafficPolicy replaces the gateway one entirely
+  (outlier detection included) unless it sets `mergeType`.
 - Do not change `provider.kubernetes.deploy.type` away from
   `GatewayNamespace`: renaming the managed gateway LB Services drops
   their Cilium L2 announcements and blackholes `.6.202`/`.6.203`.
