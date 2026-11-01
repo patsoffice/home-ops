@@ -41,10 +41,11 @@ metadata:
   name: l2-policy
 spec:
   loadBalancerIPs: true
-  # NOTE: interfaces might need to be set if you have more than one active NIC on your hosts
-  # interfaces:
-  #   - ^eno[0-9]+
-  #   - ^eth[0-9]+
+  # Answer ARP for VIPs only on the main LAN NIC (2.5GbE, enp89s0 or
+  # enp90s0 depending on the node), never on the 10G storage NIC
+  # (enp2s0f0np0, VLAN 30), which shares no subnet with the VIPs.
+  interfaces:
+    - ^enp[0-9]+s0$
   nodeSelector:
     matchLabels:
       kubernetes.io/os: linux
