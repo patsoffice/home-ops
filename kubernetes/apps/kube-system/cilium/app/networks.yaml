@@ -3,13 +3,32 @@
 apiVersion: cilium.io/v2alpha1
 kind: CiliumLoadBalancerIPPool
 metadata:
-  name: pool
+  name: dns
 spec:
   allowFirstLastIPs: "No"
   blocks:
     # DNS VIPs (.0.100-.0.103) plus headroom. Everything else in
     # the old /21 (DHCP .7.x, node and infra statics) is excluded.
     - cidr: "192.168.0.96/28"
+  # Only the Blocky DNS services may draw from here, so an unpinned
+  # LoadBalancer can never take an address DHCP hands out as DNS.
+  serviceSelector:
+    matchExpressions:
+      - key: io.kubernetes.service.namespace
+        operator: In
+        values: ["network"]
+      - key: app.kubernetes.io/service
+        operator: In
+        values: ["blocky-dns", "blocky-filtered-dns"]
+---
+# yaml-language-server: $schema=https://datreeio.github.io/CRDs-catalog/cilium.io/ciliumloadbalancerippool_v2alpha1.json
+apiVersion: cilium.io/v2alpha1
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: pool
+spec:
+  allowFirstLastIPs: "No"
+  blocks:
     # Entire .5/24 is dedicated to Kubernetes LoadBalancers.
     - cidr: "192.168.5.0/24"
     # Entire .6/24 is dedicated to Kubernetes LoadBalancers.
