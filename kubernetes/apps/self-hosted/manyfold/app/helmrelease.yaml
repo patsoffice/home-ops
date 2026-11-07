@@ -12,7 +12,6 @@ spec:
   values:
     controllers:
       manyfold:
-        forceRename: *app
         annotations:
           secret.reloader.stakater.com/reload: manyfold-secret
         pod:
@@ -85,9 +84,6 @@ spec:
                   - ALL
     service:
       app:
-        forceRename: *app
-        primary: true
-        controller: *app
         annotations:
           gatus.home-operations.com/enabled: "true"
           gatus.home-operations.com/endpoint: |-

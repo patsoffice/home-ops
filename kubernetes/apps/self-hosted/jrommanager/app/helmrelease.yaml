@@ -58,16 +58,12 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
     service:
       app:
-        controller: *app
         ports:
           http:
-            primary: true
             port: *port
     persistence:
       work:
         existingClaim: *app
-        globalMounts:
-          - path: /work
       romroot:
         type: nfs
         server: nas0.internal
