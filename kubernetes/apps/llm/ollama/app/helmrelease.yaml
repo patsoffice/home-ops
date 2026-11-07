@@ -20,6 +20,14 @@ spec:
       ollama:
         pod:
           affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                  - matchExpressions:
+                      - key: intel.feature.node.kubernetes.io/gpu
+                        operator: In
+                        values:
+                          - "true"
             podAntiAffinity:
               requiredDuringSchedulingIgnoredDuringExecution:
                 - labelSelector:
@@ -81,21 +89,11 @@ spec:
                   failureThreshold: 3
               startup: *probe
     defaultPodOptions:
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: intel.feature.node.kubernetes.io/gpu
-                    operator: In
-                    values:
-                      - "true"
       resourceClaims:
         - name: gpu
           resourceClaimTemplateName: ollama-gpu
     service:
       app:
-        controller: *app
         type: LoadBalancer
         annotations:
           lbipam.cilium.io/ips: 192.168.5.105
@@ -104,17 +102,9 @@ spec:
             port: *port
     persistence:
       models:
-        enabled: true
         existingClaim: ollama-models
-        advancedMounts:
-          ollama:
-            app:
-              - path: *modelPath
       config:
-        enabled: true
         existingClaim: *app
-        globalMounts:
-          - path: /config
       dev:
         type: hostPath
         hostPath: /dev/dri

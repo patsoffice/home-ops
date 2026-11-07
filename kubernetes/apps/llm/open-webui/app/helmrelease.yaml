@@ -82,13 +82,11 @@ spec:
                 memory: 4Gi
     service:
       app:
-        controller: *app
         ports:
           http:
             port: ${APP_PORT}
     persistence:
       config:
-        enabled: true
         existingClaim: *app
         globalMounts:
           - path: /app/backend/data
