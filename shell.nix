@@ -25,24 +25,37 @@
 let
   python = pkgs.python314;
 
-  # topf is not in nixpkgs — install the pinned upstream release binary
-  # (Linux x86_64; macOS gets it via aqua in .mise.toml). The version is the
-  # single source of truth in the release URL below so Renovate can bump it;
-  # after a bump, refresh sha256 with:
+  # topf is not in nixpkgs — install the pinned upstream release binary for
+  # each supported system. The version lives in the release URLs below so
+  # Renovate can bump it; after a bump, refresh each sha256 with:
   #   nix-prefetch-url --type sha256 <url> | xargs nix-hash --to-base32 --type sha256
   topf =
     let
-      # renovate: datasource=github-releases depName=postfinance/topf
-      url = "https://github.com/postfinance/topf/releases/download/v0.6.2/topf_linux_amd64.tar.gz";
-      version = builtins.head (builtins.match ".*/v([0-9.]+)/.*" url);
+      sources = {
+        x86_64-linux = {
+          # renovate: datasource=github-releases depName=postfinance/topf
+          url = "https://github.com/postfinance/topf/releases/download/v0.6.2/topf_linux_amd64.tar.gz";
+          sha256 = "01944xawyw0ldmiz4420j7kdji3661c3ab5q7pbmym56jxychgbr";
+        };
+        x86_64-darwin = {
+          # renovate: datasource=github-releases depName=postfinance/topf
+          url = "https://github.com/postfinance/topf/releases/download/v0.6.2/topf_darwin_amd64.tar.gz";
+          sha256 = "1ac8590f9as2lx140j73cw0d3xfn3y1yg2wq5pa593aijh70ndqr";
+        };
+        aarch64-darwin = {
+          # renovate: datasource=github-releases depName=postfinance/topf
+          url = "https://github.com/postfinance/topf/releases/download/v0.6.2/topf_darwin_arm64.tar.gz";
+          sha256 = "1dzqv6n83d6n42dm06dq60bbyfj9frxmpag359xb727bfqww2qy2";
+        };
+      };
+      system = pkgs.stdenv.hostPlatform.system;
+      source = sources.${system} or (throw "topf: unsupported system ${system}");
+      version = builtins.head (builtins.match ".*/v([0-9.]+)/.*" source.url);
     in
     pkgs.stdenv.mkDerivation {
       pname = "topf";
       inherit version;
-      src = pkgs.fetchurl {
-        inherit url;
-        sha256 = "0hfkh0f01id5wy5xk0jyrps815n4c6dax3njsw18nn5qgi99wfbg";
-      };
+      src = pkgs.fetchurl { inherit (source) url sha256; };
       sourceRoot = ".";
       dontConfigure = true;
       dontBuild = true;
@@ -54,7 +67,53 @@ let
       meta = with pkgs.lib; {
         description = "Talos orchestrator by PostFinance";
         homepage = "https://github.com/postfinance/topf";
-        platforms = [ "x86_64-linux" ];
+        platforms = [ "x86_64-linux" "x86_64-darwin" "aarch64-darwin" ];
+      };
+    };
+
+  # deadvalues is not in nixpkgs — install the pinned upstream release binary
+  # for each supported system. The version lives in the release URLs below so
+  # Renovate can bump it; after a bump, refresh each sha256 with:
+  #   nix-prefetch-url --type sha256 <url> | xargs nix-hash --to-base32 --type sha256
+  deadvalues =
+    let
+      sources = {
+        x86_64-linux = {
+          # renovate: datasource=github-releases depName=guarnz/deadvalues
+          url = "https://github.com/guarnz/deadvalues/releases/download/v0.1.9/deadvalues_linux_amd64.tar.gz";
+          sha256 = "1q160fixfqpza9s0d29l354s2pbkw08qc07m4qzqpizmsw1xs18m";
+        };
+        x86_64-darwin = {
+          # renovate: datasource=github-releases depName=guarnz/deadvalues
+          url = "https://github.com/guarnz/deadvalues/releases/download/v0.1.9/deadvalues_darwin_amd64.tar.gz";
+          sha256 = "0l34r3ij507g6cdz5afc4676wavwsixhsgv8wsha278nc0qr3a3a";
+        };
+        aarch64-darwin = {
+          # renovate: datasource=github-releases depName=guarnz/deadvalues
+          url = "https://github.com/guarnz/deadvalues/releases/download/v0.1.9/deadvalues_darwin_arm64.tar.gz";
+          sha256 = "0mygckqpndx29r78vqjkldi0a6wsd827m1cx3r4vhkmqb0k8mpmj";
+        };
+      };
+      system = pkgs.stdenv.hostPlatform.system;
+      source = sources.${system} or (throw "deadvalues: unsupported system ${system}");
+      version = builtins.head (builtins.match ".*/v([0-9.]+)/.*" source.url);
+    in
+    pkgs.stdenv.mkDerivation {
+      pname = "deadvalues";
+      inherit version;
+      src = pkgs.fetchurl { inherit (source) url sha256; };
+      sourceRoot = ".";
+      dontConfigure = true;
+      dontBuild = true;
+      installPhase = ''
+        runHook preInstall
+        install -Dm755 deadvalues -t $out/bin
+        runHook postInstall
+      '';
+      meta = with pkgs.lib; {
+        description = "Helm values dead code detector";
+        homepage = "https://github.com/guarnz/deadvalues";
+        platforms = [ "x86_64-linux" "x86_64-darwin" "aarch64-darwin" ];
       };
     };
 in
@@ -72,6 +131,7 @@ pkgs.mkShell {
     gh # aqua:cli/cli
     cloudflared # aqua:cloudflare/cloudflared
     cue # aqua:cue-lang/cue
+    deadvalues # custom derivation above (not in nixpkgs)
     age # aqua:FiloSottile/age
     fluxcd # aqua:fluxcd/flux2
     sops # aqua:getsops/sops
