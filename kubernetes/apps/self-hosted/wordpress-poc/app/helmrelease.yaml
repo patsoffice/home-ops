@@ -31,7 +31,7 @@ spec:
             image: &wordpress-image
               repository: ghcr.io/patsoffice/patsoffice-wordpress-image
               # renovate: datasource=docker depName=ghcr.io/patsoffice/patsoffice-wordpress-image
-              tag: v7.1.4-7@sha256:b71cea07c012fb300529026caf8ea0a8ea43d30c550f5730a0b4308252037493
+              tag: v7.1.4-10@sha256:5f7718ec489a9471ac391083e777e293719bac16d17186a0696e27590238662d
               pullPolicy: IfNotPresent
             command: ["/bin/bash", "-c"]
             args:
