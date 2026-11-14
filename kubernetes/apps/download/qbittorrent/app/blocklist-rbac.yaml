@@ -1,0 +1,30 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: qbittorrent-blocklist
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: qbittorrent-blocklist
+rules:
+  # Restart the qBittorrent Deployment (kubectl rollout restart equivalent)
+  # so the strategy is honoured and pods terminate gracefully. This is
+  # narrower than pod deletion: patch on one named Deployment, nothing else.
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    resourceNames: ["qbittorrent"]
+    verbs: ["get", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: qbittorrent-blocklist
+subjects:
+  - kind: ServiceAccount
+    name: qbittorrent-blocklist
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: qbittorrent-blocklist

@@ -1,0 +1,73 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: qbittorrent-blocklist
+spec:
+  # Sunday 03:00 local time.
+  schedule: "0 3 * * 0"
+  timeZone: America/Los_Angeles
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: qbittorrent-blocklist
+          automountServiceAccountToken: true
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10010
+            runAsGroup: 8675309
+            fsGroup: 8675309
+            fsGroupChangePolicy: OnRootMismatch
+            seccompProfile:
+              type: RuntimeDefault
+          affinity:
+            # The config PVC is RWO ceph-block: this pod must land on the
+            # same node as qBittorrent to mount it.
+            podAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/name: qbittorrent
+                  topologyKey: kubernetes.io/hostname
+          containers:
+            - name: updater
+              # renovate: datasource=docker depName=docker.io/library/python
+              image: docker.io/library/python:3.14-alpine@sha256:5862d971d1f0ae26b258cefa4e893556b1d3aba81bd2ff30888704ad378bab67
+              command: ["python3", "/scripts/update-blocklist.py"]
+              env:
+                - name: BLOCKLIST_URL
+                  value: "https://upd.emule-security.org/ipfilter.zip"
+                - name: FILTER_PATH
+                  value: "/config/qBittorrent/ipfilter.dat"
+                - name: DEPLOYMENT_NAME
+                  value: "qbittorrent"
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 32Mi
+                limits:
+                  memory: 128Mi
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop: ["ALL"]
+              volumeMounts:
+                - name: config
+                  mountPath: /config
+                - name: script
+                  mountPath: /scripts
+                  readOnly: true
+          volumes:
+            - name: config
+              persistentVolumeClaim:
+                claimName: qbittorrent
+            - name: script
+              configMap:
+                name: qbittorrent-blocklist-script
+                defaultMode: 0o444
+          restartPolicy: Never

@@ -1,0 +1,144 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: qbittorrent-blocklist-script
+data:
+  update-blocklist.py: |
+    """Download the emule-security IP filter and restart qBittorrent.
+
+    Writes ipfilter.dat atomically, then patches the qBittorrent Deployment
+    (rollout-restart equivalent) so the strategy is honoured and the
+    replacement pods re-read the filter on startup. Fails loudly on
+    download, format, or write problems.
+    """
+    import datetime
+    import io
+    import json
+    import os
+    import re
+    import ssl
+    import sys
+    import tempfile
+    import urllib.request
+    import zipfile
+
+    LINE_RE = re.compile(r"^\d{1,3}(\.\d{1,3}){3}\s*-")
+    MIN_LINES = 5000
+
+
+    def fetch(url):
+        req = urllib.request.Request(
+            url, headers={"User-Agent": "home-ops-blocklist-updater/1.0"}
+        )
+        with urllib.request.urlopen(req, timeout=120) as resp:
+            if resp.status != 200:
+                raise RuntimeError(f"download failed: HTTP {resp.status}")
+            return resp.read()
+
+
+    def extract_filter(blob):
+        with zipfile.ZipFile(io.BytesIO(blob)) as zf:
+            names = [
+                n for n in zf.namelist()
+                if n.lower().endswith((".dat", ".p2p"))
+            ]
+            if not names:
+                raise RuntimeError(
+                    f"no .dat/.p2p entry in archive: {zf.namelist()}"
+                )
+            # Prefer the canonical ipfilter.dat when present.
+            names.sort(key=lambda n: (os.path.basename(n).lower()
+                                       != "ipfilter.dat", len(n)))
+            data = zf.read(names[0])
+        # Decoded text is only used for validation, so tolerate bad bytes
+        # rather than failing the whole run on one corrupt line.
+        lines = data.decode("utf-8", errors="replace").splitlines()
+        if len(lines) < MIN_LINES:
+            raise RuntimeError(
+                f"suspiciously small filter: {len(lines)} lines"
+            )
+        if not LINE_RE.match(lines[0]):
+            raise RuntimeError(f"unexpected first line: {lines[0][:80]!r}")
+        return data, len(lines)
+
+
+    def atomic_write(path, data):
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        fd, tmp_path = tempfile.mkstemp(
+            dir=os.path.dirname(path), prefix=".ipfilter-"
+        )
+        try:
+            with os.fdopen(fd, "wb") as f:
+                f.write(data)
+            os.chmod(tmp_path, 0o644)
+            os.replace(tmp_path, path)
+        finally:
+            if os.path.exists(tmp_path):
+                os.unlink(tmp_path)
+
+
+    def restart_deployment():
+        token = open(
+            "/var/run/secrets/kubernetes.io/serviceaccount/token"
+        ).read().strip()
+        namespace = open(
+            "/var/run/secrets/kubernetes.io/serviceaccount/namespace"
+        ).read().strip()
+        host = os.environ["KUBERNETES_SERVICE_HOST"]
+        port = os.environ["KUBERNETES_SERVICE_PORT_HTTPS"]
+        name = os.environ["DEPLOYMENT_NAME"]
+        stamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
+        body = json.dumps(
+            {
+                "spec": {
+                    "template": {
+                        "metadata": {
+                            "annotations": {
+                                "kubectl.kubernetes.io/restartedAt": stamp
+                            }
+                        }
+                    }
+                }
+            }
+        ).encode()
+        url = (f"https://{host}:{port}/apis/apps/v1/namespaces/"
+               f"{namespace}/deployments/{name}")
+        req = urllib.request.Request(
+            url,
+            data=body,
+            method="PATCH",
+            headers={
+                "Authorization": f"Bearer {token}",
+                "Content-Type": "application/merge-patch+json",
+            },
+        )
+        ctx = ssl.create_default_context(
+            cafile="/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+        )
+        with urllib.request.urlopen(req, timeout=30, context=ctx) as resp:
+            if resp.status != 200:
+                raise RuntimeError(f"restart failed: HTTP {resp.status}")
+            print(resp.read().decode()[:200])
+
+
+    def main():
+        url = os.environ["BLOCKLIST_URL"]
+        path = os.environ["FILTER_PATH"]
+        print(f"downloading {url}", flush=True)
+        blob = fetch(url)
+        print(f"downloaded {len(blob)} bytes", flush=True)
+        data, count = extract_filter(blob)
+        print(f"extracted {count} filter lines", flush=True)
+        atomic_write(path, data)
+        print(f"wrote {path}", flush=True)
+        restart_deployment()
+        print("qbittorrent rollout restarted", flush=True)
+
+
+    if __name__ == "__main__":
+        try:
+            main()
+        except Exception as exc:  # noqa: BLE001 - fail the Job loudly
+            print(f"ERROR: {exc}", file=sys.stderr)
+            raise SystemExit(1)
