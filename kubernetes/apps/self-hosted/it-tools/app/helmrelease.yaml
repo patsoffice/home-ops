@@ -24,8 +24,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/home-operations/it-tools
-              tag: 2024.10.22@sha256:7f26ae8d7a4a58b8d70b685cba5cbaa54d7df876d9f8bae702207f45b06d9b7c
+              repository: ghcr.io/sharevb/it-tools
+              tag: 2026.10.25@sha256:c6e68a94af10c73cb4e53eaa78726d8abbbb4ad1a89a3f127a69f85a9ae029ab
               pullPolicy: IfNotPresent
             securityContext:
               allowPrivilegeEscalation: false
