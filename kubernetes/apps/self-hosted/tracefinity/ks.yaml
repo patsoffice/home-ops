@@ -19,7 +19,7 @@ spec:
   path: ./kubernetes/apps/self-hosted/tracefinity/app
   postBuild:
     substitute:
-      VOLSYNC_SCHEDULE: "17 * * * *"
+      VOLSYNC_SCHEDULE: "23 * * * *"
       APP: *app
       APP_PORT: "3000"
       VOLSYNC_CAPACITY: 10Gi
