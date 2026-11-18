@@ -22,9 +22,11 @@ This is a Kubernetes home-ops GitOps repository managed by Flux CD. It contains 
 ## Commit Style
 
 - Prefix: `feat:`, `fix:`, `refactor:`, `test:`, `docs:`
-- Summary line under 80 chars with counts where relevant
+- Summary line 50 chars or less (the 50/72 rule) with counts where relevant
 - Body: each logical change on its own `-` bullet
 - Summarize what was added/changed and why, not just file names
+- Wrap body lines at 72 chars; commit with `git commit -F - <<'EOF'` heredoc so breaks survive (`-m` per bullet inserts blank lines)
+- If commit signing fails, stop: never commit unsigned and never bypass with `--no-gpg-sign`
 
 ## Read-Only Tooling (sak)
 
