@@ -81,7 +81,8 @@ spec:
               WORDPRESS_DB_HOST: mariadb-wordpress-poc.database.svc.cluster.local
               WORDPRESS_DB_NAME: wordpress
               WP_REDIS_HOST: dragonfly.database.svc.cluster.local
-              CADDY_CACHE_REDIS_URL: redis://dragonfly.database.svc.cluster.local:6379
+              WP_REDIS_DATABASE: "5"
+              CADDY_CACHE_REDIS_URL: redis://dragonfly.database.svc.cluster.local:6379/5
               XDG_CONFIG_HOME: /tmp
               XDG_DATA_HOME: /tmp
             envFrom:
@@ -104,7 +105,7 @@ spec:
         data:
           session.ini: |
             session.save_handler = redis
-            session.save_path = "tcp://dragonfly.database.svc.cluster.local:6379"
+            session.save_path = "tcp://dragonfly.database.svc.cluster.local:6379?database=5"
     service:
       app:
         controller: *app

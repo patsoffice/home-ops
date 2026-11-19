@@ -6,3 +6,4 @@ resources:
   - ./cluster.yaml
   - ./networkpolicy.yaml
   - ./podmonitor.yaml
+  - ./prometheusrule.yaml

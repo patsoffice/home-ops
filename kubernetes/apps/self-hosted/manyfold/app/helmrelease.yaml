@@ -48,7 +48,7 @@ spec:
               tag: 0.154.2@sha256:65ed5dedc6f3f40e5a9c5768e60164ef7cc6ad94e08421e3ca8737094b937c24
             env:
               PORT: &httpPort ${APP_PORT}
-              REDIS_URL: redis://dragonfly.database.svc.cluster.local:6379/4
+              REDIS_URL: redis://dragonfly.database.svc.cluster.local:6379/3
               REGISTRATION: false
               RUBY_TCP_NO_FAST_FALLBACK: "1"
               SECRET_KEY_BASE:

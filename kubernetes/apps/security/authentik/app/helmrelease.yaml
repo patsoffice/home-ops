@@ -30,10 +30,6 @@ spec:
     blueprints:
       configMaps:
         - authentik-blueprints
-    authentik:
-      redis:
-        host: dragonfly.database.svc.cluster.local
-        db: 1
     prometheus:
       rules:
         enabled: true

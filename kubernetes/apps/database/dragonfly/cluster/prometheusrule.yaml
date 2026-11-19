@@ -1,0 +1,27 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/prometheusrule_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: dragonfly
+spec:
+  groups:
+    - name: dragonfly.rules
+      rules:
+        # A DB that loses 90%+ of its keys within 10m was flushed (FLUSHDB
+        # from a tenant) or lost on a full restart. Apps sharing that DB
+        # can be left with orphaned queue workers. The max across replicas
+        # keeps a single pod's resync from tripping it. Small DBs are left
+        # out.
+        - alert: DragonflyDBKeysWiped
+          expr: |
+            (max by (db) (dragonfly_db_keys) < 0.1 * max by (db) (dragonfly_db_keys offset 10m))
+              and on (db)
+            (max by (db) (dragonfly_db_keys offset 10m) > 100)
+          annotations:
+            summary: >-
+              Dragonfly {{ $labels.db }} dropped to {{ $value }} keys, under
+              10% of what it held 10m ago; check its tenants (see the
+              registry in cluster.yaml)
+          labels:
+            severity: warning

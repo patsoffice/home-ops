@@ -13,6 +13,18 @@ spec:
         resourceFieldRef:
           resource: limits.memory
           divisor: 1Mi
+  # DB index registry (16 DBs, 0-15). Give each app with queues or state
+  # its own index and record it here: a FLUSHDB only clears one DB, but it
+  # clears every tenant in it (2026-11-18 a db0 flush orphaned RomM's RQ
+  # workers). Leaving the index unset means db0, so keep db0 empty: keys
+  # there mean an app forgot to pick one.
+  #   0  unassigned (should stay empty)
+  #   1  free (authentik's old index; 2025.10+ needs no Redis)
+  #   2  romm (RQ queues + cache)
+  #   3  manyfold (Sidekiq)
+  #   4  paperless (Celery)
+  #   5  wordpress-poc (PHP sessions, Caddy cache, object cache)
+  #   6  open-webui (websocket manager)
   args:
     - --maxmemory=$(MAX_MEMORY)Mi
     - --proactor_threads=2

@@ -40,9 +40,10 @@ spec:
               WEBUI_AUTH: false
               ENABLE_OLLAMA_API: true
               OLLAMA_BASE_URL: "http://ollama.llm.svc.cluster.local:11434"
+              # https://docs.openwebui.com/getting-started/advanced-topics/env-configuration/#redis
               ENABLE_WEBSOCKET_SUPPORT: true
               WEBSOCKET_MANAGER: redis
-              WEBSOCKET_REDIS_URL: "redis://dragonfly.database.svc.cluster.local:6379"
+              WEBSOCKET_REDIS_URL: "redis://dragonfly.database.svc.cluster.local:6379/6"
               ENABLE_RAG_WEB_SEARCH: false
               ENABLE_SEARCH_QUERY: false
             envFrom: *envFrom
