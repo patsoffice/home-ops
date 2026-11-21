@@ -20,3 +20,6 @@ spec:
     # new virt-launcher instead of leaving them pinned to the old one.
     workloadUpdateMethods:
       - LiveMigrate
+  # Explicit: the CRD defines no default, so don't rely on operator
+  # defaulting order to protect the VMs on uninstall.
+  uninstallStrategy: BlockUninstallIfWorkloadsExist
