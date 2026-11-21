@@ -1,0 +1,17 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  # renovate: datasource=github-releases depName=kubevirt/kubevirt
+  - https://github.com/kubevirt/kubevirt/releases/download/v1.10.0/kubevirt-operator.yaml
+patches:
+  # cluster-apps already owns Namespace/kubevirt via components/common
+  # (with the prune guard) - drop the copy from the operator bundle so a
+  # deleted kubevirt ks can never prune the namespace out from under the VMs.
+  - patch: |-
+      $patch: delete
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: kubevirt

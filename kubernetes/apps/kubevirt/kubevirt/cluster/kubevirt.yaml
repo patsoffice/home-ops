@@ -1,0 +1,22 @@
+---
+apiVersion: kubevirt.io/v1
+kind: KubeVirt
+metadata:
+  name: kubevirt
+  namespace: kubevirt
+spec:
+  configuration:
+    # Talos upgrades drain nodes - migrate VMs instead of killing them.
+    # Falls back to eviction for VMs that cannot migrate (e.g. RWO disks).
+    evictionStrategy: LiveMigrateIfPossible
+  imagePullPolicy: IfNotPresent
+  # Wire KubeVirt monitoring into the in-cluster Prometheus stack. The
+  # operator creates its ServiceMonitor here and grants this service
+  # account read access to the KubeVirt endpoints.
+  monitorAccount: kube-prometheus-stack-prometheus
+  monitorNamespace: observability
+  workloadUpdateStrategy:
+    # Renovate auto-merges operator bumps - live-migrate workloads onto the
+    # new virt-launcher instead of leaving them pinned to the old one.
+    workloadUpdateMethods:
+      - LiveMigrate
