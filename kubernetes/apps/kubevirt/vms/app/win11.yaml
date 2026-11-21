@@ -92,9 +92,6 @@ spec:
         - name: installer
           persistentVolumeClaim:
             claimName: win11-full-iso
-        - containerDisk:
-            # Upstream virtio driver image; no digest floating around to
-            # pin, so this stays on the tag (or upload virtio-win.iso as
-            # a DataVolume later for a fully self-contained setup).
-            image: quay.io/kubevirt/virtio-container-disk:latest
-          name: drivers
+        - name: drivers
+          persistentVolumeClaim:
+            claimName: virtio-win-iso
