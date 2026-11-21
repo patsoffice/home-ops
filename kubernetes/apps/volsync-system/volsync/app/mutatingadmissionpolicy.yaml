@@ -21,12 +21,18 @@ spec:
         operations: ["CREATE", "UPDATE"]
         resources: ["jobs"]
   matchConditions:
+    # Guarded with has()/in: a match-condition error fails closed and
+    # denies the request, so unguarded access would block any Job created
+    # without these fields (e.g. via generateName, as KubeVirt does).
     - name: has-volsync-job-name-prefix
       expression: >
-        object.metadata.name.startsWith("volsync-src-")
+        has(object.metadata.name)
+        && object.metadata.name.startsWith("volsync-src-")
     - name: has-volsync-created-by-labels
       expression: >
-        object.metadata.labels["app.kubernetes.io/created-by"] == "volsync"
+        has(object.metadata.labels)
+        && ("app.kubernetes.io/created-by" in object.metadata.labels)
+        && object.metadata.labels["app.kubernetes.io/created-by"] == "volsync"
   failurePolicy: Fail
   reinvocationPolicy: IfNeeded
   mutations:
