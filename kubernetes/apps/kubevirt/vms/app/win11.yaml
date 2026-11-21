@@ -94,4 +94,7 @@ spec:
             claimName: win11-full-iso
         - name: drivers
           persistentVolumeClaim:
-            claimName: virtio-win-iso
+            # Fresh PVC: the original virtio-win-iso could never upload
+            # because the VM held it attached (CDI won't start an upload
+            # server into a mounted volume), so it stayed empty.
+            claimName: virtio-drivers
