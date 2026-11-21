@@ -27,6 +27,10 @@ spec:
       create: true
       rules:
         kubeApiserverBurnrate: false
+      disabled:
+        # Replaced by client-cert-rules below: Talos mints 10-minute admin
+        # certs for its own API calls, which trip the upstream p1 quantile.
+        KubeClientCertificateExpiration: true
     alertmanager:
       route:
         main:
@@ -118,6 +122,8 @@ spec:
         - pods=[*]
         - deployments=[*]
         - persistentvolumeclaims=[*]
+        # KubeVirtNoAvailableNodesToRunVMs reads this via kube_node_labels
+        - nodes=[kubevirt.io/schedulable]
       prometheus:
         monitor:
           enabled: true
@@ -131,6 +137,41 @@ spec:
       enabled: false
       forceDeployDashboards: true
     additionalPrometheusRulesMap:
+      # Talos machined authenticates on control-plane nodes with a fresh
+      # 10-minute admin cert (NewTemporaryClientFromPKI) - on upgrades, and
+      # whenever the Node's labels/annotations change (e.g. the KubeVirt
+      # heartbeat, ~1/min). Those always land in the <=30m bucket, so alert
+      # only on certs with 30m..7d (warning) or 30m..24h (critical) left. A
+      # genuinely expiring cert crosses those windows days before the blind
+      # spot. le is matched both ways: Prometheus 3 stores "1800.0".
+      client-cert-rules:
+        groups:
+          - name: kubernetes-system-apiserver-client-certs
+            rules:
+              - alert: KubeClientCertificateExpiration
+                annotations:
+                  description: A client certificate used to authenticate to kube-apiserver {{ $labels.instance }} is expiring in less than 7 days (ignoring sub-30m Talos temporary certs).
+                  runbook_url: https://runbooks.prometheus-operator.dev/runbooks/kubernetes/kubeclientcertificateexpiration
+                  summary: Client certificate is about to expire.
+                expr: |-
+                  sum by (job, cluster, instance) (rate(apiserver_client_certificate_expiration_seconds_bucket{job="apiserver",le=~"604800|604800.0"}[5m]))
+                  - sum by (job, cluster, instance) (rate(apiserver_client_certificate_expiration_seconds_bucket{job="apiserver",le=~"1800|1800.0"}[5m]))
+                  > 0
+                for: 5m
+                labels:
+                  severity: warning
+              - alert: KubeClientCertificateExpiration
+                annotations:
+                  description: A client certificate used to authenticate to kube-apiserver {{ $labels.instance }} is expiring in less than 24 hours (ignoring sub-30m Talos temporary certs).
+                  runbook_url: https://runbooks.prometheus-operator.dev/runbooks/kubernetes/kubeclientcertificateexpiration
+                  summary: Client certificate is about to expire.
+                expr: |-
+                  sum by (job, cluster, instance) (rate(apiserver_client_certificate_expiration_seconds_bucket{job="apiserver",le=~"86400|86400.0"}[5m]))
+                  - sum by (job, cluster, instance) (rate(apiserver_client_certificate_expiration_seconds_bucket{job="apiserver",le=~"1800|1800.0"}[5m]))
+                  > 0
+                for: 5m
+                labels:
+                  severity: critical
       dockerhub-rules:
         groups:
           - name: dockerhub
