@@ -8,3 +8,4 @@ components:
 resources:
   - ./kubevirt/ks.yaml
   - ./cdi/ks.yaml
+  - ./vms/ks.yaml

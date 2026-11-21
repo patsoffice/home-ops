@@ -1,0 +1,31 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app kubevirt-vms
+  namespace: &namespace kubevirt
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  dependsOn:
+    - name: kubevirt-cluster
+      namespace: *namespace
+    - name: cdi-cluster
+      namespace: *namespace
+  healthChecks:
+    - apiVersion: kubevirt.io/v1
+      kind: VirtualMachine
+      name: win11
+      namespace: default
+  interval: 1h
+  path: ./kubernetes/apps/kubevirt/vms/app
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: default
+  timeout: 5m

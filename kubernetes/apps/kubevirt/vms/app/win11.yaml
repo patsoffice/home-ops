@@ -1,0 +1,96 @@
+---
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  # First VM: Windows 11 installer boots from the uploaded ISO.
+  # After setup finishes, flip the boot order (or drop the installer
+  # cdrom) so it boots from the OS disk.
+  name: win11
+  namespace: default
+spec:
+  runStrategy: Always
+  dataVolumeTemplates:
+    - metadata:
+        name: win11-os
+      spec:
+        source:
+          blank: {}
+        storage:
+          accessModes:
+            - ReadWriteMany
+          resources:
+            requests:
+              storage: 80Gi
+          # Filesystem RWX: live-migratable OS disk.
+          storageClassName: ceph-filesystem
+          volumeMode: Filesystem
+  template:
+    metadata:
+      labels:
+        kubevirt.io/vm: win11
+    spec:
+      domain:
+        clock:
+          timer:
+            hpet:
+              present: false
+            hyperv: {}
+            pit:
+              tickPolicy: delay
+            rtc:
+              tickPolicy: catchup
+          utc: {}
+        cpu:
+          cores: 4
+          model: host-model
+        devices:
+          disks:
+            - bootOrder: 1
+              cdrom:
+                bus: sata
+              name: installer
+            - bootOrder: 2
+              disk:
+                bus: virtio
+              name: os
+            - cdrom:
+                bus: sata
+              name: drivers
+          interfaces:
+            - masquerade: {}
+              model: virtio
+              name: default
+          tpm:
+            persistent: true
+        features:
+          acpi: {}
+          hyperv:
+            relaxed: {}
+            spinlocks:
+              spinlocks: 8191
+            vapic: {}
+        firmware:
+          bootloader:
+            efi:
+              secureBoot: true
+        machine:
+          type: q35
+        resources:
+          requests:
+            memory: 8Gi
+      networks:
+        - name: default
+          pod: {}
+      volumes:
+        - dataVolume:
+            name: win11-os
+          name: os
+        - name: installer
+          persistentVolumeClaim:
+            claimName: win11-full-iso
+        - containerDisk:
+            # Upstream virtio driver image; no digest floating around to
+            # pin, so this stays on the tag (or upload virtio-win.iso as
+            # a DataVolume later for a fully self-contained setup).
+            image: quay.io/kubevirt/virtio-container-disk:latest
+          name: drivers
