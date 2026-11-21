@@ -1,0 +1,58 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app cdi
+  namespace: &namespace kubevirt
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  healthChecks:
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: cdi-operator
+      namespace: cdi
+  interval: 1h
+  path: ./kubernetes/apps/kubevirt/cdi/app
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: cdi
+  timeout: 5m
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app cdi-cluster
+  namespace: &namespace kubevirt
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  dependsOn:
+    - name: cdi
+      namespace: *namespace
+  healthChecks:
+    - apiVersion: cdi.kubevirt.io/v1beta1
+      kind: CDI
+      name: cdi
+  healthCheckExprs:
+    - apiVersion: cdi.kubevirt.io/v1beta1
+      kind: CDI
+      current: status.phase == 'Deployed'
+  interval: 1h
+  path: ./kubernetes/apps/kubevirt/cdi/cluster
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: cdi
+  timeout: 15m

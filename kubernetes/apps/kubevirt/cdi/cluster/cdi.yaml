@@ -1,0 +1,22 @@
+---
+apiVersion: cdi.kubevirt.io/v1beta1
+kind: CDI
+metadata:
+  name: cdi
+  annotations:
+    # Belt and braces: a renamed/moved/dropped ks must not prune this CR.
+    # Pruning it uninstalls CDI, removes the DataVolume CRDs, and every
+    # DataVolume takes its PVC (the VM disks) with it.
+    kustomize.toolkit.fluxcd.io/prune: disabled
+spec:
+  config:
+    featureGates:
+      - HonorWaitForFirstConsumer
+    # Scratch space for imports/uploads; RWO is fine here and this pins
+    # it instead of following whatever the default class becomes.
+    scratchSpaceStorageClass: ceph-block
+  imagePullPolicy: IfNotPresent
+  # The deletion webhook only blocks uninstall when this is explicit.
+  # Unset, deleting the CR uninstalls CDI and garbage-collects every
+  # DataVolume and its PVC.
+  uninstallStrategy: BlockUninstallIfWorkloadsExist
