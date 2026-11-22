@@ -93,7 +93,7 @@ spec:
           persistentVolumeClaim:
             # Slim installer image; the original full ISO PVC is left
             # untouched as a fallback.
-            claimName: win11-slim-iso
+            claimName: win11-slim
         - name: drivers
           persistentVolumeClaim:
             # Fresh PVC: the original virtio-win-iso could never upload
