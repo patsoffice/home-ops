@@ -57,7 +57,7 @@ spec:
             image:
               repository: ghcr.io/prusa3d/prusa-connect
               # renovate: datasource=docker depName=ghcr.io/prusa3d/prusa-connect
-              tag: 0.1.0-beta.1@sha256:5dbb69a3d1bb3ebad9c933e9aaec6bb59cf2e2e531b93be4919b9e13ccb7370a
+              tag: 0.1.0-beta.2@sha256:8ab946744acaaf48823f7931382f620b4acb42ae6f31c7efbf384073215c336f
             # The image CMD is ["core"]; this adds the config file to read.
             # The core reads no environment variables, so everything the
             # operator sets lives in the prusa-connect-secret config.yaml.
