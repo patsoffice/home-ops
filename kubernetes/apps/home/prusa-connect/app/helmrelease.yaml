@@ -61,10 +61,15 @@ spec:
             # The image CMD is ["core"]; this adds the config file to read.
             # The core reads no environment variables, so everything the
             # operator sets lives in the prusa-connect-secret config.yaml.
+            # The file sits at /config so that config.d/ beside it is the
+            # writable state claim: the setup wizard always writes
+            # config.d/setup.yaml beside the file it was given and no key
+            # moves that path, so a config under a read-only mount leaves
+            # the wizard with nowhere to write (upstream config.md).
             args:
               - core
               - -config
-              - /etc/prusa-connect/config.yaml
+              - /config/config.yaml
             probes:
               startup:
                 enabled: true
@@ -131,9 +136,11 @@ spec:
           printers:
             port: *port
     persistence:
-      # The files the core writes beside the operator's own: the resource
-      # overlay the API rewrites, plus pairing files. The authorization
-      # graph itself lives in postgres17 now. VolSync-covered (see ks.yaml).
+      # The files the core writes beside the operator's own: the setup
+      # wizard's setup.yaml (always config.d/ beside -config, no key
+      # moves it), the resource overlay the API rewrites, plus pairing
+      # files. The authorization graph itself lives in postgres17 now.
+      # VolSync-covered (see ks.yaml).
       state:
         existingClaim: "{{ .Release.Name }}"
         globalMounts:
@@ -148,14 +155,15 @@ spec:
         globalMounts:
           - path: /storage
       # Operator config from the ExternalSecret (go2rtc precedent), mounted
-      # as a single file: mounting the directory would work too, but the
-      # secret also carries the INIT_* keys, which must not land as files
+      # as a single file beside the writable config.d claim (see the args
+      # comment): mounting the directory would work too, but the secret
+      # also carries the INIT_* keys, which must not land as files
       # next to config.yaml.
       config-file:
         type: secret
         name: prusa-connect-secret
         globalMounts:
-          - path: /etc/prusa-connect/config.yaml
+          - path: /config/config.yaml
             subPath: config.yaml
             readOnly: true
       # Scratch for multipart uploads; the root filesystem is read-only.
