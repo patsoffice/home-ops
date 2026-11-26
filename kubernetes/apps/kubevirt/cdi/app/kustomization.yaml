@@ -18,3 +18,17 @@ patches:
           kustomize.toolkit.fluxcd.io/prune: disabled
         labels:
           resource.kubernetes.io/admin-access: "true"
+  # The bundle's CDI CRD still declares the deprecated v1alpha1 version,
+  # but cdi-operator strips it from the live CRD. Applying it as-is made
+  # Flux re-add v1alpha1 every reconcile and the operator remove it again,
+  # and each write reset the apiserver watch cache for cdis. The test op
+  # fails the build if a future bundle reorders or drops the versions.
+  - target:
+      kind: CustomResourceDefinition
+      name: cdis.cdi.kubevirt.io
+    patch: |-
+      - op: test
+        path: /spec/versions/0/name
+        value: v1alpha1
+      - op: remove
+        path: /spec/versions/0
