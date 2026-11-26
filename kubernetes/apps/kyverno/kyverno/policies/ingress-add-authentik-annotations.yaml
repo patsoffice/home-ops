@@ -1,6 +1,7 @@
 ---
-apiVersion: kyverno.io/v1
-kind: ClusterPolicy
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/policies.kyverno.io/generatingpolicy_v1.json
+apiVersion: policies.kyverno.io/v1
+kind: GeneratingPolicy
 metadata:
   name: generate-authentik-security-policy
   annotations:
@@ -14,29 +15,36 @@ metadata:
       `authentik.home.arpa/enabled: "true"`. The SecurityPolicy forwards
       authentication to the Authentik embedded outpost.
 spec:
-  generateExisting: true
-  rules:
-    - name: auth
-      match:
-        any:
-          - resources:
-              kinds:
-                - HTTPRoute
-              annotations:
-                authentik.home.arpa/enabled: "true"
-      generate:
-        synchronize: true
-        orphanDownstreamOnPolicyDelete: true
-        apiVersion: gateway.envoyproxy.io/v1alpha1
-        kind: SecurityPolicy
-        name: "authentik-{{ request.object.metadata.name }}"
-        namespace: "{{ request.object.metadata.namespace }}"
-        data:
+  evaluation:
+    generateExisting:
+      enabled: true
+    synchronize:
+      enabled: true
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ["gateway.networking.k8s.io"]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["httproutes"]
+  matchConditions:
+    - name: authentik-enabled
+      expression: >-
+        has(object.metadata.annotations) &&
+        object.metadata.annotations[?'authentik.home.arpa/enabled'].orValue('') == 'true'
+  generate:
+    - template:
+        interpolate: cel
+        value: |
+          apiVersion: gateway.envoyproxy.io/v1alpha1
+          kind: SecurityPolicy
+          metadata:
+            name: authentik-((object.metadata.name))
+            namespace: ((object.metadata.namespace))
           spec:
             targetRefs:
               - group: gateway.networking.k8s.io
                 kind: HTTPRoute
-                name: "{{ request.object.metadata.name }}"
+                name: ((object.metadata.name))
             extAuth:
               headersToExtAuth:
                 - Cookie
