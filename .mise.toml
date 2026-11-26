@@ -35,3 +35,7 @@ TALOS_DIR = "{{config_root}}/talos"
 "pipx:flux-local" = "8.4.0"
 "restic" = "0.20.0"
 "trivy" = "0.76.2"
+
+[tools."github:kubevirt/kubevirt"]
+version = "1.10.0"
+bin = "virtctl"

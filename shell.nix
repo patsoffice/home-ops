@@ -141,6 +141,7 @@ pkgs.mkShell {
     jq # aqua:jqlang/jq
     kustomize # aqua:kubernetes-sigs/kustomize
     kubectl # aqua:kubernetes/kubectl
+    kubevirt # github:kubevirt/kubevirt (nixpkgs builds cmd/virtctl from source)
     yq-go # aqua:mikefarah/yq  (binary: yq)
     talosctl # aqua:siderolabs/talos
     kubeconform # aqua:yannh/kubeconform
