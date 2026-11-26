@@ -170,6 +170,15 @@ spec:
             forward_to = [loki.write.default.receiver]
           }
 
+          // Known gap: the UDM also sends UniFi activity events (WiFi
+          // client connect/disconnect, etc.) as CEF lines with no <PRI>
+          // header ("Nov 26 13:07:05 <host> CEF:0|Ubiquiti|UniFi Network|...").
+          // The rfc3164 parser rejects them ("invalid or unsupported
+          // framing. first byte: 'N'", ~1.5% of syslog), so they're dropped.
+          // Capturing them needs syslog_format = "raw" plus regex parsing
+          // in loki.process, which is experimental as of Alloy v1.22 and
+          // requires --stability.level=experimental for the whole DaemonSet.
+          // Revisit once raw is stable.
           loki.source.syslog "network" {
             listener {
               address       = "0.0.0.0:1514"
