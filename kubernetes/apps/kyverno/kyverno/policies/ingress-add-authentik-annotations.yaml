@@ -26,6 +26,7 @@ spec:
                 authentik.home.arpa/enabled: "true"
       generate:
         synchronize: true
+        orphanDownstreamOnPolicyDelete: true
         apiVersion: gateway.envoyproxy.io/v1alpha1
         kind: SecurityPolicy
         name: "authentik-{{ request.object.metadata.name }}"
