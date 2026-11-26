@@ -29,6 +29,8 @@ exclude:
       parts:
         extensions:
         - txt
+        - nfo
+        - sfv
         - xml
         - jpg
         - jpeg
