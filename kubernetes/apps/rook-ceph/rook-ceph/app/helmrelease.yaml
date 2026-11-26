@@ -21,7 +21,7 @@ spec:
     csi:
       serviceMonitor:
         enabled: true
-    enableDiscoveryDaemon: true
+    enableDiscoveryDaemon: false
     monitoring:
       enabled: true
     resources:
