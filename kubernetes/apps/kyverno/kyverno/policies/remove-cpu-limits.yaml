@@ -13,6 +13,11 @@ metadata:
       This policy removes CPU limits from all Pods (containers and
       initContainers) unless annotated `kyverno.io/ignore: "true"`.
 spec:
+  # Admission-only: background scans would flag pods in webhook-excluded
+  # namespaces (kube-system, kyverno) that keep their CPU limits.
+  evaluation:
+    background:
+      enabled: false
   autogen:
     podControllers:
       controllers: []
