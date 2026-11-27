@@ -37,6 +37,11 @@ tmdb:
   language: en
   region: US
 
+# The universe default builds from MDBList lists, which now need a key.
+mdblist:
+  apikey: <<MDBLIST_API_KEY>>
+  cache_expiration: 60
+
 settings:
   # No run_order: v2.5.5 rewrites config.yml to fill in any missing
   # stages and ignores --read-only-config there, which fails on the
