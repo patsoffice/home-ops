@@ -6,5 +6,6 @@ resources:
   - ./aqua.yaml
   - ./external-dns.yaml
   - ./external-secrets.yaml
+  - ./fairwinds.yaml
   - ./ingress-nginx.yaml
   - ./node-feature-discovery.yaml
