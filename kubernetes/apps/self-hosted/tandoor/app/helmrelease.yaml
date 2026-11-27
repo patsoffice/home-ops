@@ -39,7 +39,7 @@ spec:
             env:
               ALLOWED_HOSTS: "*"
               COMMENT_PREF_DEFAULT: 0
-              DEBUG: 1
+              DEBUG: 0
               ENABLE_SIGNUP: 0
               FRACTION_PREF_DEFAULT: 0
               GUNICORN_MEDIA: 0
