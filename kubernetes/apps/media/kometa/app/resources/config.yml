@@ -36,8 +36,9 @@ tmdb:
   region: US
 
 settings:
-  run_order:
-    - collections
+  # No run_order: v2.5.5 rewrites config.yml to fill in any missing
+  # stages and ignores --read-only-config there, which fails on the
+  # read-only mount. --collections-only already limits the run.
   cache: true
   cache_expiration: 60
   asset_directory: /config/assets
