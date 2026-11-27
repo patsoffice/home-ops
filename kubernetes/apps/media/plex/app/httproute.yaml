@@ -20,7 +20,33 @@ spec:
     - name: envoy-internal
       namespace: network
   rules:
-    - backendRefs:
+    - name: app
+      backendRefs: &backendRefs
         - name: ${APP}
           namespace: media
           port: ${APP_PORT}
+      filters:
+        - type: RequestHeaderModifier
+          requestHeaderModifier:
+            set:
+              # Plex closes idle keep-alive connections after 20s unless this
+              # is set, so Envoy owns the connection pool instead
+              - name: X-Plex-Http-Pipeline
+                value: infinite
+    # External SRT subtitles fail behind a reverse proxy when the client's
+    # Range header is forwarded; strip it for stream requests.
+    # Ref: https://forums.plex.tv/t/external-srt-subtitles-are-not-working-w-reverse-proxy/886540
+    - name: subtitles
+      backendRefs: *backendRefs
+      filters:
+        - type: RequestHeaderModifier
+          requestHeaderModifier:
+            set:
+              - name: X-Plex-Http-Pipeline
+                value: infinite
+            remove:
+              - Range
+      matches:
+        - path:
+            type: PathPrefix
+            value: /library/streams
