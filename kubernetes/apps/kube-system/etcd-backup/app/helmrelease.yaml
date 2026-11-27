@@ -31,6 +31,9 @@ spec:
             image:
               repository: ghcr.io/siderolabs/talosctl
               tag: v1.14.7@sha256:5567c99a07bec8415dd863c182e2854a93e81c97d7efc87ce06d7802e17a9d93
+            resources:
+              limits:
+                memory: 128Mi
             args:
               - -n
               - "$(CP_NODE_IP)"
@@ -45,6 +48,9 @@ spec:
             image:
               repository: ghcr.io/restic/restic
               tag: 0.20.0@sha256:ccb3af1abb107769156f339823d746722eba67bed2d0590a775a566ae7fc2454
+            resources:
+              limits:
+                memory: 512Mi
             workingDir: /data
             args:
               - backup
@@ -75,6 +81,9 @@ spec:
             image:
               repository: ghcr.io/restic/restic
               tag: 0.20.0@sha256:ccb3af1abb107769156f339823d746722eba67bed2d0590a775a566ae7fc2454
+            resources:
+              limits:
+                memory: 512Mi
             args:
               - forget
               - --keep-last=7 # change me - set retention policy

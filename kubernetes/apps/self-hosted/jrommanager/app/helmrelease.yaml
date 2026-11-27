@@ -25,6 +25,12 @@ spec:
               repository: docker.io/optyfr/jrommanager
               tag: 3.0.5@sha256:9d5bfd11e7571348066ff411d774216d1ebf0d4056f18b8cc816a96f0dc92383
               pullPolicy: IfNotPresent
+            # JRomManager's server launcher passes -Xmx2g on 64-bit, so
+            # the heap alone can reach 2Gi; leave room for metaspace,
+            # threads and native buffers above it.
+            resources:
+              limits:
+                memory: 3Gi
             env:
               JRM_SERVER_WORKPATH: /work
               JRM_SERVER_HTTP: &port ${APP_PORT}

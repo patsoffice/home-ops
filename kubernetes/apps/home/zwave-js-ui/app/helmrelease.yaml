@@ -23,6 +23,9 @@ spec:
             image:
               repository: ghcr.io/zwave-js/zwave-js-ui
               tag: 11.27.0@sha256:0f3ad23ccf5ff2256ad8cc060ab0fc987b8f52a8427eac337f93b058fa628f35
+            resources:
+              limits:
+                memory: 512Mi
             env:
               TZ: America/Los_Angeles
               PORT: &port ${APP_PORT}

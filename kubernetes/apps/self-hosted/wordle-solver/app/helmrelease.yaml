@@ -26,6 +26,9 @@ spec:
               repository: ghcr.io/patsoffice/wordle-solver
               tag: 1.2.0@sha256:b5c7052621f9faf02cd674c601ca493643548a565456ba38288e9ba0d2d50391
               pullPolicy: IfNotPresent
+            resources:
+              limits:
+                memory: 128Mi
             probes:
               liveness:
                 enabled: true

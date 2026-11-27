@@ -27,6 +27,9 @@ spec:
               repository: ghcr.io/sharevb/it-tools
               tag: 2026.11.22@sha256:bcbb29086ca71f1ff23c7dc061f8c9b6e50f1267b4dc704327bb29ba55a8b87d
               pullPolicy: IfNotPresent
+            resources:
+              limits:
+                memory: 128Mi
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
