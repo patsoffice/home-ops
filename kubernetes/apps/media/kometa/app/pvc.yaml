@@ -1,0 +1,13 @@
+---
+# Kometa's cache (config.cache), logs and asset directory. Rebuildable, so
+# no VolSync backup.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kometa
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: ceph-block

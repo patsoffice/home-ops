@@ -1,0 +1,50 @@
+---
+# Kometa: collections only (no overlays; run with --collections-only).
+# Plex URL/token come from KOMETA_PLEX_URL/KOMETA_PLEX_TOKEN, and the
+# <<TMDB_API_KEY>> secret from KOMETA_TMDB_API_KEY (kometa-secret).
+libraries:
+  Movies:
+    collection_files:
+      - default: basic      # Newly Released, New Episodes-style rows
+      - default: imdb       # IMDb Top 250, Popular, Lowest Rated
+      - default: tmdb       # TMDb Popular, Trending, Top Rated
+      - default: franchise
+      - default: universe
+      - default: genre
+      - default: studio
+      - default: seasonal
+  TV Shows:
+    collection_files:
+      - default: basic
+      - default: imdb
+      - default: tmdb
+      - default: franchise
+      - default: network
+      - default: genre
+
+plex:
+  url: http://plex.media.svc.cluster.local:32400
+  token: overridden-by-KOMETA_PLEX_TOKEN
+  timeout: 60
+  clean_bundles: false
+  empty_trash: false
+  optimize: false
+
+tmdb:
+  apikey: <<TMDB_API_KEY>>
+  language: en
+  region: US
+
+settings:
+  run_order:
+    - collections
+  cache: true
+  cache_expiration: 60
+  asset_directory: /config/assets
+  sync_mode: append
+  minimum_items: 1
+  delete_below_minimum: true
+  missing_only_released: false
+  show_missing: false
+  save_report: false
+  verify_ssl: true
