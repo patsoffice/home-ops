@@ -43,7 +43,9 @@ spec:
               LIDARR__AUTH__METHOD: External
               LIDARR__AUTH__REQUIRED: DisabledForLocalAddresses
               LIDARR__SERVER__PORT: &port ${APP_PORT}
-              LIDARR__LOG_LEVEL: info
+              LIDARR__LOG__LEVEL: info
+              # Keep app logs in pod stdout/Loki, not the lidarr-log DB
+              LIDARR__LOG__DBENABLED: "false"
               LIDARR__UPDATE__BRANCH: develop
               LIDARR__POSTGRES__MAINDB: lidarr-main
               LIDARR__POSTGRES__LOGDB: lidarr-log
