@@ -1,7 +1,7 @@
 ---
 # Kometa: collections only (no overlays; run with --collections-only).
-# Plex URL/token come from KOMETA_PLEX_URL/KOMETA_PLEX_TOKEN, and the
-# <<TMDB_API_KEY>> secret from KOMETA_TMDB_API_KEY (kometa-secret).
+# Plex URL/token come from KOMETA_PLEX_URL/KOMETA_PLEX_TOKEN (plex: env),
+# and the <<TMDB_API_KEY>> secret from KOMETA_TMDB_API_KEY (kometa-secret).
 libraries:
   Movies:
     collection_files:
@@ -23,8 +23,10 @@ libraries:
       - default: genre
 
 plex:
-  url: http://plex.media.svc.cluster.local:32400
-  token: overridden-by-KOMETA_PLEX_TOKEN
+  # The literal value "env" makes Kometa use KOMETA_PLEX_URL /
+  # KOMETA_PLEX_TOKEN; any other string is used as-is.
+  url: env
+  token: env
   timeout: 60
   clean_bundles: false
   empty_trash: false
