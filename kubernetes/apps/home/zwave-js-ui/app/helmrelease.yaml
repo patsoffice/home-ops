@@ -26,6 +26,9 @@ spec:
             resources:
               limits:
                 memory: 512Mi
+                # ZWA-2 radio from generic-device-plugin, mounted at
+                # /dev/zwave (opened via the dialout group below).
+                devic.es/zwa-2: 1
             env:
               TZ: America/Los_Angeles
               PORT: &port ${APP_PORT}
@@ -43,8 +46,9 @@ spec:
                   failureThreshold: 3
               readiness: *probes
             securityContext:
-              privileged: true
+              allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
     defaultPodOptions:
       affinity:
         nodeAffinity:
@@ -77,8 +81,3 @@ spec:
           - path: /usr/src/app/store
       tmp:
         type: emptyDir
-      usb:
-        type: hostPath
-        hostPath: /dev/serial/by-id/usb-Nabu_Casa_ZWA-2_80B54EE632C4-if00
-        globalMounts:
-          - path: /dev/zwave
