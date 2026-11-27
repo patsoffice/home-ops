@@ -1,0 +1,60 @@
+---
+# Dashboards come from the ConfigMaps the cilium chart renders
+# (dashboards.enabled, operator.dashboards.enabled,
+# hubble.metrics.dashboards.enabled), so they track the chart version.
+# yaml-language-server: $schema=https://schemas.ajgon.casa/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: cilium-agent
+spec:
+  allowCrossNamespaceImport: true
+  folder: Cilium
+  instanceSelector:
+    matchLabels:
+      grafana.internal/instance: grafana
+  datasources:
+    - datasourceName: Prometheus
+      inputName: DS_PROMETHEUS
+  configMapRef:
+    name: cilium-dashboard
+    key: cilium-dashboard.json
+---
+# yaml-language-server: $schema=https://schemas.ajgon.casa/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: cilium-operator
+spec:
+  allowCrossNamespaceImport: true
+  folder: Cilium
+  instanceSelector:
+    matchLabels:
+      grafana.internal/instance: grafana
+  datasources:
+    - datasourceName: Prometheus
+      inputName: DS_PROMETHEUS
+  configMapRef:
+    name: cilium-operator-dashboard
+    key: cilium-operator-dashboard.json
+---
+# Only the general Hubble dashboard: the chart's DNS/network-overview
+# namespace dashboards need context labels and the L7 one needs http
+# metrics, none of which are enabled.
+# yaml-language-server: $schema=https://schemas.ajgon.casa/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: hubble
+spec:
+  allowCrossNamespaceImport: true
+  folder: Cilium
+  instanceSelector:
+    matchLabels:
+      grafana.internal/instance: grafana
+  datasources:
+    - datasourceName: Prometheus
+      inputName: DS_PROMETHEUS
+  configMapRef:
+    name: hubble-dashboard
+    key: hubble-dashboard.json

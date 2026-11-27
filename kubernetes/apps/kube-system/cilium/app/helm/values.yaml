@@ -33,6 +33,8 @@ hubble:
       - port-distribution
     serviceMonitor:
       enabled: true
+    dashboards:
+      enabled: true
   relay:
     enabled: false
   ui:
