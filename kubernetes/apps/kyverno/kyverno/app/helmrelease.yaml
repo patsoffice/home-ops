@@ -46,6 +46,8 @@ spec:
         image:
           registry: ghcr.io
       replicas: 3
+      serviceMonitor:
+        enabled: true
       topologySpreadConstraints:
         - maxSkew: 1
           topologyKey: kubernetes.io/hostname
