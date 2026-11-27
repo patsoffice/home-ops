@@ -45,6 +45,9 @@ spec:
                 value: tdarr.media.svc.cluster.local
               - name: serverPort
                 value: 8266
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: { drop: ["ALL"] }
             resources:
               claims:
                 - name: gpu
@@ -77,6 +80,16 @@ spec:
       resourceClaims:
         - name: gpu
           resourceClaimTemplateName: tdarr-node-gpu
+      # Run as the uid/gid the image used to drop to (PUID/PGID). The
+      # image's init skips its chown/usermod steps when started
+      # non-root. Group 0 keeps the image's /app, /temp and /home/Tdarr
+      # dirs writable and opens the GPU: /dev/dri/renderD128 on these
+      # nodes is root:root 0660.
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10070
+        runAsGroup: 8675309
+        supplementalGroups: [0]
     service:
       app:
         controller: *app
@@ -88,6 +101,13 @@ spec:
         path: /tank/transcode/tdarr/transcode-cache
         globalMounts:
           - path: /cache
+      # s6-overlay needs a writable /run; the image's is root 0755.
+      run:
+        type: emptyDir
+        medium: Memory
+        sizeLimit: 64Mi
+        globalMounts:
+          - path: /run
       movies:
         type: nfs
         server: nas0.internal
