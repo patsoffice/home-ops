@@ -33,8 +33,10 @@ spec:
                 memory: 1Gi
             env:
               CACHE_DIR: /cache
-              PUID: 10000
-              PGID: 8675309
+              PUID: "10000"
+              # Quoted: Helm turns large unquoted ints into floats, so this
+              # rendered as "8.675309e+06" and groupmod rejected it.
+              PGID: "8675309"
               NETWORK_SHARE_MODE: true
               S6_YES_I_WANT_A_WORLD_WRITABLE_RUN_BECAUSE_KUBERNETES: 1
               S6_READ_ONLY_ROOT: 1
