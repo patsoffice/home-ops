@@ -19,8 +19,24 @@ envoy:
   enabled: false
 dashboards:
   enabled: true
+# Hubble for flow metrics only: no relay or UI. http metrics are left out
+# because they need the L7 proxy (envoy is disabled).
 hubble:
-  enabled: false
+  enabled: true
+  metrics:
+    enabled:
+      - dns
+      - drop
+      - tcp
+      - flow
+      - icmp
+      - port-distribution
+    serviceMonitor:
+      enabled: true
+  relay:
+    enabled: false
+  ui:
+    enabled: false
 ipam:
   mode: kubernetes
 ipv4NativeRoutingCIDR: "10.192.0.0/16"
