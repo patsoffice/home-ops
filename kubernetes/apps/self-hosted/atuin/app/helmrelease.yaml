@@ -42,6 +42,11 @@ spec:
               ATUIN_HOST: 0.0.0.0
               ATUIN_PORT: &port ${APP_PORT}
               ATUIN_OPEN_REGISTRATION: "true"
+              # Metrics run on a separate listener so they're never
+              # exposed through the app port.
+              ATUIN_METRICS__ENABLE: "true"
+              ATUIN_METRICS__HOST: 0.0.0.0
+              ATUIN_METRICS__PORT: &metricsPort 9001
               TZ: America/Los_Angeles
             envFrom: *envFrom
             probes:
@@ -50,7 +55,7 @@ spec:
                 custom: true
                 spec:
                   httpGet:
-                    path: /
+                    path: /healthz
                     port: *port
                   initialDelaySeconds: 0
                   periodSeconds: 10
@@ -75,6 +80,17 @@ spec:
           http:
             primary: true
             port: *port
+          metrics:
+            port: *metricsPort
+    serviceMonitor:
+      app:
+        serviceName: *app
+        endpoints:
+          - port: metrics
+            scheme: http
+            path: /metrics
+            interval: 1m
+            scrapeTimeout: 10s
     persistence:
       config:
         type: emptyDir
