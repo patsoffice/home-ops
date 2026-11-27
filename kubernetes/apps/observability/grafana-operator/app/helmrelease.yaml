@@ -21,3 +21,5 @@ spec:
   values:
     operator:
       watchNamespaces: []
+    serviceMonitor:
+      enabled: true
