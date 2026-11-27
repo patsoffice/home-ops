@@ -1,0 +1,93 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app descheduler
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    kind: Deployment
+    leaderElection:
+      enabled: true
+    service:
+      enabled: true
+    serviceMonitor:
+      enabled: true
+    resources:
+      requests:
+        cpu: 10m
+      limits:
+        memory: 256Mi
+    deschedulerPolicyAPIVersion: descheduler/v1alpha2
+    deschedulerPolicy:
+      # LowNodeUtilization uses real usage from metrics-server, not requests
+      metricsProviders:
+        - source: KubernetesMetrics
+      profiles:
+        - name: Default
+          pluginConfig:
+            - name: DefaultEvictor
+              args:
+                # Never evict from these: Rook Ceph and CNPG are
+                # disruption-sensitive, KubeVirt pods are running VMs, and
+                # kube-system holds DNS and node plumbing. They all have
+                # PDBs or critical priority too; this is belt and braces.
+                namespaceLabelSelector:
+                  matchExpressions:
+                    - key: kubernetes.io/metadata.name
+                      operator: NotIn
+                      values: ["kube-system", "rook-ceph", "database", "kubevirt"]
+                nodeFit: true
+                podProtections:
+                  # Most apps use emptyDir, so local storage must not pin
+                  # them; system-critical pods stay protected.
+                  defaultDisabled: ["PodsWithLocalStorage", "FailedBarePods"]
+            - name: LowNodeUtilization
+              args:
+                metricsUtilization:
+                  source: KubernetesMetrics
+                # Underutilized: below all of these. Overutilized: above
+                # any targetThreshold. Today's nodes (15-22% mem, 25-44% of
+                # pod capacity) sit in between, so this only fires on a
+                # real imbalance such as a freshly drained node.
+                thresholds: { cpu: 20, memory: 20, pods: 20 }
+                targetThresholds: { cpu: 50, memory: 50, pods: 50 }
+            - name: RemoveFailedPods
+              args:
+                excludeOwnerKinds: ["Job"]
+                includingInitContainers: true
+                minPodLifetimeSeconds: 1800
+                reasons:
+                  - ContainerStatusUnknown
+                  - NodeAffinity
+                  - NodeShutdown
+                  - Terminated
+                  - UnexpectedAdmissionError
+            - name: RemovePodsViolatingInterPodAntiAffinity
+            - name: RemovePodsViolatingNodeAffinity
+              args:
+                nodeAffinityType: ["requiredDuringSchedulingIgnoredDuringExecution"]
+            - name: RemovePodsViolatingNodeTaints
+            - name: RemovePodsViolatingTopologySpreadConstraint
+          plugins:
+            balance:
+              enabled:
+                - LowNodeUtilization
+                - RemovePodsViolatingTopologySpreadConstraint
+            deschedule:
+              enabled:
+                - RemoveFailedPods
+                - RemovePodsViolatingInterPodAntiAffinity
+                - RemovePodsViolatingNodeAffinity
+                - RemovePodsViolatingNodeTaints
