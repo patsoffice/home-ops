@@ -6,3 +6,4 @@ resources:
   - ./downstairs-vacuum.yaml
   - ./kvm0.yaml
   - ./upstairs-vacuum.yaml
+  - ./vpinfe.yaml
