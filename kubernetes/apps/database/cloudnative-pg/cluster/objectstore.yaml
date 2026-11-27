@@ -1,0 +1,30 @@
+---
+# Barman Cloud plugin object store: a 1:1 translation of the Cluster's
+# old in-tree spec.backup.barmanObjectStore. retentionPolicy moved here
+# from the Cluster. serverName must stay empty in the ObjectStore; the
+# Cluster sets it as a plugin parameter instead.
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/barmancloud.cnpg.io/objectstore_v1.json
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: garage
+spec:
+  retentionPolicy: 14d
+  configuration:
+    destinationPath: s3://backups-cnpg/
+    endpointURL: http://nas0.internal:3900
+    data:
+      compression: bzip2
+    wal:
+      compression: bzip2
+      maxParallel: 4
+    s3Credentials:
+      accessKeyId:
+        name: cloudnative-pg-secret
+        key: s3_access_key
+      secretAccessKey:
+        name: cloudnative-pg-secret
+        key: s3_secret_access_key
+      region:
+        name: cloudnative-pg-secret
+        key: s3_region

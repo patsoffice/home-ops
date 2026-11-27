@@ -64,6 +64,9 @@ spec:
   dependsOn:
     - name: cloudnative-pg
       namespace: database
+    # ObjectStore CRD + the plugin must exist before the Cluster uses it
+    - name: plugin-barman-cloud
+      namespace: database
   path: ./kubernetes/apps/database/cloudnative-pg/cluster
   prune: true
   wait: true
