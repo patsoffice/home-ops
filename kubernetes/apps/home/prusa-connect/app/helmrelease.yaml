@@ -131,7 +131,10 @@ spec:
         type: LoadBalancer
         annotations:
           lbipam.cilium.io/ips: 192.168.5.108
-        externalTrafficPolicy: Local
+        # Cilium L2 announcements ignore Local and can ARP the VIP from a
+        # node without the pod, which drops traffic. DSR keeps the client
+        # source IP with Cluster anyway.
+        externalTrafficPolicy: Cluster
         ports:
           printers:
             port: *port
