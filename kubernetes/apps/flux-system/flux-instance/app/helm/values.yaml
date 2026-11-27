@@ -15,3 +15,39 @@ instance:
     url: "https://github.com/patsoffice/home-ops.git"
     ref: "refs/heads/main"
     path: kubernetes/flux/cluster
+  kustomize:
+    patches:
+      # More workers and faster dependency re-checks. Defaults are
+      # concurrent 2-4 and requeue-dependency 30s, which serializes a
+      # ~90-release cluster after every push. Controllers peak ~250Mi
+      # of their 1Gi limit, so there's headroom for the extra workers.
+      - patch: |-
+          - op: add
+            path: /spec/template/spec/containers/0/args/-
+            value: --concurrent=10
+          - op: add
+            path: /spec/template/spec/containers/0/args/-
+            value: --requeue-dependency=5s
+        target:
+          kind: Deployment
+          name: (helm-controller|kustomize-controller|source-controller)
+      # OOMWatch: helm-controller cancels an in-flight Helm action as it
+      # nears its memory limit instead of being OOM-killed mid-upgrade
+      # and leaving the release stuck pending (threshold 95% and
+      # interval 500ms are already the defaults).
+      # CancelHealthCheckOnNewRevision: a new commit aborts the wait on
+      # a failing health check instead of waiting out the timeout.
+      - patch: |-
+          - op: add
+            path: /spec/template/spec/containers/0/args/-
+            value: --feature-gates=OOMWatch=true,CancelHealthCheckOnNewRevision=true
+        target:
+          kind: Deployment
+          name: helm-controller
+      - patch: |-
+          - op: add
+            path: /spec/template/spec/containers/0/args/-
+            value: --feature-gates=CancelHealthCheckOnNewRevision=true
+        target:
+          kind: Deployment
+          name: kustomize-controller
