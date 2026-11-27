@@ -28,13 +28,17 @@ spec:
               - secretRef:
                   name: home-assistant-secret
             securityContext:
-              privileged: true
+              allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
             resources:
               requests:
                 cpu: 10m
               limits:
                 memory: 2Gi
+                # ZBT-2 radio from generic-device-plugin, mounted at
+                # /dev/ttyACM0 (opened via the dialout group below).
+                devic.es/zbt-2: 1
           code-server:
             image:
               repository: ghcr.io/coder/code-server
@@ -118,8 +122,3 @@ spec:
                 subPath: code-server-tmp
               - path: /nonexistent
                 subPath: nonexistent
-      usb:
-        type: hostPath
-        hostPath: /dev/serial/by-id/usb-Nabu_Casa_ZBT-2_1CDBD45CF864-if00
-        globalMounts:
-          - path: /dev/ttyACM0
