@@ -1,0 +1,101 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app generic-device-plugin
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    controllers:
+      generic-device-plugin:
+        type: daemonset
+        strategy: RollingUpdate
+        containers:
+          app:
+            image:
+              repository: ghcr.io/squat/generic-device-plugin
+              tag: 0.2.0@sha256:66c8d5c270eb2b721f1064c549b9b7898152a6d2f0163380a5d37dc7636c20ff
+            args:
+              - --config=/config/config.yaml
+            ports:
+              - name: http
+                containerPort: 8080
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: 8080
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 64Mi
+    defaultPodOptions:
+      priorityClassName: system-node-critical
+    configMaps:
+      config:
+        data:
+          # USB radios handed to pods as extended resources, so the apps
+          # get the device node in their cgroup without running
+          # privileged. Matched by serial/by-id so a re-enumerated
+          # ttyACMn can't swap the radios; mountPath keeps the paths the
+          # apps already use.
+          config.yaml: |
+            log-level: info
+            domain: devic.es
+            devices:
+              - name: zbt-2
+                groups:
+                  - paths:
+                      - path: /dev/serial/by-id/usb-Nabu_Casa_ZBT-2_*-if00
+                        mountPath: /dev/ttyACM0
+              - name: zwa-2
+                groups:
+                  - paths:
+                      - path: /dev/serial/by-id/usb-Nabu_Casa_ZWA-2_*-if00
+                        mountPath: /dev/zwave
+    persistence:
+      config:
+        type: configMap
+        identifier: config
+        globalMounts:
+          - path: /config/config.yaml
+            subPath: config.yaml
+            readOnly: true
+      dev:
+        type: hostPath
+        hostPath: /dev
+        globalMounts:
+          - readOnly: true
+      sys:
+        type: hostPath
+        hostPath: /sys
+        globalMounts:
+          - readOnly: true
+      device-plugins:
+        type: hostPath
+        hostPath: /var/lib/kubelet/device-plugins
+        globalMounts:
+          - path: /var/lib/kubelet/device-plugins
