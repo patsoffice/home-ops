@@ -19,7 +19,19 @@ spec:
   values:
     controllers:
       cloudflare-tunnel:
+        # Two connectors on separate nodes so a drain or Talos upgrade
+        # doesn't take all external traffic down with one pod.
+        replicas: 2
         strategy: RollingUpdate
+        pod:
+          topologySpreadConstraints:
+            - maxSkew: 1
+              topologyKey: kubernetes.io/hostname
+              whenUnsatisfiable: DoNotSchedule
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: *app
+                  app.kubernetes.io/controller: cloudflare-tunnel
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
