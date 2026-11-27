@@ -23,26 +23,11 @@ spec:
           app:
             image:
               repository: docker.io/optyfr/jrommanager
-              tag: 4.0.0-beta.2@sha256:4c3fdbe9f3d497ec72b3edfec3d5a19fd9e444d0bc5425d8e8973f3a0d33c3ac
+              tag: 3.0.5@sha256:9d5bfd11e7571348066ff411d774216d1ebf0d4056f18b8cc816a96f0dc92383
               pullPolicy: IfNotPresent
-            # 4.0's simple server only grants admin to loopback clients and
-            # returns 401 to everyone else, so behind Envoy it is unusable.
-            # Run the FullServer instead: same image and classpath (the
-            # image runs from /app), with HTTP Basic login. First start
-            # creates admin/admin in the H2 user DB under /work; change it
-            # on first login.
-            # The image's entrypoint sets no -Xmx (JVM default = 25% of the
-            # limit); pin the 2g heap 3.x used, leaving headroom under 3Gi.
-            # Its AOT cache is trained for jrm.server.Server, so it's not
-            # passed here.
-            command:
-              - java
-              - -Xmx2g
-              - --sun-misc-unsafe-memory-access=allow
-              - --enable-native-access=ALL-UNNAMED
-              - -cp
-              - "*:lib/*"
-              - jrm.fullserver.FullServer
+            # JRomManager's server launcher passes -Xmx2g on 64-bit, so
+            # the heap alone can reach 2Gi; leave room for metaspace,
+            # threads and native buffers above it.
             resources:
               limits:
                 memory: 3Gi
@@ -51,28 +36,19 @@ spec:
               JRM_SERVER_HTTP: &port ${APP_PORT}
               JRM_SERVER_DEBUG: 1
               TZ: America/Los_Angeles
-            # TCP probes: every HTTP path, "/" included, requires Basic auth
-            # on the FullServer.
             probes:
               liveness: &probes
                 enabled: true
                 custom: true
                 spec:
-                  tcpSocket:
+                  httpGet:
+                    path: /
                     port: *port
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 3
               readiness: *probes
-              startup:
-                enabled: true
-                custom: true
-                spec:
-                  tcpSocket:
-                    port: *port
-                  periodSeconds: 5
-                  failureThreshold: 60
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: false
